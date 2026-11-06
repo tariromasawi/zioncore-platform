@@ -1,3 +1,5 @@
+import { validateObservation } from '@/lib/observation-validation';
+
 export type Observation = {
   id: string;
   createdAt: string;
@@ -20,17 +22,19 @@ export function readObservations(): Observation[] {
     if (!value) return [];
     const parsed: unknown = JSON.parse(value);
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter((item): item is Observation =>
-      Boolean(item && typeof item === 'object' && typeof item.id === 'string' &&
-        typeof item.createdAt === 'string' && typeof item.sampleRate === 'number' &&
-        typeof item.fftSize === 'number' && Array.isArray(item.topPeaksHz)),
-    );
+    return parsed.flatMap(item => {
+      const result = validateObservation(item);
+      return result.success ? [result.data] : [];
+    });
   } catch {
     return [];
   }
 }
 
 export function writeObservations(items: Observation[]) {
+  if (!items.every(item => validateObservation(item).success)) {
+    throw new Error('One or more observations failed validation.');
+  }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
 }
 

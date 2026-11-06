@@ -1,0 +1,1 @@
+- [Firestore rule arithmetic](firestore-rule-arithmetic.md) — cast operands to floating point before fractional resolution checks; integer division truncates.

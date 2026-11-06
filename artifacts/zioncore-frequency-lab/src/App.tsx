@@ -1,10 +1,29 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, Route, Switch, useLocation, useParams } from 'wouter';
+import { onAuthStateChanged, type User } from 'firebase/auth';
 import {
   Activity, ArrowLeft, ArrowRight, AudioLines, BookOpen, Check, Download,
   FileDown, History, Info, Mic, Radio, Save, ShieldCheck, Square, Trash2,
   Waves, X,
 } from 'lucide-react';
+import AccountAccess from '@/components/account-access';
+import AnalysisPanel from '@/components/analysis-panel';
+import { analyzeMeasurement, type Explanation } from '@/lib/ai-analysis';
+import {
+  deleteCloudObservations,
+  getCloudHistoryErrorMessage,
+  getCloudObservation,
+  listCloudObservations,
+  saveCloudObservation,
+} from '@/lib/cloud-observations';
+import { authenticateWithEmail, getAuthErrorMessage, signOutCurrentUser } from '@/lib/firebase-auth';
+import {
+  firebaseAuth,
+  firebaseAuthConfigured,
+  firebaseCloudReady,
+  firebaseProjectMismatch,
+  getFirebaseSetupMessage,
+} from '@/lib/firebase';
 import {
   downloadFile, formatFrequency, readObservations, toCsv, writeObservations,
   type Observation,
@@ -19,6 +38,17 @@ type Reading = {
   rms: number;
   bins: number[];
 };
+
+type AuthContextValue = {
+  user: User | null;
+  loading: boolean;
+};
+
+const AuthContext = createContext<AuthContextValue>({ user: null, loading: false });
+
+function useAuth() {
+  return useContext(AuthContext);
+}
 
 function useLabEngine(fftSize: number) {
   const [running, setRunning] = useState(false);
@@ -195,16 +225,65 @@ function Spectrum({ bins, fftSize }: { bins: number[] | null; fftSize: number })
 
 function Shell({ children }: { children: ReactNode }) {
   const [location] = useLocation();
+  const { user } = useAuth();
   return <div className="lab-shell">
     <header className="topbar">
       <Link href="/" className="brand-lockup" data-testid="link-home"><span className="brand-mark"><Waves size={19} strokeWidth={1.8} /></span><span><span className="brand-name">ZIONCORE</span><br /><span className="brand-sub">Frequency Lab</span></span></Link>
       <nav className="nav-links" aria-label="Main navigation">
         <Link href="/" className={`nav-link ${location === '/' ? 'active' : ''}`} data-testid="link-live-lab">Live lab</Link>
         <Link href="/history" className={`nav-link ${location.startsWith('/history') ? 'active' : ''}`} data-testid="link-history"><History size={14} style={{ verticalAlign: 'middle', marginRight: 5 }} />History</Link>
+        {user?.email && <span className="nav-account" data-testid="text-current-account">{user.email}</span>}
       </nav>
     </header>
     {children}
   </div>;
+}
+
+function AccountSection() {
+  const { user } = useAuth();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => setError(''), [user?.uid]);
+
+  const authenticate = async (mode: 'sign-in' | 'create', email: string, password: string) => {
+    setBusy(true);
+    setError('');
+    try {
+      await authenticateWithEmail(mode, email, password);
+    } catch (cause) {
+      setError(getAuthErrorMessage(cause));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const signOut = async () => {
+    setBusy(true);
+    setError('');
+    try {
+      await signOutCurrentUser();
+    } catch (cause) {
+      setError(getAuthErrorMessage(cause));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const readinessMessage = firebaseAuthConfigured && !firebaseCloudReady
+    ? getFirebaseSetupMessage()
+    : '';
+
+  return <AccountAccess
+    configured={firebaseAuthConfigured}
+    projectMismatch={firebaseProjectMismatch}
+    userEmail={user?.email ?? null}
+    busy={busy}
+    error={error}
+    statusMessage={readinessMessage}
+    onAuth={authenticate}
+    onSignOut={signOut}
+  />;
 }
 
 function LabPage() {
@@ -213,11 +292,18 @@ function LabPage() {
   const [notes, setNotes] = useState('');
   const [reflection, setReflection] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [cloudSaved, setCloudSaved] = useState(false);
+  const [cloudSaving, setCloudSaving] = useState(false);
+  const [cloudError, setCloudError] = useState('');
+  const [analysis, setAnalysis] = useState<Explanation | null>(null);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+  const [analysisError, setAnalysisError] = useState('');
+  const { user } = useAuth();
   const engine = useLabEngine(fftSize);
   const hasReading = Boolean(engine.reading);
-  const save = () => {
-    if (!engine.reading) return;
-    const item: Observation = {
+  const createObservation = (): Observation | null => {
+    if (!engine.reading) return null;
+    return {
       id: crypto.randomUUID(), createdAt: new Date().toISOString(),
       sampleRate: engine.reading.sampleRate, fftSize: engine.reading.fftSize,
       frequencyResolutionHz: engine.reading.resolution, dominantFrequencyHz: engine.reading.dominant,
@@ -225,11 +311,53 @@ function LabPage() {
       durationSeconds: engine.elapsed, mode: 'microphone',
       ...(notes.trim() ? { notes: notes.trim() } : {}),
     };
+  };
+  const save = () => {
+    const item = createObservation();
+    if (!item) return;
     const next = [item, ...observations];
     try {
       writeObservations(next); setObservations(next); setSaved(true);
       window.setTimeout(() => setSaved(false), 2600);
     } catch { setSaved(false); window.alert('Could not save to this browser. Check available local storage and try again.'); }
+  };
+  const saveToCloud = async () => {
+    const item = createObservation();
+    if (!item || !user || !firebaseCloudReady) return;
+    setCloudSaving(true);
+    setCloudSaved(false);
+    setCloudError('');
+    try {
+      await saveCloudObservation(item);
+      setCloudSaved(true);
+      window.setTimeout(() => setCloudSaved(false), 2600);
+    } catch (cause) {
+      setCloudError(getCloudHistoryErrorMessage(cause));
+    } finally {
+      setCloudSaving(false);
+    }
+  };
+  const requestAnalysis = async (includeFaithReflection: boolean) => {
+    if (!engine.reading) return;
+    setAnalysisLoading(true);
+    setAnalysisError('');
+    try {
+      const result = await analyzeMeasurement({
+        sampleRate: engine.reading.sampleRate,
+        fftSize: engine.reading.fftSize,
+        frequencyResolutionHz: engine.reading.resolution,
+        dominantFrequencyHz: engine.reading.dominant,
+        topPeaksHz: engine.reading.peaks,
+        rmsLevel: engine.reading.rms,
+        durationSeconds: engine.elapsed,
+      }, includeFaithReflection);
+      setAnalysis(result);
+    } catch (cause) {
+      setAnalysis(null);
+      setAnalysisError(cause instanceof Error ? cause.message : 'The AI service could not explain this measurement.');
+    } finally {
+      setAnalysisLoading(false);
+    }
   };
   const level = engine.reading ? Math.min(100, Math.round(engine.reading.rms * 5000)) : null;
   return <Shell>
@@ -274,11 +402,30 @@ function LabPage() {
         <section className="panel">
           <div className="panel-head"><span className="panel-title">Save an observation</span><Save size={16} color="#758681" /></div>
           <div className="section-body">
-            <label className="label-row" htmlFor="observation-notes"><span>Notes <span className="small-note">(optional)</span></span><span className="small-note">local only</span></label>
-            <textarea id="observation-notes" className="text-control" placeholder="Describe the room, source, or context…" value={notes} onChange={event => setNotes(event.target.value)} data-testid="input-notes" />
+            <label className="label-row" htmlFor="observation-notes"><span>Notes <span className="small-note">(optional)</span></span><span className="small-note">not sent to AI</span></label>
+            <textarea id="observation-notes" className="text-control" maxLength={4000} placeholder="Describe the room, source, or context…" value={notes} onChange={event => setNotes(event.target.value)} data-testid="input-notes" />
             <button className="btn btn-primary" style={{ marginTop: 12 }} disabled={!hasReading} onClick={save} data-testid="button-save-observation">{saved ? <Check size={15} /> : <Save size={15} />}{saved ? 'Saved to this browser' : 'Save observation'}</button>
-            <p className="permission-note">A snapshot of the current measurement is saved only when you choose this action. Audio itself is never stored.</p>
+            <button className="btn btn-subtle zc-cloud-save" style={{ marginTop: 10, width: '100%' }} disabled={!hasReading || !user || !firebaseCloudReady || cloudSaving} onClick={() => void saveToCloud()} data-testid="button-save-cloud-observation">
+              <Save size={14} />{cloudSaving ? 'Saving privately…' : cloudSaved ? 'Saved to your private cloud history' : 'Save to private cloud'}
+            </button>
+            {cloudError && <p className="zc-callout zc-callout-alert" role="alert" data-testid="status-cloud-save-error">{cloudError}</p>}
+            {!user && <p className="permission-note">To save across devices, sign in from the History page. Local saving remains available.</p>}
+            {user && !firebaseCloudReady && <p className="permission-note" role="status">Cloud saves are paused until Firebase App Check is configured.</p>}
+            <p className="permission-note">A snapshot is saved only when you choose a save action. Audio is never stored or uploaded.</p>
           </div>
+        </section>
+      </div>
+      <div className="section-grid">
+        <AnalysisPanel
+          hasMeasurement={hasReading}
+          loading={analysisLoading}
+          error={analysisError}
+          explanation={analysis}
+          onAnalyze={requestAnalysis}
+        />
+        <section className="panel">
+          <div className="panel-head"><span className="panel-title">Analysis privacy</span><ShieldCheck size={16} color="#758681" /></div>
+          <div className="section-body"><p className="empty-inline" style={{ marginTop: 0 }}>AI analysis runs only after you request it. Only the selected measurement values are sent: sampling rate, FFT size, resolution, dominant frequency, peaks, relative RMS, and duration. Audio, spectrum bins, and your notes are not sent.</p><p className="empty-inline">The current explanation model is {`gemini-3.5-flash-lite`}. Firebase documents it as available on the Gemini Developer API free tier without a billing account; project-specific quota and availability still require owner verification. App Check must be configured and enforced.</p></div>
         </section>
       </div>
       <div className="section-grid">
@@ -291,46 +438,130 @@ function LabPage() {
           <div className="section-body">{!reflection ? <><p className="empty-inline" style={{ marginTop: 0, marginBottom: 16 }}>An optional scripture passage for personal reflection, kept separate from the measurements.</p><button className="btn btn-subtle" onClick={() => setReflection(true)} data-testid="button-open-reflection"><BookOpen size={14} />Open reflection</button></> : <><blockquote>“Be still, and know that I am God.”</blockquote><p>Psalm 46:10 · A passage for reflection, not a scientific interpretation or measurement.</p><button className="btn btn-subtle" style={{ marginTop: 14 }} onClick={() => setReflection(false)} data-testid="button-close-reflection"><X size={14} />Close reflection</button></>}</div>
         </section>
       </div>
-      <p className="footnote"><ShieldCheck size={12} style={{ verticalAlign: 'middle', marginRight: 5 }} />Local-first by design. Microphone data is processed in memory in your browser. Saved observations stay in this browser’s local storage until you export or clear them.</p>
+      <p className="footnote"><ShieldCheck size={12} style={{ verticalAlign: 'middle', marginRight: 5 }} />Microphone data is processed in memory in your browser and is never uploaded. Saved measurements stay in local storage unless you explicitly save one to private cloud history.</p>
     </main>
   </Shell>;
 }
 
 function HistoryPage() {
-  const [items, setItems] = useState<Observation[]>(readObservations);
+  const { user, loading: authLoading } = useAuth();
+  const scope = authLoading ? 'loading' : user && firebaseCloudReady ? user.uid : 'local';
+  const [items, setItems] = useState<Observation[]>([]);
+  const [itemsScope, setItemsScope] = useState('loading');
+  const [loading, setLoading] = useState(true);
+  const [historyError, setHistoryError] = useState('');
+  const [clearError, setClearError] = useState('');
   const [confirmClear, setConfirmClear] = useState(false);
-  const exportJson = () => downloadFile('zioncore-observations.json', JSON.stringify(items, null, 2), 'application/json');
-  const exportCsv = () => downloadFile('zioncore-observations.csv', toCsv(items), 'text/csv;charset=utf-8');
-  const clear = () => {
-    try { writeObservations([]); setItems([]); setConfirmClear(false); }
-    catch { window.alert('Could not clear local history. Check browser storage permissions and retry.'); }
+  const isCloudHistory = scope !== 'local' && scope !== 'loading';
+
+  useEffect(() => {
+    if (scope === 'loading') return;
+    let active = true;
+    setItems([]);
+    setItemsScope('loading');
+    setLoading(true);
+    setHistoryError('');
+    if (scope === 'local') {
+      setItems(readObservations());
+      setItemsScope('local');
+      setLoading(false);
+      return () => { active = false; };
+    }
+    void listCloudObservations().then(result => {
+      if (active) {
+        setItems(result);
+        setItemsScope(scope);
+      }
+    }).catch(cause => {
+      if (active) setHistoryError(getCloudHistoryErrorMessage(cause));
+    }).finally(() => {
+      if (active) setLoading(false);
+    });
+    return () => { active = false; };
+  }, [scope]);
+
+  const visibleItems = itemsScope === scope ? items : [];
+  const exportJson = () => downloadFile('zioncore-observations.json', JSON.stringify(visibleItems, null, 2), 'application/json');
+  const exportCsv = () => downloadFile('zioncore-observations.csv', toCsv(visibleItems), 'text/csv;charset=utf-8');
+  const clear = async () => {
+    setClearError('');
+    try {
+      if (isCloudHistory) {
+        await deleteCloudObservations(visibleItems.map(item => item.id));
+      } else {
+        writeObservations([]);
+      }
+      setItems([]);
+      setConfirmClear(false);
+    } catch (cause) {
+      setClearError(isCloudHistory ? getCloudHistoryErrorMessage(cause) : 'Could not clear local history. Check browser storage permissions and retry.');
+    }
   };
   return <Shell>
     <main className="page-wrap">
-      <div className="eyebrow">Your browser / archive</div>
+      <div className="eyebrow">{isCloudHistory ? 'Private cloud / archive' : 'Your browser / archive'}</div>
       <h1 className="page-title">Observation<br />history.</h1>
-      <p className="lead">Only measurements you explicitly saved appear here. This archive lives in local browser storage on this device.</p>
+      <p className="lead">{isCloudHistory ? 'Only observations you explicitly saved to your account appear here. This private archive follows your sign-in across devices.' : 'Only measurements you explicitly saved appear here. This archive lives in local browser storage on this device.'}</p>
+      <div style={{ marginTop: 24 }}><AccountSection /></div>
+      {historyError && <div className="status-box alert-box" role="alert" style={{ marginTop: 18 }} data-testid="status-history-error">{historyError}</div>}
+      {clearError && <div className="status-box alert-box" role="alert" style={{ marginTop: 18 }} data-testid="status-history-clear-error">{clearError}</div>}
       <div className="history-toolbar" style={{ marginTop: 25 }}>
-        <button className="btn btn-subtle" onClick={exportJson} disabled={!items.length} data-testid="button-export-json"><Download size={14} />Export JSON</button>
-        <button className="btn btn-subtle" onClick={exportCsv} disabled={!items.length} data-testid="button-export-csv"><FileDown size={14} />Export CSV</button>
-        <button className="btn btn-danger" onClick={() => setConfirmClear(true)} disabled={!items.length} data-testid="button-clear-history"><Trash2 size={14} />Clear history</button>
+        <button className="btn btn-subtle" onClick={exportJson} disabled={!visibleItems.length} data-testid="button-export-json"><Download size={14} />Export JSON</button>
+        <button className="btn btn-subtle" onClick={exportCsv} disabled={!visibleItems.length} data-testid="button-export-csv"><FileDown size={14} />Export CSV</button>
+        <button className="btn btn-danger" onClick={() => setConfirmClear(true)} disabled={!visibleItems.length} data-testid="button-clear-history"><Trash2 size={14} />Clear history</button>
       </div>
-      {items.length ? <div className="history-list">{items.map(item => <Link key={item.id} href={`/history/${item.id}`} className="panel history-item" data-testid={`link-observation-${item.id}`}>
+      {loading ? <div className="panel empty-state" role="status" data-testid="status-history-loading"><p>Loading your saved observations…</p></div>
+        : historyError ? <div className="panel empty-state" role="status" data-testid="status-history-unavailable"><span className="empty-glyph"><Info size={22} /></span><h2>History could not be loaded.</h2><p>Retry the page after checking the Firebase connection. No local history was substituted for the cloud archive.</p></div>
+        : visibleItems.length ? <div className="history-list">{visibleItems.map(item => <Link key={item.id} href={`/history/${item.id}`} className="panel history-item" data-testid={`link-observation-${item.id}`}>
         <span><span className="history-date">{new Date(item.createdAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}</span><span className="history-freq">{formatFrequency(item.dominantFrequencyHz)}</span><span className="history-meta">{item.fftSize.toLocaleString()} FFT · {(item.sampleRate / 1000).toFixed(1)} kHz sample rate · {item.durationSeconds.toFixed(1)} sec</span></span><ArrowRight className="history-arrow" size={17} />
       </Link>)}</div> : <div className="panel empty-state" style={{ marginTop: 30 }}>
-        <span className="empty-glyph"><History size={23} /></span><h2>Your record begins with an observation.</h2><p>Start a microphone measurement in the live lab, then choose “Save observation.” Nothing is added automatically.</p><Link href="/" className="btn btn-primary" style={{ width: 'auto', padding: '12px 16px' }} data-testid="link-empty-start"><Mic size={14} />Go to live lab</Link>
+        <span className="empty-glyph"><History size={23} /></span><h2>Your record begins with an observation.</h2><p>{isCloudHistory ? 'No cloud observations are saved to this account yet. Local browser records remain separate.' : 'Start a microphone measurement in the live lab, then choose “Save observation.” Nothing is added automatically.'}</p><Link href="/" className="btn btn-primary" style={{ width: 'auto', padding: '12px 16px' }} data-testid="link-empty-start"><Mic size={14} />Go to live lab</Link>
       </div>}
       <p className="footnote"><ShieldCheck size={12} style={{ verticalAlign: 'middle', marginRight: 5 }} />Exports contain measurement metadata and your notes, never microphone audio.</p>
     </main>
     {confirmClear && <div className="modal-backdrop" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setConfirmClear(false); }}>
-      <section className="modal" role="dialog" aria-modal="true" aria-labelledby="clear-title" data-testid="dialog-clear-history"><h2 id="clear-title">Clear saved observations?</h2><p>This permanently removes {items.length} {items.length === 1 ? 'observation' : 'observations'} from this browser. Export first if you want to keep a copy.</p><div className="modal-actions"><button className="btn btn-subtle" onClick={() => setConfirmClear(false)} data-testid="button-cancel-clear">Keep history</button><button className="btn btn-danger" onClick={clear} data-testid="button-confirm-clear"><Trash2 size={14} />Clear permanently</button></div></section>
+      <section className="modal" role="dialog" aria-modal="true" aria-labelledby="clear-title" data-testid="dialog-clear-history"><h2 id="clear-title">Clear saved observations?</h2><p>This permanently removes {visibleItems.length} {visibleItems.length === 1 ? 'observation' : 'observations'} from {isCloudHistory ? 'your private cloud archive' : 'this browser'}. Export first if you want to keep a copy.</p><div className="modal-actions"><button className="btn btn-subtle" onClick={() => setConfirmClear(false)} data-testid="button-cancel-clear">Keep history</button><button className="btn btn-danger" onClick={() => void clear()} data-testid="button-confirm-clear"><Trash2 size={14} />Clear permanently</button></div></section>
     </div>}
   </Shell>;
 }
 
 function DetailPage() {
   const params = useParams<{ id: string }>();
-  const [item] = useState(() => readObservations().find(entry => entry.id === params.id));
+  const { user, loading: authLoading } = useAuth();
+  const scope = authLoading ? 'loading' : user && firebaseCloudReady ? user.uid : 'local';
+  const [item, setItem] = useState<Observation | undefined>();
+  const [loadedScope, setLoadedScope] = useState('');
+  const [detailLoading, setDetailLoading] = useState(true);
+  const [detailError, setDetailError] = useState('');
+
+  useEffect(() => {
+    if (scope === 'loading') return;
+    let active = true;
+    setItem(undefined);
+    setLoadedScope('');
+    setDetailError('');
+    setDetailLoading(true);
+    if (scope === 'local') {
+      setItem(readObservations().find(entry => entry.id === params.id));
+      setLoadedScope('local');
+      setDetailLoading(false);
+      return () => { active = false; };
+    }
+    void getCloudObservation(params.id).then(result => {
+      if (active) {
+        setItem(result);
+        setLoadedScope(scope);
+      }
+    }).catch(cause => {
+      if (active) setDetailError(getCloudHistoryErrorMessage(cause));
+    }).finally(() => {
+      if (active) setDetailLoading(false);
+    });
+    return () => { active = false; };
+  }, [scope, params.id]);
+
+  if (detailLoading || loadedScope !== scope) return <Shell><main className="page-wrap"><div className="panel empty-state" role="status" data-testid="status-detail-loading"><p>Loading this observation…</p></div></main></Shell>;
+  if (detailError) return <Shell><main className="page-wrap"><Link href="/history" className="detail-back" data-testid="link-back-history"><ArrowLeft size={14} />Back to history</Link><div className="status-box alert-box" role="alert" data-testid="status-detail-error">{detailError}</div></main></Shell>;
   if (!item) return <Shell><main className="page-wrap"><Link href="/history" className="detail-back" data-testid="link-back-history"><ArrowLeft size={14} />Back to history</Link><div className="panel empty-state"><span className="empty-glyph"><Info size={22} /></span><h2>Observation not found</h2><p>It may have been cleared from this browser or the link may be incomplete.</p><Link href="/history" className="btn btn-subtle" data-testid="link-return-history">Return to history</Link></div></main></Shell>;
   return <Shell>
     <main className="page-wrap">
@@ -355,7 +586,26 @@ function NotFound() {
 }
 
 function App() {
-  return <Switch><Route path="/" component={LabPage} /><Route path="/history" component={HistoryPage} /><Route path="/history/:id" component={DetailPage} /><Route component={NotFound} /></Switch>;
+  const [user, setUser] = useState<User | null>(firebaseAuth?.currentUser ?? null);
+  const [loading, setLoading] = useState(Boolean(firebaseAuth));
+
+  useEffect(() => {
+    if (!firebaseAuth) {
+      setLoading(false);
+      return;
+    }
+    return onAuthStateChanged(firebaseAuth, currentUser => {
+      setUser(currentUser);
+      setLoading(false);
+    }, () => {
+      setUser(null);
+      setLoading(false);
+    });
+  }, []);
+
+  return <AuthContext.Provider value={{ user, loading }}>
+    <Switch><Route path="/" component={LabPage} /><Route path="/history" component={HistoryPage} /><Route path="/history/:id" component={DetailPage} /><Route component={NotFound} /></Switch>
+  </AuthContext.Provider>;
 }
 
 export default App;
