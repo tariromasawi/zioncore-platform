@@ -2,24 +2,34 @@ import { useState, type FormEvent } from 'react';
 import { AlertCircle, KeyRound, LogIn, LogOut, UserRoundPlus } from 'lucide-react';
 
 type AccountAccessProps = {
+  heading?: string;
+  footnote?: string;
   configured: boolean;
   projectMismatch: boolean;
   userEmail: string | null;
+  googleConnected: boolean;
   busy: boolean;
   error: string;
   statusMessage?: string;
   onAuth(mode: 'sign-in' | 'create', email: string, password: string): Promise<void>;
+  onGoogleAuth(): Promise<void>;
+  onPasswordReset(email: string): Promise<void>;
   onSignOut(): Promise<void>;
 };
 
 export function AccountAccess({
+  heading = 'Private cloud history',
+  footnote = 'Account access is optional. This panel does not upload microphone audio.',
   configured,
   projectMismatch,
   userEmail,
+  googleConnected,
   busy,
   error,
   statusMessage,
   onAuth,
+  onGoogleAuth,
+  onPasswordReset,
   onSignOut,
 }: AccountAccessProps) {
   const [mode, setMode] = useState<'sign-in' | 'create'>('sign-in');
@@ -39,7 +49,7 @@ export function AccountAccess({
   return (
     <section className="panel zc-account" aria-labelledby="zc-account-title" data-testid="panel-account-access">
       <div className="panel-head">
-        <span className="panel-title" id="zc-account-title">Private cloud history</span>
+        <span className="panel-title" id="zc-account-title">{heading}</span>
         <KeyRound size={16} aria-hidden="true" />
       </div>
       <div className="section-body">
@@ -71,6 +81,22 @@ export function AccountAccess({
             <span className="zc-field-label">Signed in as</span>
             <strong className="zc-account-email" data-testid="text-account-email">{userEmail}</strong>
             <p className="permission-note">Your cloud history is tied to this account. Microphone audio is never uploaded.</p>
+            {googleConnected ? (
+              <p className="permission-note" data-testid="status-google-connected">Google sign-in is connected to this account.</p>
+            ) : (
+              <>
+                <p className="permission-note">Connect Google to keep using this same account and its permissions.</p>
+                <button
+                  className="btn btn-subtle"
+                  type="button"
+                  onClick={() => void onGoogleAuth()}
+                  disabled={!configured || projectMismatch || busy}
+                  data-testid="button-google-link"
+                >
+                  {busy ? 'Redirecting…' : 'Connect Google account'}
+                </button>
+              </>
+            )}
             <button
               className="btn btn-subtle"
               type="button"
@@ -84,6 +110,18 @@ export function AccountAccess({
           </div>
         ) : (
           <>
+            <button
+              className="btn btn-subtle"
+              type="button"
+              onClick={() => void onGoogleAuth()}
+              disabled={!configured || projectMismatch || busy}
+              data-testid="button-google-auth"
+            >
+              {busy ? 'Redirecting…' : 'Continue with Google'}
+            </button>
+            <p className="permission-note" data-testid="text-google-link-guidance">
+              If you already have a password account, sign in with it first and connect Google to preserve that account.
+            </p>
             <div className="zc-auth-tabs" role="group" aria-label="Account action">
               <button
                 className={`zc-auth-tab ${mode === 'sign-in' ? 'active' : ''}`}
@@ -143,7 +181,18 @@ export function AccountAccess({
                 {mode === 'sign-in' ? <LogIn size={15} /> : <UserRoundPlus size={15} />}
                 {busy ? 'Please wait…' : mode === 'sign-in' ? 'Sign in' : 'Create account'}
               </button>
-              <p className="permission-note">Account access is optional. This panel does not upload microphone audio.</p>
+              {mode === 'sign-in' && (
+                <button
+                  className="btn btn-subtle"
+                  type="button"
+                  onClick={() => void onPasswordReset(email.trim())}
+                  disabled={!configured || projectMismatch || busy || !email.trim()}
+                  data-testid="button-password-reset"
+                >
+                  Send password reset link
+                </button>
+              )}
+              <p className="permission-note">{footnote}</p>
             </form>
           </>
         )}

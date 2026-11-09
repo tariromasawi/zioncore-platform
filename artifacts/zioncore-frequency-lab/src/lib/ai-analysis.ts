@@ -4,7 +4,7 @@ import {
   firebaseApp,
   getFirebaseSetupMessage,
 } from '@/lib/firebase';
-import type { Observation } from '@/lib/observations';
+import type { Observation, SavedInterpretation } from '@/lib/observations';
 
 export const FREQUENCY_EXPLANATION_MODEL = 'gemini-3.5-flash-lite';
 const minimumRequestIntervalMs = 15_000;
@@ -39,7 +39,7 @@ export const explanationSchema = z.object({
   faithReflection: z.string().max(900).nullable(),
 }).strict();
 
-export type Explanation = z.infer<typeof explanationSchema> & { model: string };
+export type Explanation = SavedInterpretation;
 export type AnalysisMeasurement = Pick<
   Observation,
   | 'sampleRate'

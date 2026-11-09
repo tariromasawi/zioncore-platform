@@ -2,6 +2,8 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // The inspected live rules contained a project-wide allow-all grant and
+    // six explicitly public legacy roots. Unclassified roots default deny.
     function ownsUserPath(uid) {
       return request.auth != null && request.auth.uid == uid;
     }
@@ -9,6 +11,54 @@ service cloud.firestore {
     function validPeak(peaks, index, nyquist) {
       return peaks.size() <= index
         || (peaks[index] is number && peaks[index] > 0 && peaks[index] <= nyquist);
+    }
+
+    function validInterpretationSource(sources, index) {
+      return sources.size() <= index
+        || (sources[index] is string
+          && sources[index].size() > 0
+          && sources[index].size() <= 240);
+    }
+
+    function validInterpretation(interpretation) {
+      return interpretation is map
+        && interpretation.keys().hasAll([
+          'scientificInterpretation',
+          'confidence',
+          'uncertainty',
+          'possibleSources',
+          'faithReflection',
+          'model'
+        ])
+        && interpretation.keys().hasOnly([
+          'scientificInterpretation',
+          'confidence',
+          'uncertainty',
+          'possibleSources',
+          'faithReflection',
+          'model'
+        ])
+        && interpretation.scientificInterpretation is string
+        && interpretation.scientificInterpretation.size() > 0
+        && interpretation.scientificInterpretation.size() <= 1800
+        && interpretation.confidence in ['low', 'moderate', 'high']
+        && interpretation.uncertainty is string
+        && interpretation.uncertainty.size() > 0
+        && interpretation.uncertainty.size() <= 1200
+        && interpretation.possibleSources is list
+        && interpretation.possibleSources.size() <= 6
+        && validInterpretationSource(interpretation.possibleSources, 0)
+        && validInterpretationSource(interpretation.possibleSources, 1)
+        && validInterpretationSource(interpretation.possibleSources, 2)
+        && validInterpretationSource(interpretation.possibleSources, 3)
+        && validInterpretationSource(interpretation.possibleSources, 4)
+        && validInterpretationSource(interpretation.possibleSources, 5)
+        && (interpretation.faithReflection == null
+          || (interpretation.faithReflection is string
+            && interpretation.faithReflection.size() <= 900))
+        && interpretation.model is string
+        && interpretation.model.size() > 0
+        && interpretation.model.size() <= 100;
     }
 
     function validObservation(data) {
@@ -35,7 +85,8 @@ service cloud.firestore {
           'rmsLevel',
           'durationSeconds',
           'mode',
-          'notes'
+          'notes',
+          'interpretation'
         ])
         && data.createdAt is timestamp
         && data.updatedAt is timestamp
@@ -68,13 +119,22 @@ service cloud.firestore {
         && data.durationSeconds <= 86400
         && data.mode == 'microphone'
         && (!data.keys().hasAny(['notes'])
-          || (data.notes is string && data.notes.size() <= 4000));
+          || (data.notes is string && data.notes.size() <= 4000))
+        && (!data.keys().hasAny(['interpretation'])
+          || validInterpretation(data.interpretation));
     }
 
     match /users/{uid}/frequency_observations/{observationId} {
       allow get, list, delete: if ownsUserPath(uid);
       allow create: if ownsUserPath(uid) && validObservation(request.resource.data);
-      allow update: if false;
+      allow update: if ownsUserPath(uid)
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['interpretation', 'updatedAt'])
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasAny(['interpretation'])
+        && request.resource.data.keys().hasAny(['interpretation'])
+        && request.resource.data.updatedAt == request.time
+        && validInterpretation(request.resource.data.interpretation);
     }
   }
 }

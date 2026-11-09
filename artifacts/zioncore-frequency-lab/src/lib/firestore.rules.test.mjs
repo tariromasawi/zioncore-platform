@@ -6,7 +6,7 @@ import {
   assertSucceeds,
   initializeTestEnvironment,
 } from '@firebase/rules-unit-testing';
-import { collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 
 const projectId = 'demo-zioncore-frequency-lab';
 let testEnvironment;
@@ -23,6 +23,15 @@ const validObservation = () => ({
   durationSeconds: 8.4,
   mode: 'microphone',
   notes: 'Near-field tone test',
+});
+
+const validInterpretation = () => ({
+  scientificInterpretation: 'A narrow peak was measured; its source is not identified.',
+  confidence: 'low',
+  uncertainty: 'A single microphone reading cannot identify a source.',
+  possibleSources: ['A steady nearby tone'],
+  faithReflection: null,
+  model: 'gemini-3.5-flash-lite',
 });
 
 function observationReference(uid, id) {
@@ -51,6 +60,13 @@ test('signed-in users can create a validated observation under their own UID', a
   await assertSucceeds(setDoc(observationReference('user-a', 'reading-1'), validObservation()));
 });
 
+test('signed-in users can save a bounded interpretation with their own observation', async () => {
+  await assertSucceeds(setDoc(
+    observationReference('user-a', 'reading-with-interpretation'),
+    { ...validObservation(), interpretation: validInterpretation() },
+  ));
+});
+
 test('unauthenticated users cannot read or create observations', async () => {
   const firestore = testEnvironment.unauthenticatedContext().firestore();
   await assertFails(getDocs(collection(firestore, 'users', 'user-a', 'frequency_observations')));
@@ -70,6 +86,10 @@ test('users cannot read or create records under another UID', async () => {
     doc(otherUser, 'users', 'user-a', 'frequency_observations', 'stolen-write'),
     validObservation(),
   ));
+  await assertFails(updateDoc(
+    doc(otherUser, 'users', 'user-a', 'frequency_observations', 'private-reading'),
+    { interpretation: validInterpretation(), updatedAt: serverTimestamp() },
+  ));
 });
 
 test('invalid measurement fields and client-selected timestamps are rejected', async () => {
@@ -84,11 +104,55 @@ test('invalid measurement fields and client-selected timestamps are rejected', a
   const clientTimestamp = validObservation();
   clientTimestamp.createdAt = new Date();
   await assertFails(setDoc(observationReference('user-a', 'client-time'), clientTimestamp));
+
+  const invalidInterpretation = validObservation();
+  invalidInterpretation.interpretation = {
+    ...validInterpretation(),
+    possibleSources: [{ source: 'not a string' }],
+  };
+  await assertFails(setDoc(
+    observationReference('user-a', 'invalid-interpretation'),
+    invalidInterpretation,
+  ));
 });
 
-test('users can delete but cannot update their own observations', async () => {
-  const reference = observationReference('user-a', 'delete-me');
+test('users can attach or revise an interpretation without editing measurement fields', async () => {
+  const reference = observationReference('user-a', 'interpret-once');
   await assertSucceeds(setDoc(reference, validObservation()));
-  await assertFails(setDoc(reference, { ...validObservation(), notes: 'changed' }));
+  await assertSucceeds(updateDoc(reference, {
+    interpretation: validInterpretation(),
+    updatedAt: serverTimestamp(),
+  }));
+  await assertSucceeds(updateDoc(reference, {
+    interpretation: { ...validInterpretation(), scientificInterpretation: 'Changed result' },
+    updatedAt: serverTimestamp(),
+  }));
+  await assertFails(updateDoc(reference, {
+    notes: 'changed',
+    updatedAt: serverTimestamp(),
+  }));
   await assertSucceeds(deleteDoc(reference));
+});
+
+test('denies client access to unclassified legacy roots and unmatched paths', async () => {
+  const anonymous = testEnvironment.unauthenticatedContext().firestore();
+  const signedIn = testEnvironment.authenticatedContext('user-a').firestore();
+  const legacyRoots = [
+    'DivineTreasury',
+    'ZionLattice',
+    'SovereignPatents',
+    'advancements',
+    'soul_signatures',
+    'petitions',
+  ];
+
+  for (const root of legacyRoots) {
+    const anonymousReference = doc(anonymous, root, 'legacy-record');
+    const signedInReference = doc(signedIn, root, 'legacy-record');
+    await assertFails(getDoc(anonymousReference));
+    await assertFails(setDoc(anonymousReference, { value: 'blocked' }));
+    await assertFails(setDoc(signedInReference, { value: 'blocked' }));
+  }
+
+  await assertFails(getDoc(doc(anonymous, 'unmatched-collection', 'private-record')));
 });

@@ -12,6 +12,16 @@ export type Observation = {
   durationSeconds: number;
   mode: string;
   notes?: string;
+  interpretation?: SavedInterpretation;
+};
+
+export type SavedInterpretation = {
+  scientificInterpretation: string;
+  confidence: 'low' | 'moderate' | 'high';
+  uncertainty: string;
+  possibleSources: string[];
+  faithReflection: string | null;
+  model: string;
 };
 
 const STORAGE_KEY = 'zioncore.frequency-lab.observations.v1';
@@ -36,6 +46,12 @@ export function writeObservations(items: Observation[]) {
     throw new Error('One or more observations failed validation.');
   }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+}
+
+export function upsertObservation(items: Observation[], observation: Observation) {
+  const existingIndex = items.findIndex(item => item.id === observation.id);
+  if (existingIndex < 0) return [observation, ...items];
+  return items.map(item => item.id === observation.id ? observation : item);
 }
 
 export function formatFrequency(value: number | null | undefined) {

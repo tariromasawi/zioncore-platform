@@ -1,27 +1,46 @@
 # Firebase setup notes
 
 This code targets the existing Firebase project `ethereal-throne-b20e6`. It does
-not create a project, enable services, change console settings, or deploy rules.
+not create a project or deploy production rules.
 
-## Before connecting the web app
+## Inspected Firebase configuration
 
-1. Register or confirm the existing Firebase Web app in that project.
-2. Confirm the project's current Authentication providers, Firestore rules, and
-   App Check settings before changing any of them. This workspace could not read
-   the live Firebase project.
-3. If desired, enable Email/Password under Firebase Authentication. The app's
-   account panel uses only this provider.
-4. Configure the approved Firestore database and register a reCAPTCHA Enterprise
-   key for Firebase App Check. The web app refuses cloud history and AI requests
-   until App Check is initialized.
-5. Enable Firebase AI Logic with the Gemini Developer API only after verifying
-   the project's actual model availability and quota. The configured model is
-   `gemini-3.5-flash-lite`; Firebase currently lists it as supported without
-   requiring a billing account on the limited free tier. Quotas still apply.
-   Do not link Cloud Billing or switch to a paid model without explicit approval.
-6. Set the public Web app configuration and App Check site key in the artifact's
-   environment using the names in `.env.example`. Never use a service-account
-   key or Admin SDK credential in the browser.
+The live project was inspected using the existing service account through ADC.
+
+- Email/Password authentication is enabled. Google OAuth is enabled with
+  provider credentials configured; the existing owner account is still linked
+  only to password sign-in until its owner completes the Google link flow.
+- Apple is marked enabled in the project, but its provider configuration has no
+  client ID or client secret, so Apple sign-in is not ready.
+- The production hostname and the current Replit preview hostname are both
+  authorized for Firebase Auth redirects. The preview hostname was added
+  without removing any existing domains.
+- The project has separate development and production web app registrations.
+  Replit's `development` and `production` environments now use their matching
+  Firebase app IDs and distinct reCAPTCHA Enterprise keys. Do not put either
+  App Check site key in the shared environment.
+- The development App Check key is restricted to the Replit preview hostname
+  and its token exchange succeeded in a 402px mobile-sized browser.
+- The production App Check key is restricted to `zioncore.replit.app`. No
+  production app was published or deployed during this work.
+- The web client supports Google sign-in and linking. Linking while signed in
+  preserves the current Firebase UID and its existing custom claims. The
+  project does not expose owner dashboard routes in the current API source.
+- A synthetic AI request reached `gemini-3.5-flash-lite`, but returned
+  `RESOURCE_EXHAUSTED` because Gemini Developer API prepayment credits are
+  depleted. Do not add credits, link billing, or change the model without
+  approval.
+
+## Before changing Firebase settings
+
+1. Check which Firebase web app ID is active in the target Replit environment.
+2. Keep development and production Firebase app IDs and App Check site keys
+   separate. Never use the production key for the temporary Replit preview.
+3. Check App Check token exchange before enabling enforcement for Firestore or
+   Authentication. Firebase AI Logic currently has App Check enforcement.
+4. Set public web configuration in the matching Replit `development` or
+   `production` environment using the names in `.env.example`. Never use a
+   service-account key or Admin SDK credential in the browser.
 
 The model call is opt-in. It sends only sample rate, FFT size, frequency
 resolution, dominant frequency, spectral peaks, relative RMS, and duration.
@@ -29,15 +48,42 @@ It never sends audio, spectrum bins, or observation notes.
 
 ## Firestore rules safety
 
-`firestore.rules` is a project-specific ruleset for
-`users/{uid}/frequency_observations/{observationId}`. It is provided for local
-emulator tests and as a rule to integrate. **Do not deploy it as a replacement
-for the existing project's rules until those rules have been inspected and
-merged.** Firestore rules are project-wide; deployment replaces the active
-ruleset. The rules deny all access outside the user's own observation path,
-reject updates, and validate the stored fields, ranges, and each of the six
-current microphone peak slots. The browser also validates values before writes.
+`firestore.rules` is a local candidate for
+`users/{uid}/frequency_observations/{observationId}`. It removes the
+project-wide allow-all grant and all six public legacy grants, then adds
+owner-only observation access. It denies every other path, rejects observation
+measurement edits, and validates stored fields, ranges, each of the six
+microphone peak slots, and optional bounded AI interpretations stored
+separately from measured values. An owner may attach or revise an interpretation
+without changing the measurement. The browser also validates values before
+writes.
+
+The live rules also grant unauthenticated read/write access to all descendants
+of `DivineTreasury`, `ZionLattice`, `SovereignPatents`, `advancements`,
+`soul_signatures`, and `petitions`. No code in this workspace references those
+collections, and no customer documents were read. Their purpose and any
+external production dependencies remain unverified. The local candidate denies
+client access to those roots until their data and required permissions can be
+classified.
+
+A metadata-only listing of root collection IDs returned an empty list. No
+document IDs, document contents, or subcollections were requested. Recent API
+logs show `/api/billing/catalog` and `/api/owner/firebase-diagnostics`, but the
+current API source, generated bundle, and available repository refs/history
+expose only health routes. The serving production revision has no reported Git
+SHA to map it to source. Until that runtime/source mismatch and any external
+Firestore clients are reconciled, the legacy compatibility and billing/admin
+requirements cannot be verified.
 
 To run the local rules tests, use the artifact's `test:rules` command. It uses
 the demo project ID `demo-zioncore-frequency-lab` and the local Firestore
 emulator; it does not contact the real Firebase project.
+
+The active live rules make every Firestore path publicly readable and writable.
+The local candidate does not expand access, but would block client access to
+the six legacy roots and every other path except a user's own validated
+observations. Because those legacy roots and any external production clients
+are unclassified, the candidate is not verified as compatible and must not be
+deployed yet. Firebase Admin SDK calls bypass Firestore rules, but any backend
+authorization still needs to be verified separately. No production rules were
+deployed.

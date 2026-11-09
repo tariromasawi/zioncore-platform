@@ -35,12 +35,28 @@ function fromSnapshot(snapshot: DocumentSnapshot<DocumentData> | QueryDocumentSn
     durationSeconds: snapshot.get('durationSeconds'),
     mode: snapshot.get('mode'),
     ...(snapshot.get('notes') ? { notes: snapshot.get('notes') } : {}),
+    ...(snapshot.get('interpretation') != null
+      ? { interpretation: snapshot.get('interpretation') }
+      : {}),
   };
   const parsed = observationSchema.safeParse(value);
   if (!parsed.success) {
     throw new Error(`A saved cloud observation (${snapshot.id}) has invalid measurement data.`);
   }
   return parsed.data as Observation;
+}
+
+function sameInterpretation(
+  left: Observation['interpretation'],
+  right: Observation['interpretation'],
+) {
+  if (!left || !right) return left === right;
+  return left.scientificInterpretation === right.scientificInterpretation
+    && left.confidence === right.confidence
+    && left.uncertainty === right.uncertainty
+    && JSON.stringify(left.possibleSources) === JSON.stringify(right.possibleSources)
+    && left.faithReflection === right.faithReflection
+    && left.model === right.model;
 }
 
 export async function saveCloudObservation(observation: Observation) {
@@ -50,6 +66,30 @@ export async function saveCloudObservation(observation: Observation) {
   }
   const { firestore, collectionRef } = await firestoreForCurrentUser();
   const reference = firestore.doc(collectionRef, parsed.data.id);
+  const existingSnapshot = await firestore.getDoc(reference);
+  if (existingSnapshot.exists()) {
+    const existing = fromSnapshot(existingSnapshot);
+    const sameMeasurement = existing.sampleRate === parsed.data.sampleRate
+      && existing.fftSize === parsed.data.fftSize
+      && existing.frequencyResolutionHz === parsed.data.frequencyResolutionHz
+      && existing.dominantFrequencyHz === parsed.data.dominantFrequencyHz
+      && JSON.stringify(existing.topPeaksHz) === JSON.stringify(parsed.data.topPeaksHz)
+      && existing.rmsLevel === parsed.data.rmsLevel
+      && existing.durationSeconds === parsed.data.durationSeconds
+      && existing.mode === parsed.data.mode
+      && existing.notes === parsed.data.notes;
+    if (!sameMeasurement) {
+      throw new Error('This observation ID already has different cloud measurement data. No existing record was changed.');
+    }
+    if (parsed.data.interpretation
+      && !sameInterpretation(existing.interpretation, parsed.data.interpretation)) {
+      await firestore.updateDoc(reference, {
+        interpretation: parsed.data.interpretation,
+        updatedAt: firestore.serverTimestamp(),
+      });
+    }
+    return;
+  }
   const measurement: Omit<ValidatedObservation, 'id' | 'createdAt'> = {
     sampleRate: parsed.data.sampleRate,
     fftSize: parsed.data.fftSize,
@@ -60,6 +100,9 @@ export async function saveCloudObservation(observation: Observation) {
     durationSeconds: parsed.data.durationSeconds,
     mode: parsed.data.mode,
     ...(parsed.data.notes ? { notes: parsed.data.notes } : {}),
+    ...(parsed.data.interpretation
+      ? { interpretation: parsed.data.interpretation }
+      : {}),
   };
   await firestore.setDoc(reference, {
     ...measurement,

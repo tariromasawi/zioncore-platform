@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link, Route, Switch, useLocation, useParams } from 'wouter';
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import {
@@ -16,7 +16,14 @@ import {
   listCloudObservations,
   saveCloudObservation,
 } from '@/lib/cloud-observations';
-import { authenticateWithEmail, getAuthErrorMessage, signOutCurrentUser } from '@/lib/firebase-auth';
+import {
+  authenticateWithEmail,
+  getAuthErrorMessage,
+  getAuthRedirectResult,
+  sendPasswordReset,
+  signInOrLinkWithGoogle,
+  signOutCurrentUser,
+} from '@/lib/firebase-auth';
 import {
   firebaseAuth,
   firebaseAuthConfigured,
@@ -25,150 +32,22 @@ import {
   getFirebaseSetupMessage,
 } from '@/lib/firebase';
 import {
-  downloadFile, formatFrequency, readObservations, toCsv, writeObservations,
+  downloadFile, formatFrequency, readObservations, toCsv, upsertObservation, writeObservations,
   type Observation,
 } from '@/lib/observations';
-
-type Reading = {
-  sampleRate: number;
-  fftSize: number;
-  resolution: number;
-  dominant: number | null;
-  peaks: number[];
-  rms: number;
-  bins: number[];
-};
+import useLabEngine from '@/hooks/use-lab-engine';
+import CelestialExplorationPage from '@/pages/celestial-exploration';
 
 type AuthContextValue = {
   user: User | null;
   loading: boolean;
+  authError: string;
 };
 
-const AuthContext = createContext<AuthContextValue>({ user: null, loading: false });
+const AuthContext = createContext<AuthContextValue>({ user: null, loading: false, authError: '' });
 
 function useAuth() {
   return useContext(AuthContext);
-}
-
-function useLabEngine(fftSize: number) {
-  const [running, setRunning] = useState(false);
-  const [starting, setStarting] = useState(false);
-  const [status, setStatus] = useState('Ready when you are. Microphone access begins only after you press Start.');
-  const [error, setError] = useState('');
-  const [reading, setReading] = useState<Reading | null>(null);
-  const [elapsed, setElapsed] = useState(0);
-  const [silent, setSilent] = useState(false);
-  const streamRef = useRef<MediaStream | null>(null);
-  const contextRef = useRef<AudioContext | null>(null);
-  const frameRef = useRef<number>(0);
-  const startRef = useRef(0);
-  const requestIdRef = useRef(0);
-
-  const stop = useCallback(async (message = 'Capture stopped. No audio was saved.') => {
-    requestIdRef.current += 1;
-    setStarting(false);
-    cancelAnimationFrame(frameRef.current);
-    streamRef.current?.getTracks().forEach(track => track.stop());
-    streamRef.current = null;
-    if (contextRef.current) {
-      const context = contextRef.current;
-      contextRef.current = null;
-      try { await context.close(); } catch { /* already closed */ }
-    }
-    setRunning(false);
-    setStatus(message);
-  }, []);
-
-  const start = useCallback(async () => {
-    setError('');
-    setReading(null);
-    setElapsed(0);
-    setSilent(false);
-    const requestId = ++requestIdRef.current;
-    if (!navigator.mediaDevices?.getUserMedia || typeof AudioContext === 'undefined') {
-      setError('This browser does not support microphone capture with Web Audio. Try a recent browser on a secure connection.');
-      setStatus('Microphone capture is unavailable.');
-      return;
-    }
-    setStatus('Waiting for microphone permission…');
-    setStarting(true);
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
-      if (requestId !== requestIdRef.current) {
-        stream.getTracks().forEach(track => track.stop());
-        return;
-      }
-      streamRef.current = stream;
-      const context = new AudioContext();
-      contextRef.current = context;
-      const source = context.createMediaStreamSource(stream);
-      const analyser = context.createAnalyser();
-      analyser.fftSize = fftSize;
-      analyser.smoothingTimeConstant = 0.72;
-      source.connect(analyser);
-      const bins = new Uint8Array(analyser.frequencyBinCount);
-      const time = new Float32Array(analyser.fftSize);
-      startRef.current = performance.now();
-      setStarting(false);
-      setRunning(true);
-      setStatus('Measuring locally from your selected microphone.');
-      const tick = () => {
-        if (!contextRef.current) return;
-        analyser.getByteFrequencyData(bins);
-        analyser.getFloatTimeDomainData(time);
-        let sum = 0;
-        for (const sample of time) sum += sample * sample;
-        const rms = Math.sqrt(sum / time.length);
-        const peaks: { frequency: number; magnitude: number }[] = [];
-        let max = 0;
-        let dominantBin = 0;
-        for (let i = 1; i < bins.length - 1; i++) {
-          if (bins[i] > max) { max = bins[i]; dominantBin = i; }
-          if (bins[i] > bins[i - 1] && bins[i] >= bins[i + 1] && bins[i] > 32) {
-            peaks.push({ frequency: i * context.sampleRate / analyser.fftSize, magnitude: bins[i] });
-          }
-        }
-        peaks.sort((a, b) => b.magnitude - a.magnitude);
-        const isSilent = rms < 0.0008 || max < 4;
-        setSilent(isSilent);
-        setElapsed((performance.now() - startRef.current) / 1000);
-        setReading({
-          sampleRate: context.sampleRate, fftSize, resolution: context.sampleRate / fftSize,
-          dominant: isSilent || max < 4 ? null : dominantBin * context.sampleRate / analyser.fftSize,
-          peaks: isSilent ? [] : peaks.slice(0, 6).map(peak => peak.frequency),
-          rms, bins: Array.from(bins),
-        });
-        frameRef.current = requestAnimationFrame(tick);
-      };
-      tick();
-    } catch (cause) {
-      if (requestId !== requestIdRef.current) return;
-      setStarting(false);
-      const name = cause instanceof DOMException ? cause.name : '';
-      const message = name === 'NotAllowedError' || name === 'PermissionDeniedError'
-        ? 'Microphone permission was denied. Allow access in your browser settings, then try again.'
-        : name === 'NotFoundError' ? 'No microphone was found. Connect or enable an input device and try again.'
-          : name === 'NotReadableError' ? 'The microphone is in use or unavailable to this page. Close other recording apps and retry.'
-            : `Could not start microphone capture${cause instanceof Error ? `: ${cause.message}` : '.'}`;
-      setError(message);
-      setStatus('Capture did not start.');
-      streamRef.current?.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
-      if (contextRef.current) {
-        try { await contextRef.current.close(); } catch { /* no-op */ }
-        contextRef.current = null;
-      }
-      setRunning(false);
-    }
-  }, [fftSize]);
-
-  useEffect(() => () => {
-    cancelAnimationFrame(frameRef.current);
-    streamRef.current?.getTracks().forEach(track => track.stop());
-    if (contextRef.current && contextRef.current.state !== 'closed') void contextRef.current.close();
-  }, []);
-
-  return { running, starting, status, error, reading, elapsed, silent, start, stop };
 }
 
 function Spectrum({ bins, fftSize }: { bins: number[] | null; fftSize: number }) {
@@ -232,6 +111,7 @@ function Shell({ children }: { children: ReactNode }) {
       <nav className="nav-links" aria-label="Main navigation">
         <Link href="/" className={`nav-link ${location === '/' ? 'active' : ''}`} data-testid="link-live-lab">Live lab</Link>
         <Link href="/history" className={`nav-link ${location.startsWith('/history') ? 'active' : ''}`} data-testid="link-history"><History size={14} style={{ verticalAlign: 'middle', marginRight: 5 }} />History</Link>
+        <Link href="/exploration" className={`nav-link ${location === '/exploration' ? 'active' : ''}`} data-testid="link-exploration">Exploration</Link>
         {user?.email && <span className="nav-account" data-testid="text-current-account">{user.email}</span>}
       </nav>
     </header>
@@ -239,12 +119,33 @@ function Shell({ children }: { children: ReactNode }) {
   </div>;
 }
 
-function AccountSection() {
-  const { user } = useAuth();
+function AccountSection({ required = false }: { required?: boolean } = {}) {
+  const { user, authError } = useAuth();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [authStatus, setAuthStatus] = useState('');
 
-  useEffect(() => setError(''), [user?.uid]);
+  useEffect(() => {
+    setError('');
+    setAuthStatus('');
+  }, [user?.uid]);
+
+  useEffect(() => {
+    let active = true;
+    void getAuthRedirectResult()
+      .then(result => {
+        if (!active || !result) return;
+        setAuthStatus(result.operationType === 'link'
+          ? 'Google sign-in is now connected to this account.'
+          : 'Signed in with Google.');
+      })
+      .catch(cause => {
+        if (active) setError(getAuthErrorMessage(cause));
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const authenticate = async (mode: 'sign-in' | 'create', email: string, password: string) => {
     setBusy(true);
@@ -270,18 +171,56 @@ function AccountSection() {
     }
   };
 
+  const googleAuth = async () => {
+    setBusy(true);
+    setError('');
+    setAuthStatus('');
+    try {
+      await signInOrLinkWithGoogle();
+    } catch (cause) {
+      setError(getAuthErrorMessage(cause));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const resetPassword = async (email: string) => {
+    if (!email) {
+      setError('Enter your account email address first.');
+      return;
+    }
+    setBusy(true);
+    setError('');
+    setAuthStatus('');
+    try {
+      await sendPasswordReset(email);
+      setAuthStatus('If an account uses that email, a password reset link will arrive by email.');
+    } catch (cause) {
+      setError(getAuthErrorMessage(cause));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const readinessMessage = firebaseAuthConfigured && !firebaseCloudReady
     ? getFirebaseSetupMessage()
     : '';
 
   return <AccountAccess
+    heading={required ? 'Research archive sign-in' : undefined}
+    footnote={required
+      ? 'Sign-in is required. Research records stay in this browser and are not uploaded to Firebase.'
+      : undefined}
     configured={firebaseAuthConfigured}
     projectMismatch={firebaseProjectMismatch}
     userEmail={user?.email ?? null}
+    googleConnected={Boolean(user?.providerData.some(item => item.providerId === 'google.com'))}
     busy={busy}
-    error={error}
-    statusMessage={readinessMessage}
+    error={error || authError}
+    statusMessage={authStatus || readinessMessage}
     onAuth={authenticate}
+    onGoogleAuth={googleAuth}
+    onPasswordReset={resetPassword}
     onSignOut={signOut}
   />;
 }
@@ -289,6 +228,8 @@ function AccountSection() {
 function LabPage() {
   const [fftSize, setFftSize] = useState(4096);
   const [observations, setObservations] = useState<Observation[]>(readObservations);
+  const [draftId, setDraftId] = useState(() => crypto.randomUUID());
+  const [draftCreatedAt, setDraftCreatedAt] = useState(() => new Date().toISOString());
   const [notes, setNotes] = useState('');
   const [reflection, setReflection] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -304,18 +245,19 @@ function LabPage() {
   const createObservation = (): Observation | null => {
     if (!engine.reading) return null;
     return {
-      id: crypto.randomUUID(), createdAt: new Date().toISOString(),
+      id: draftId, createdAt: draftCreatedAt,
       sampleRate: engine.reading.sampleRate, fftSize: engine.reading.fftSize,
       frequencyResolutionHz: engine.reading.resolution, dominantFrequencyHz: engine.reading.dominant,
       topPeaksHz: engine.reading.peaks, rmsLevel: engine.reading.rms,
       durationSeconds: engine.elapsed, mode: 'microphone',
       ...(notes.trim() ? { notes: notes.trim() } : {}),
+      ...(analysis ? { interpretation: analysis } : {}),
     };
   };
   const save = () => {
     const item = createObservation();
     if (!item) return;
-    const next = [item, ...observations];
+    const next = upsertObservation(observations, item);
     try {
       writeObservations(next); setObservations(next); setSaved(true);
       window.setTimeout(() => setSaved(false), 2600);
@@ -338,7 +280,7 @@ function LabPage() {
     }
   };
   const requestAnalysis = async (includeFaithReflection: boolean) => {
-    if (!engine.reading) return;
+    if (!engine.reading || engine.running || engine.starting) return;
     setAnalysisLoading(true);
     setAnalysisError('');
     try {
@@ -358,6 +300,16 @@ function LabPage() {
     } finally {
       setAnalysisLoading(false);
     }
+  };
+  const startCapture = async () => {
+    setDraftId(crypto.randomUUID());
+    setDraftCreatedAt(new Date().toISOString());
+    setAnalysis(null);
+    setAnalysisError('');
+    setSaved(false);
+    setCloudSaved(false);
+    setCloudError('');
+    await engine.start();
   };
   const level = engine.reading ? Math.min(100, Math.round(engine.reading.rms * 5000)) : null;
   return <Shell>
@@ -380,7 +332,7 @@ function LabPage() {
           <div className="controls">
             <div className={`status-box ${engine.error ? 'alert-box' : ''}`} role={engine.error ? 'alert' : 'status'} data-testid="status-message">{engine.error || engine.status}</div>
             <div className="control-row"><label className="label-row" htmlFor="fft-size"><span>FFT size</span><span className="small-note">frequency detail</span></label><select id="fft-size" className="select-control" value={fftSize} disabled={engine.running} onChange={event => setFftSize(Number(event.target.value))} data-testid="select-fft-size"><option value={2048}>2,048 points</option><option value={4096}>4,096 points</option><option value={8192}>8,192 points</option></select></div>
-            {engine.running || engine.starting ? <button className="btn btn-stop" onClick={() => void engine.stop()} data-testid="button-stop"><Square size={15} fill="currentColor" />{engine.starting ? 'Cancel / stop' : 'Stop capture'}</button> : <button className="btn btn-primary" onClick={() => void engine.start()} data-testid="button-start"><Mic size={16} />Start microphone</button>}
+            {engine.running || engine.starting ? <button className="btn btn-stop" onClick={() => void engine.stop()} data-testid="button-stop"><Square size={15} fill="currentColor" />{engine.starting ? 'Cancel / stop' : 'Stop capture'}</button> : <button className="btn btn-primary" onClick={() => void startCapture()} disabled={analysisLoading || cloudSaving} data-testid="button-start"><Mic size={16} />Start microphone</button>}
             <p className="permission-note">Starting requests browser microphone permission. Audio is analyzed in this tab only and is never uploaded or recorded.</p>
           </div>
         </section>
@@ -404,20 +356,21 @@ function LabPage() {
           <div className="section-body">
             <label className="label-row" htmlFor="observation-notes"><span>Notes <span className="small-note">(optional)</span></span><span className="small-note">not sent to AI</span></label>
             <textarea id="observation-notes" className="text-control" maxLength={4000} placeholder="Describe the room, source, or context…" value={notes} onChange={event => setNotes(event.target.value)} data-testid="input-notes" />
-            <button className="btn btn-primary" style={{ marginTop: 12 }} disabled={!hasReading} onClick={save} data-testid="button-save-observation">{saved ? <Check size={15} /> : <Save size={15} />}{saved ? 'Saved to this browser' : 'Save observation'}</button>
+            {analysis && <p className="permission-note" role="status" data-testid="status-analysis-save-guidance">Saving now attaches this interpretation to the same stopped measurement. The measured values remain unchanged.</p>}
+            <button className="btn btn-primary" style={{ marginTop: 12 }} disabled={!hasReading} onClick={save} data-testid="button-save-observation">{saved ? <Check size={15} /> : <Save size={15} />}{saved ? analysis ? 'Saved with interpretation' : 'Saved to this browser' : analysis ? 'Save interpreted observation' : 'Save observation'}</button>
             <button className="btn btn-subtle zc-cloud-save" style={{ marginTop: 10, width: '100%' }} disabled={!hasReading || !user || !firebaseCloudReady || cloudSaving} onClick={() => void saveToCloud()} data-testid="button-save-cloud-observation">
-              <Save size={14} />{cloudSaving ? 'Saving privately…' : cloudSaved ? 'Saved to your private cloud history' : 'Save to private cloud'}
+              <Save size={14} />{cloudSaving ? 'Saving privately…' : cloudSaved ? analysis ? 'Cloud interpretation updated' : 'Saved to your private cloud history' : analysis ? 'Save interpreted observation to cloud' : 'Save to private cloud'}
             </button>
             {cloudError && <p className="zc-callout zc-callout-alert" role="alert" data-testid="status-cloud-save-error">{cloudError}</p>}
             {!user && <p className="permission-note">To save across devices, sign in from the History page. Local saving remains available.</p>}
             {user && !firebaseCloudReady && <p className="permission-note" role="status">Cloud saves are paused until Firebase App Check is configured.</p>}
-            <p className="permission-note">A snapshot is saved only when you choose a save action. Audio is never stored or uploaded.</p>
           </div>
         </section>
       </div>
       <div className="section-grid">
         <AnalysisPanel
           hasMeasurement={hasReading}
+          captureActive={engine.running || engine.starting}
           loading={analysisLoading}
           error={analysisError}
           explanation={analysis}
@@ -425,7 +378,7 @@ function LabPage() {
         />
         <section className="panel">
           <div className="panel-head"><span className="panel-title">Analysis privacy</span><ShieldCheck size={16} color="#758681" /></div>
-          <div className="section-body"><p className="empty-inline" style={{ marginTop: 0 }}>AI analysis runs only after you request it. Only the selected measurement values are sent: sampling rate, FFT size, resolution, dominant frequency, peaks, relative RMS, and duration. Audio, spectrum bins, and your notes are not sent.</p><p className="empty-inline">The current explanation model is {`gemini-3.5-flash-lite`}. Firebase documents it as available on the Gemini Developer API free tier without a billing account; project-specific quota and availability still require owner verification. App Check must be configured and enforced.</p></div>
+          <div className="section-body"><p className="empty-inline" style={{ marginTop: 0 }}>AI analysis runs only after you request it. Only the selected measurement values are sent: sampling rate, FFT size, resolution, dominant frequency, peaks, relative RMS, and duration. Audio, spectrum bins, and your notes are not sent.</p><p className="empty-inline">The current explanation model is {`gemini-3.5-flash-lite`}. AI requests require App Check and available project quota. If the project quota is exhausted, the app reports the issue and keeps your local measurements unchanged.</p></div>
         </section>
       </div>
       <div className="section-grid">
@@ -576,18 +529,60 @@ function DetailPage() {
         </div>
         <div className="section-body" style={{ borderTop: '1px solid #e4dfd4' }}><div className="label-row"><span>Spectral peaks</span><span className="small-note">Hz</span></div>{item.topPeaksHz.length ? <div className="peak-list">{item.topPeaksHz.map((peak, i) => <span className="peak-chip" key={`${peak}-${i}`}>{formatFrequency(peak)}</span>)}</div> : <p className="empty-inline">No clear peaks were detected in this observation.</p>}{item.notes && <><div className="label-row" style={{ marginTop: 22 }}><span>Notes</span></div><p className="empty-inline" style={{ whiteSpace: 'pre-wrap' }}>{item.notes}</p></>}</div>
       </section>
+      {item.interpretation && <section className="panel zc-analysis-output" style={{ marginTop: 24 }} data-testid="detail-saved-interpretation">
+        <div className="panel-head"><span className="panel-title">Saved AI interpretation</span></div>
+        <div className="section-body">
+          <section className="zc-output-section zc-output-science">
+            <div className="zc-output-heading"><Mic size={14} aria-hidden="true" /><h3>Scientific interpretation</h3><span className={`zc-confidence confidence-${item.interpretation.confidence}`}>{item.interpretation.confidence} confidence</span></div>
+            <p>{item.interpretation.scientificInterpretation}</p>
+          </section>
+          <section className="zc-output-section">
+            <div className="zc-output-heading"><Info size={14} aria-hidden="true" /><h3>Uncertainty</h3></div>
+            <p>{item.interpretation.uncertainty}</p>
+          </section>
+          {item.interpretation.possibleSources.length > 0 && <section className="zc-output-section">
+            <div className="zc-output-heading"><span className="zc-heading-mark" aria-hidden="true" /><h3>Possible sound sources</h3></div>
+            <ul className="zc-source-list">{item.interpretation.possibleSources.map((source, index) => <li key={`${source}-${index}`}>{source}</li>)}</ul>
+          </section>}
+          {item.interpretation.faithReflection && <section className="zc-output-section zc-output-reflection">
+            <div className="zc-output-heading"><BookOpen size={14} aria-hidden="true" /><h3>Separate faith reflection</h3></div>
+            <p>{item.interpretation.faithReflection}</p>
+            <small>This is personal reflection, not a measurement or scientific finding.</small>
+          </section>}
+          <div className="zc-analysis-meta">Model · {item.interpretation.model}. The saved measurement remains separate from its interpretation.</div>
+        </div>
+      </section>}
       <p className="footnote"><Info size={12} style={{ verticalAlign: 'middle', marginRight: 5 }} />An audio spectrum reflects sound pressure at the microphone. Microphones do not receive RF; this instrument does not detect supernatural communication. Spiritual meaning is a matter of faith, not a sensor result.</p>
     </main>
   </Shell>;
 }
 
 function NotFound() {
-  return <Shell><main className="page-wrap"><div className="panel empty-state"><span className="empty-glyph"><Radio size={22} /></span><h2>Page not found</h2><p>This lab has one live instrument and one local archive.</p><Link href="/" className="btn btn-primary" style={{ width: 'auto', padding: '12px 16px' }} data-testid="link-not-found-home">Return to lab</Link></div></main></Shell>;
+  return <Shell><main className="page-wrap"><div className="panel empty-state"><span className="empty-glyph"><Radio size={22} /></span><h2>Page not found</h2><p>This lab includes live analysis, saved history, and experimental exploration.</p><Link href="/" className="btn btn-primary" style={{ width: 'auto', padding: '12px 16px' }} data-testid="link-not-found-home">Return to lab</Link></div></main></Shell>;
+}
+
+function CelestialRoute() {
+  const { user, loading } = useAuth();
+  if (loading) {
+    return <Shell><main className="page-wrap"><p className="lead" role="status" data-testid="status-exploration-auth">Checking account access…</p></main></Shell>;
+  }
+  if (!user) {
+    return <Shell>
+      <main className="page-wrap">
+        <div className="eyebrow">Account required</div>
+        <h1 className="page-title">Sign in to open the research lab.</h1>
+        <p className="lead">Celestial Exploration saves its browser archive under your signed-in account. Sign in with an existing account to continue.</p>
+        <AccountSection required />
+      </main>
+    </Shell>;
+  }
+  return <CelestialExplorationPage key={user.uid} ownerUid={user.uid} ownerEmail={user.email} />;
 }
 
 function App() {
   const [user, setUser] = useState<User | null>(firebaseAuth?.currentUser ?? null);
   const [loading, setLoading] = useState(Boolean(firebaseAuth));
+  const [authError, setAuthError] = useState('');
 
   useEffect(() => {
     if (!firebaseAuth) {
@@ -596,15 +591,17 @@ function App() {
     }
     return onAuthStateChanged(firebaseAuth, currentUser => {
       setUser(currentUser);
+      setAuthError('');
       setLoading(false);
-    }, () => {
+    }, cause => {
       setUser(null);
+      setAuthError(getAuthErrorMessage(cause));
       setLoading(false);
     });
   }, []);
 
-  return <AuthContext.Provider value={{ user, loading }}>
-    <Switch><Route path="/" component={LabPage} /><Route path="/history" component={HistoryPage} /><Route path="/history/:id" component={DetailPage} /><Route component={NotFound} /></Switch>
+  return <AuthContext.Provider value={{ user, loading, authError }}>
+    <Switch><Route path="/" component={LabPage} /><Route path="/history" component={HistoryPage} /><Route path="/history/:id" component={DetailPage} /><Route path="/exploration" component={CelestialRoute} /><Route component={NotFound} /></Switch>
   </AuthContext.Provider>;
 }
 

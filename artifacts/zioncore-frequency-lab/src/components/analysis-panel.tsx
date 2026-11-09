@@ -12,6 +12,7 @@ type AnalysisExplanation = {
 
 type AnalysisPanelProps = {
   hasMeasurement: boolean;
+  captureActive: boolean;
   loading: boolean;
   error: string;
   explanation: AnalysisExplanation | null;
@@ -20,6 +21,7 @@ type AnalysisPanelProps = {
 
 export function AnalysisPanel({
   hasMeasurement,
+  captureActive,
   loading,
   error,
   explanation,
@@ -63,14 +65,19 @@ export function AnalysisPanel({
         <button
           className="btn btn-primary zc-analyze-button"
           type="button"
-          disabled={!hasMeasurement || loading}
+          disabled={!hasMeasurement || captureActive || loading}
           onClick={() => void onAnalyze(includeFaithReflection)}
           data-testid="button-analyze-measurement"
         >
           {loading ? <LoaderCircle className="zc-loading-icon" size={15} /> : <Microscope size={15} />}
-          {loading ? 'Preparing explanation…' : explanation ? 'Refresh explanation' : 'Explain this measurement'}
+          {loading ? 'Preparing explanation…' : captureActive ? 'Stop capture to analyze' : explanation ? 'Refresh explanation' : 'Explain this measurement'}
         </button>
-        {!hasMeasurement && (
+        {captureActive && (
+          <p className="permission-note" role="status" data-testid="status-analysis-stop-capture">
+            Stop capture to lock the reading before requesting an interpretation.
+          </p>
+        )}
+        {!hasMeasurement && !captureActive && (
           <p className="permission-note" role="status" data-testid="status-analysis-needs-measurement">
             Take a microphone measurement first. No explanation is generated without a reading.
           </p>

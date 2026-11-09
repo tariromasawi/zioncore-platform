@@ -1,5 +1,14 @@
 import { z } from 'zod';
 
+const interpretationSchema = z.object({
+  scientificInterpretation: z.string().min(1).max(1800),
+  confidence: z.enum(['low', 'moderate', 'high']),
+  uncertainty: z.string().min(1).max(1200),
+  possibleSources: z.array(z.string().min(1).max(240)).max(6),
+  faithReflection: z.string().max(900).nullable(),
+  model: z.string().min(1).max(100),
+}).strict();
+
 export const observationSchema = z.object({
   id: z.string().regex(/^[A-Za-z0-9_-]{1,128}$/),
   createdAt: z.string().datetime({ offset: true }),
@@ -12,6 +21,7 @@ export const observationSchema = z.object({
   durationSeconds: z.number().finite().min(0).max(86400),
   mode: z.literal('microphone'),
   notes: z.string().max(4000).optional(),
+  interpretation: interpretationSchema.optional(),
 }).strict().superRefine((observation, context) => {
   const nyquist = observation.sampleRate / 2;
   const expectedResolution = observation.sampleRate / observation.fftSize;
