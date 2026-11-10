@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'wouter';
 import { AlertCircle, BookOpen, BrainCircuit, LoaderCircle, Microscope } from 'lucide-react';
 
 type AnalysisExplanation = {
@@ -13,6 +14,8 @@ type AnalysisExplanation = {
 type AnalysisPanelProps = {
   hasMeasurement: boolean;
   captureActive: boolean;
+  canAnalyze: boolean;
+  requiresAccount: boolean;
   loading: boolean;
   error: string;
   explanation: AnalysisExplanation | null;
@@ -22,6 +25,8 @@ type AnalysisPanelProps = {
 export function AnalysisPanel({
   hasMeasurement,
   captureActive,
+  canAnalyze,
+  requiresAccount,
   loading,
   error,
   explanation,
@@ -65,13 +70,22 @@ export function AnalysisPanel({
         <button
           className="btn btn-primary zc-analyze-button"
           type="button"
-          disabled={!hasMeasurement || captureActive || loading}
+          disabled={!hasMeasurement || captureActive || loading || !canAnalyze}
           onClick={() => void onAnalyze(includeFaithReflection)}
           data-testid="button-analyze-measurement"
         >
           {loading ? <LoaderCircle className="zc-loading-icon" size={15} /> : <Microscope size={15} />}
           {loading ? 'Preparing explanation…' : captureActive ? 'Stop capture to analyze' : explanation ? 'Refresh explanation' : 'Explain this measurement'}
         </button>
+        {requiresAccount ? (
+          <p className="permission-note" role="status" data-testid="status-analysis-account-required">
+            Cloud AI requests require a signed-in account and available quota. Local measurement remains free. <Link href="/history">Sign in or create an account</Link>.
+          </p>
+        ) : !canAnalyze ? (
+          <p className="permission-note" role="status" data-testid="status-analysis-unavailable">
+            Cloud AI is not configured in this environment. You can still use the free local measurement tools.
+          </p>
+        ) : null}
         {captureActive && (
           <p className="permission-note" role="status" data-testid="status-analysis-stop-capture">
             Stop capture to lock the reading before requesting an interpretation.

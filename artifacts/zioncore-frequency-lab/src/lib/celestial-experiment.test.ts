@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import {
+  ANONYMOUS_RESEARCH_SCOPE,
   CELESTIAL_PROTOCOL_ID,
   createCelestialWaveform,
   createUniversalExperiment,
@@ -10,6 +11,7 @@ import {
   encodeCelestialMessage,
   readResearchSessions,
   researchStorageKeyForOwner,
+  researchStorageKeyForScope,
   summarizeResearchPatterns,
   validateResearchSession,
   writeResearchSessions,
@@ -195,6 +197,37 @@ test('local archives round-trip independently per signed-in UID', () => {
     const [migrated] = readResearchSessions('owner_uid_2');
     assert.equal(migrated?.universalExperiment?.schemaVersion, 'zc-cig-experiment/v1');
     assert.equal(values.get(legacyKey), legacyJson, 'legacy data is not rewritten during read-only migration');
+  } finally {
+    if (original) Object.defineProperty(globalThis, 'localStorage', original);
+    else Reflect.deleteProperty(globalThis, 'localStorage');
+  }
+});
+
+test('anonymous visitor archive stays separate and is labelled as a browser identity', () => {
+  const original = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  const values = new Map<string, string>();
+  Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true,
+    value: {
+      getItem: (key: string) => values.get(key) ?? null,
+      setItem: (key: string, value: string) => { values.set(key, value); },
+    },
+  });
+  try {
+    const visitorSession = createResearchSession({
+      id: '22222222-2222-4222-8222-222222222222',
+      now: '2026-11-10T10:00:00.000Z',
+    });
+    writeResearchSessions(ANONYMOUS_RESEARCH_SCOPE, [visitorSession], 'anonymous-browser');
+    const [saved] = readResearchSessions(ANONYMOUS_RESEARCH_SCOPE, 'anonymous-browser');
+
+    assert.notEqual(
+      researchStorageKeyForScope(ANONYMOUS_RESEARCH_SCOPE),
+      researchStorageKeyForOwner('owner_uid_1'),
+    );
+    assert.equal(saved?.universalExperiment?.participant.identityType, 'anonymous-browser');
+    assert.equal(saved?.universalExperiment?.participant.reference, ANONYMOUS_RESEARCH_SCOPE);
+    assert.equal(readResearchSessions('owner_uid_1').length, 0);
   } finally {
     if (original) Object.defineProperty(globalThis, 'localStorage', original);
     else Reflect.deleteProperty(globalThis, 'localStorage');

@@ -9,6 +9,7 @@ import {
 import AccountAccess from '@/components/account-access';
 import AnalysisPanel from '@/components/analysis-panel';
 import { analyzeMeasurement, type Explanation } from '@/lib/ai-analysis';
+import { ANONYMOUS_RESEARCH_SCOPE } from '@/lib/celestial-experiment';
 import {
   deleteCloudObservations,
   getCloudHistoryErrorMessage,
@@ -27,6 +28,7 @@ import {
 import {
   firebaseAuth,
   firebaseAuthConfigured,
+  firebaseAiReady,
   firebaseCloudReady,
   firebaseProjectMismatch,
   getFirebaseSetupMessage,
@@ -286,6 +288,16 @@ function LabPage() {
   };
   const requestAnalysis = async (includeFaithReflection: boolean) => {
     if (!engine.reading || engine.running || engine.starting) return;
+    if (!user) {
+      setAnalysis(null);
+      setAnalysisError('Sign in before requesting cloud AI. Local capture and measurement remain free.');
+      return;
+    }
+    if (!firebaseAiReady) {
+      setAnalysis(null);
+      setAnalysisError('Cloud AI is not configured for this environment. Your local measurement remains available.');
+      return;
+    }
     setAnalysisLoading(true);
     setAnalysisError('');
     try {
@@ -321,7 +333,7 @@ function LabPage() {
     <main className="page-wrap">
       <div className="eyebrow">Observation instrument / 01</div>
       <h1 className="page-title">Listen closely.<br />Measure honestly.</h1>
-      <p className="lead">A quiet place to observe sound through your microphone. Every reading is local, physical, and separate from personal meaning.</p>
+      <p className="lead">A quiet place to observe sound through your microphone. Free local capture and measurement need no account or payment; every reading stays in this tab, separate from personal meaning.</p>
       <div className="live-grid">
         <section className="panel" aria-label="Live spectrum">
           <div className="panel-head"><span className="panel-title">Frequency spectrum</span><span className="live-badge" data-testid="status-capture"><i className={`live-dot ${engine.running ? 'on' : ''}`} />{engine.running ? 'Live capture' : 'Standby'}</span></div>
@@ -376,6 +388,8 @@ function LabPage() {
         <AnalysisPanel
           hasMeasurement={hasReading}
           captureActive={engine.running || engine.starting}
+          canAnalyze={Boolean(user && firebaseAiReady)}
+          requiresAccount={!user}
           loading={analysisLoading}
           error={analysisError}
           explanation={analysis}
@@ -383,7 +397,7 @@ function LabPage() {
         />
         <section className="panel">
           <div className="panel-head"><span className="panel-title">Analysis privacy</span><ShieldCheck size={16} color="#758681" /></div>
-          <div className="section-body"><p className="empty-inline" style={{ marginTop: 0 }}>AI analysis runs only after you request it. Only the selected measurement values are sent: sampling rate, FFT size, resolution, dominant frequency, peaks, relative RMS, and duration. Audio, spectrum bins, and your notes are not sent.</p><p className="empty-inline">The current explanation model is {`gemini-3.5-flash-lite`}. AI requests require App Check and available project quota. If the project quota is exhausted, the app reports the issue and keeps your local measurements unchanged.</p></div>
+          <div className="section-body"><p className="empty-inline" style={{ marginTop: 0 }}>Cloud AI requires sign-in and runs only after you request it. Only the selected measurement values are sent: sampling rate, FFT size, resolution, dominant frequency, peaks, relative RMS, and duration. Audio, spectrum bins, and your notes are not sent.</p><p className="empty-inline">The current explanation model is {`gemini-3.5-flash-lite`}. AI requests require App Check and available project quota. If the project quota is exhausted, the app reports the issue and keeps your local measurements unchanged.</p></div>
         </section>
       </div>
       <div className="section-grid">
@@ -644,19 +658,16 @@ function DetailRoute() {
 function CelestialRoute() {
   const { user, loading } = useAuth();
   if (loading) {
-    return <Shell><main className="page-wrap"><p className="lead" role="status" data-testid="status-exploration-auth">Checking account access…</p></main></Shell>;
+    return <Shell><main className="page-wrap"><p className="lead" role="status" data-testid="status-exploration-auth">Preparing the local research archive…</p></main></Shell>;
   }
-  if (!user) {
-    return <Shell>
-      <main className="page-wrap">
-        <div className="eyebrow">Account required</div>
-        <h1 className="page-title">Sign in to open the research lab.</h1>
-        <p className="lead">Celestial Exploration saves its browser archive under your signed-in account. Sign in with an existing account to continue.</p>
-        <AccountSection required />
-      </main>
-    </Shell>;
-  }
-  return <CelestialExplorationPage key={user.uid} ownerUid={user.uid} ownerEmail={user.email} />;
+  const archiveScope = user?.uid ?? ANONYMOUS_RESEARCH_SCOPE;
+  const identityType = user ? 'firebase-uid' : 'anonymous-browser';
+  return <CelestialExplorationPage
+    key={archiveScope}
+    archiveScope={archiveScope}
+    identityType={identityType}
+    ownerEmail={user?.email ?? null}
+  />;
 }
 
 function App() {

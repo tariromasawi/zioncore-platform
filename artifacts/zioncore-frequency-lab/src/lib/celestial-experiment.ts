@@ -12,6 +12,7 @@ import {
 import { instrumentRegistry } from '@/lib/hardware-instruments';
 
 export const CELESTIAL_STORAGE_KEY = 'zioncore.celestial.sessions.v1';
+export const ANONYMOUS_RESEARCH_SCOPE = 'anonymous-browser';
 export const CELESTIAL_PROTOCOL_ID = 'ZC-EXP-DTMF-v1';
 export const CELESTIAL_MAX_MESSAGE_BYTES = 120;
 export const CELESTIAL_MAX_SAVED_SESSIONS = 100;
@@ -33,6 +34,7 @@ export const RESEARCH_DOMAINS = CIG_DOMAIN_IDS;
 export type ResearchDomain = string;
 export type ResearchIntent = 'research-message' | 'prayer';
 export type HypothesisStatus = 'open' | 'tentative' | 'not-observed';
+export type ResearchIdentityType = 'firebase-uid' | 'anonymous-browser';
 
 export type ResearchSource = {
   type: 'human-authored' | 'microphone-observation';
@@ -429,8 +431,9 @@ export function validateResearchSession(value: unknown) {
 export function createUniversalExperiment(
   session: ResearchSession,
   participantRef: string,
+  identityType: ResearchIdentityType = 'firebase-uid',
 ): UniversalExperiment {
-  researchStorageKeyForOwner(participantRef);
+  researchStorageKeyForScope(participantRef);
   const domainDefinition = researchGridRegistry.getDomain(session.domain);
   const observations = session.observations.map(observation =>
     signalAdapterRegistry.normalize(SIGNAL_ADAPTER_IDS.browserAcoustic, observation));
@@ -534,7 +537,7 @@ export function createUniversalExperiment(
   return universalExperimentSchema.parse({
     schemaVersion: 'zc-cig-experiment/v1',
     id: session.id,
-    participant: { reference: participantRef, identityType: 'firebase-uid' },
+    participant: { reference: participantRef, identityType },
     domain: {
       id: session.domain,
       label: domainDefinition?.label ?? session.domain,
@@ -596,16 +599,23 @@ export function createUniversalExperiment(
   });
 }
 
-export function researchStorageKeyForOwner(ownerUid: string) {
-  if (typeof ownerUid !== 'string' || ownerUid.length < 1 || ownerUid.length > 128) {
-    throw new Error('Sign in to open a valid account-specific research archive.');
+export function researchStorageKeyForScope(scopeRef: string) {
+  if (typeof scopeRef !== 'string' || scopeRef.length < 1 || scopeRef.length > 128) {
+    throw new Error('Sign in or provide a local visitor scope for the research archive.');
   }
-  return `${CELESTIAL_STORAGE_KEY}.${encodeURIComponent(ownerUid)}`;
+  return `${CELESTIAL_STORAGE_KEY}.${encodeURIComponent(scopeRef)}`;
 }
 
-export function readResearchSessions(ownerUid: string): ResearchSession[] {
+export function researchStorageKeyForOwner(ownerUid: string) {
+  return researchStorageKeyForScope(ownerUid);
+}
+
+export function readResearchSessions(
+  scopeRef: string,
+  identityType: ResearchIdentityType = 'firebase-uid',
+): ResearchSession[] {
   if (typeof localStorage === 'undefined') return [];
-  const saved = localStorage.getItem(researchStorageKeyForOwner(ownerUid));
+  const saved = localStorage.getItem(researchStorageKeyForScope(scopeRef));
   if (!saved) return [];
   let parsed: unknown;
   try {
@@ -622,18 +632,22 @@ export function readResearchSessions(ownerUid: string): ResearchSession[] {
   }
   return result.data.map(session => ({
     ...session,
-    universalExperiment: createUniversalExperiment(session, ownerUid),
+    universalExperiment: createUniversalExperiment(session, scopeRef, identityType),
   }));
 }
 
-export function writeResearchSessions(ownerUid: string, sessions: ResearchSession[]) {
+export function writeResearchSessions(
+  scopeRef: string,
+  sessions: ResearchSession[],
+  identityType: ResearchIdentityType = 'firebase-uid',
+) {
   if (typeof localStorage === 'undefined') {
     throw new Error('Browser storage is unavailable.');
   }
-  const key = researchStorageKeyForOwner(ownerUid);
+  const key = researchStorageKeyForScope(scopeRef);
   const canonicalSessions = sessions.map(session => ({
     ...session,
-    universalExperiment: createUniversalExperiment(session, ownerUid),
+    universalExperiment: createUniversalExperiment(session, scopeRef, identityType),
   }));
   const result = z.array(sessionSchema).max(CELESTIAL_MAX_SAVED_SESSIONS).safeParse(canonicalSessions);
   if (!result.success) {

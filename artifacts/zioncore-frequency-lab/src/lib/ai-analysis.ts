@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
   firebaseAiReady,
+  firebaseAuth,
   firebaseApp,
   getFirebaseSetupMessage,
 } from '@/lib/firebase';
@@ -101,6 +102,9 @@ export async function analyzeMeasurement(
   measurement: AnalysisMeasurement,
   includeFaithReflection: boolean,
 ): Promise<Explanation> {
+  if (!firebaseAuth?.currentUser) {
+    throw new Error('Sign in before sending a cloud AI request. Local measurements remain available.');
+  }
   const prompt = buildAnalysisPrompt(measurement, includeFaithReflection);
   if (!firebaseAiReady || !firebaseApp) {
     throw new Error(getFirebaseSetupMessage() || 'Firebase AI Logic is not ready.');

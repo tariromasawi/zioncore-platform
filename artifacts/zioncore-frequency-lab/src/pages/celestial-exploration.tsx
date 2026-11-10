@@ -13,7 +13,7 @@ import {
   createUniversalExperiment,
   decodeCelestialSymbols, encodeCelestialMessage, readResearchSessions,
   summarizeResearchPatterns, validateResearchSession, writeResearchSessions,
-  type HypothesisStatus, type ResearchObservation, type ResearchSession,
+  type HypothesisStatus, type ResearchIdentityType, type ResearchObservation, type ResearchSession,
 } from '@/lib/celestial-experiment';
 import { downloadFile } from '@/lib/observations';
 import { researchAgentRouter, researchGridRegistry } from '@/lib/research-grid';
@@ -42,10 +42,12 @@ function downloadJson(name: string, value: unknown) {
 }
 
 export default function CelestialExplorationPage({
-  ownerUid,
+  archiveScope,
+  identityType,
   ownerEmail,
 }: {
-  ownerUid: string;
+  archiveScope: string;
+  identityType: ResearchIdentityType;
   ownerEmail: string | null;
 }) {
   const form = useForm<ComposeValues>({
@@ -96,7 +98,7 @@ export default function CelestialExplorationPage({
 
   const loadHistory = () => {
     try {
-      setSessions(readResearchSessions(ownerUid));
+      setSessions(readResearchSessions(archiveScope, identityType));
       setStorageError('');
       setLoaded(true);
     } catch (cause) {
@@ -104,7 +106,7 @@ export default function CelestialExplorationPage({
       setLoaded(false);
     }
   };
-  useEffect(() => { loadHistory(); }, [ownerUid]);
+  useEffect(() => { loadHistory(); }, [archiveScope, identityType]);
   useEffect(() => {
     if (previousFormSignature.current === formSignature) return;
     previousFormSignature.current = formSignature;
@@ -325,7 +327,7 @@ export default function CelestialExplorationPage({
     try {
       nextDraft = {
         ...sessionWithoutExperiment,
-        universalExperiment: createUniversalExperiment(sessionWithoutExperiment, ownerUid),
+        universalExperiment: createUniversalExperiment(sessionWithoutExperiment, archiveScope, identityType),
       };
     } catch (cause) {
       setSaveStatus(cause instanceof Error ? cause.message : 'Could not prepare the universal experiment record.');
@@ -338,7 +340,7 @@ export default function CelestialExplorationPage({
     }
     try {
       const nextSessions = [validation.data, ...sessions.filter(item => item.id !== validation.data.id)];
-      writeResearchSessions(ownerUid, nextSessions);
+      writeResearchSessions(archiveScope, nextSessions, identityType);
       setSessions(nextSessions);
       setDraft(createResearchSession());
       form.reset({ text: '', domain: 'celestial-exploration', intent: 'research-message', symbolDurationMs: '75', outputLevel: '0.04' });
@@ -365,7 +367,7 @@ export default function CelestialExplorationPage({
     if (!window.confirm('Delete this local research session? This cannot be undone.')) return;
     try {
       const next = sessions.filter(item => item.id !== id);
-      writeResearchSessions(ownerUid, next);
+      writeResearchSessions(archiveScope, next, identityType);
       setSessions(next);
       setSelectedIds(ids => ids.filter(value => value !== id));
     } catch (cause) {
@@ -405,7 +407,7 @@ export default function CelestialExplorationPage({
         </div>
         <aside className="cex-privacy" data-testid="notice-local-privacy">
           <ShieldCheck size={18} />
-          <div><strong>Account-scoped browser archive</strong><p>Sessions stay in this browser under your signed-in account. Browser storage is not encrypted and may be visible to other people using this browser profile. Avoid sensitive family details. Raw audio is never saved; no cloud or AI calls are made.</p></div>
+          <div><strong>{identityType === 'anonymous-browser' ? 'Free visitor browser archive' : 'Account-scoped browser archive'}</strong><p>Sessions stay in this browser under {identityType === 'anonymous-browser' ? 'this visitor profile' : 'your signed-in account'}. Browser storage is not encrypted and may be visible to other people using this browser profile. Avoid sensitive family details. Raw audio is never saved; no cloud or AI calls are made.</p></div>
         </aside>
       </div>
 

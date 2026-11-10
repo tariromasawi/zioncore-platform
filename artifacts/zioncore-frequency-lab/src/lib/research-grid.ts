@@ -366,7 +366,7 @@ export const universalExperimentSchema = z.object({
   id: z.string().uuid(),
   participant: z.object({
     reference: z.string().min(1).max(128),
-    identityType: z.literal('firebase-uid'),
+    identityType: z.enum(['firebase-uid', 'anonymous-browser']),
   }).strict(),
   domain: z.object({
     id: domainIdSchema,

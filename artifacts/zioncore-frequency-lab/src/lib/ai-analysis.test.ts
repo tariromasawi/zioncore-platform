@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import {
+  analyzeMeasurement,
   analysisMeasurementSchema,
   buildAnalysisPrompt,
   FREQUENCY_EXPLANATION_MODEL,
@@ -48,4 +49,11 @@ test('requests reflection separately and identifies the documented model', () =>
 test('quota and App Check failures have specific user-facing guidance', () => {
   assert.match(getAnalysisErrorMessage({ code: 'functions/resource-exhausted' }), /quota/i);
   assert.match(getAnalysisErrorMessage({ code: 'functions/permission-denied' }), /App Check/i);
+});
+
+test('cloud AI analysis refuses to send a request without a signed-in user', async () => {
+  await assert.rejects(
+    analyzeMeasurement(measurement, false),
+    /Sign in before sending a cloud AI request/,
+  );
 });
