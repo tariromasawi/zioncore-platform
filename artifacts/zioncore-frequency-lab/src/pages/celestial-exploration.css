@@ -62,6 +62,12 @@
 .cex-icon-disc { width:35px;height:35px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;background:#e9e7dc;color:#607973; }
 .cex-capture-copy h3 { margin:1px 0 5px;color:#355254;font-size:13px; }
 .cex-capture-copy p { color:#82908a;font-size:10px;line-height:1.55;margin:0; }
+.cex-instrument-status { display:grid;grid-template-columns:1fr 1fr;gap:9px 16px;margin-top:16px;padding:12px 13px;background:#f4f1e8;border:1px solid #e2ddd1; }
+.cex-instrument-status > div { display:grid;gap:4px;min-width:0; }
+.cex-instrument-status span { color:#82908a;font:8px var(--app-font-mono);letter-spacing:.06em;text-transform:uppercase; }
+.cex-instrument-status strong { color:#49615d;font:10px var(--app-font-mono);overflow-wrap:anywhere; }
+.cex-instrument-status p { grid-column:1 / -1;color:#84908a;font-size:9px;line-height:1.5;margin:0; }
+.cex-simulator-note { padding:9px 11px;margin:9px 0 0;background:#fdf7e9;border-left:2px solid #d5a54e;color:#806e49;font-size:9px;line-height:1.5; }
 .cex-reading-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:18px 0;padding:13px 0;border-top:1px solid #e4dfd4;border-bottom:1px solid #e4dfd4; }
 .cex-reading-grid > div { min-width:0;padding:0 11px;border-right:1px solid #e4dfd4; }
 .cex-reading-grid > div:first-child { padding-left:0; }

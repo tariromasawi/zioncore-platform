@@ -1,4 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  BROWSER_MICROPHONE_INSTRUMENT_ID,
+  instrumentRegistry,
+  type InstrumentDiscovery,
+  type InstrumentLease,
+} from '@/lib/hardware-instruments';
 
 export type Reading = {
   sampleRate: number;
@@ -11,6 +17,7 @@ export type Reading = {
 };
 
 export default function useLabEngine(fftSize: number) {
+  const microphoneAdapter = instrumentRegistry.get(BROWSER_MICROPHONE_INSTRUMENT_ID);
   const [running, setRunning] = useState(false);
   const [starting, setStarting] = useState(false);
   const [status, setStatus] = useState('Ready when you are. Microphone access begins only after you press Start.');
@@ -18,7 +25,8 @@ export default function useLabEngine(fftSize: number) {
   const [reading, setReading] = useState<Reading | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [silent, setSilent] = useState(false);
-  const streamRef = useRef<MediaStream | null>(null);
+  const [instrumentDiscovery, setInstrumentDiscovery] = useState<InstrumentDiscovery | null>(null);
+  const leaseRef = useRef<InstrumentLease | null>(null);
   const contextRef = useRef<AudioContext | null>(null);
   const frameRef = useRef<number>(0);
   const startRef = useRef(0);
@@ -28,8 +36,15 @@ export default function useLabEngine(fftSize: number) {
     requestIdRef.current += 1;
     setStarting(false);
     cancelAnimationFrame(frameRef.current);
-    streamRef.current?.getTracks().forEach(track => track.stop());
-    streamRef.current = null;
+    const lease = leaseRef.current;
+    leaseRef.current = null;
+    if (lease) {
+      const adapter = instrumentRegistry.get(lease.instrumentId);
+      if (adapter) await adapter.release(lease);
+      setInstrumentDiscovery(current => current
+        ? { ...current, status: 'ready', permission: 'granted', note: 'Microphone released. Device identifiers are not retained.' }
+        : current);
+    }
     if (contextRef.current) {
       const context = contextRef.current;
       contextRef.current = null;
@@ -38,6 +53,33 @@ export default function useLabEngine(fftSize: number) {
     setRunning(false);
     setStatus(message);
   }, []);
+
+  useEffect(() => {
+    let current = true;
+    void instrumentRegistry.discoverAll().then(discoveries => {
+      if (!current) return;
+      setInstrumentDiscovery(discoveries.find(item => item.instrument.id === BROWSER_MICROPHONE_INSTRUMENT_ID) ?? null);
+    }).catch(cause => {
+      if (!current) return;
+      setInstrumentDiscovery({
+        instrument: microphoneAdapter?.descriptor ?? {
+          id: BROWSER_MICROPHONE_INSTRUMENT_ID,
+          name: 'Browser microphone',
+          kind: 'microphone',
+          sourceType: 'live',
+          modalities: ['acoustic'],
+          capabilities: { inputChannels: null, sampleRateHz: null, frequencyBandHz: null, continuousCapture: true },
+          calibration: { status: 'uncalibrated', checkedAt: null, reference: 'Calibration not available.' },
+        },
+        status: 'error',
+        discoveredAt: new Date().toISOString(),
+        availableInputCount: null,
+        permission: 'unknown',
+        note: cause instanceof Error ? cause.message : 'Instrument discovery failed.',
+      });
+    });
+    return () => { current = false; };
+  }, [microphoneAdapter]);
 
   const start = useCallback(async () => {
     setError('');
@@ -53,20 +95,32 @@ export default function useLabEngine(fftSize: number) {
     setStatus('Waiting for microphone permission…');
     setStarting(true);
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: false,
-          noiseSuppression: false,
-          autoGainControl: false,
-        },
-      });
+      if (!microphoneAdapter) throw new Error('The browser microphone adapter is not registered.');
+      const lease = await microphoneAdapter.acquire();
       if (requestId !== requestIdRef.current) {
-        stream.getTracks().forEach(track => track.stop());
+        await microphoneAdapter.release(lease);
         return;
       }
-      streamRef.current = stream;
+      leaseRef.current = lease;
+      const stream = lease.handle as MediaStream;
       const context = new AudioContext();
       contextRef.current = context;
+      setInstrumentDiscovery(current => current
+        ? {
+          ...current,
+          status: 'active',
+          permission: 'granted',
+          instrument: {
+            ...current.instrument,
+            capabilities: {
+              ...current.instrument.capabilities,
+              sampleRateHz: context.sampleRate,
+              inputChannels: lease.actualSettings.inputChannels,
+            },
+            calibration: lease.calibration,
+          },
+        }
+        : current);
       const source = context.createMediaStreamSource(stream);
       const analyser = context.createAnalyser();
       analyser.fftSize = fftSize;
@@ -129,23 +183,41 @@ export default function useLabEngine(fftSize: number) {
             : `Could not start microphone capture${cause instanceof Error ? `: ${cause.message}` : '.'}`;
       setError(message);
       setStatus('Capture did not start.');
-      streamRef.current?.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
+      const lease = leaseRef.current;
+      leaseRef.current = null;
+      if (lease) {
+        const adapter = instrumentRegistry.get(lease.instrumentId);
+        if (adapter) await adapter.release(lease);
+      }
+      const denied = name === 'NotAllowedError' || name === 'PermissionDeniedError';
+      setInstrumentDiscovery(current => current
+        ? {
+          ...current,
+          status: denied ? 'permission-denied' : 'error',
+          permission: denied ? 'denied' : current.permission,
+          note: message,
+        }
+        : current);
       if (contextRef.current) {
         try { await contextRef.current.close(); } catch { /* no-op */ }
         contextRef.current = null;
       }
       setRunning(false);
     }
-  }, [fftSize]);
+  }, [fftSize, microphoneAdapter]);
 
   useEffect(() => () => {
     cancelAnimationFrame(frameRef.current);
-    streamRef.current?.getTracks().forEach(track => track.stop());
+    const lease = leaseRef.current;
+    leaseRef.current = null;
+    if (lease) {
+      const adapter = instrumentRegistry.get(lease.instrumentId);
+      if (adapter) void adapter.release(lease);
+    }
     if (contextRef.current && contextRef.current.state !== 'closed') {
       void contextRef.current.close();
     }
   }, []);
 
-  return { running, starting, status, error, reading, elapsed, silent, start, stop };
+  return { running, starting, status, error, reading, elapsed, silent, instrumentDiscovery, start, stop };
 }

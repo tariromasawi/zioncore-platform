@@ -9,6 +9,7 @@ import {
   universalExperimentSchema,
   type UniversalExperiment,
 } from '@/lib/research-grid';
+import { instrumentRegistry } from '@/lib/hardware-instruments';
 
 export const CELESTIAL_STORAGE_KEY = 'zioncore.celestial.sessions.v1';
 export const CELESTIAL_PROTOCOL_ID = 'ZC-EXP-DTMF-v1';
@@ -77,6 +78,7 @@ export type ObservationWindow = {
 
 export type ResearchObservation = {
   id: string;
+  instrumentId?: string;
   source: ResearchSource;
   window: ObservationWindow;
   sampleRateHz: number;
@@ -147,6 +149,7 @@ const observationWindowSchema = z.object({
 
 const observationSchema = z.object({
   id: z.string().uuid(),
+  instrumentId: z.string().min(1).max(120).optional(),
   source: sourceSchema,
   window: observationWindowSchema,
   sampleRateHz: z.number().int().min(8000).max(192000),
@@ -488,13 +491,23 @@ export function createUniversalExperiment(
         { name: 'fftSizes', value: fftSizes.join(',') },
       ],
     });
-    instruments.push({
-      id: 'instrument.browser-microphone-web-audio',
-      role: 'input',
-      modality: 'acoustic',
-      name: 'Browser microphone and Web Audio analyser',
-      calibration: 'uncalibrated',
-    });
+    const inputInstrumentIds = [...new Set(session.observations.map(item =>
+      item.instrumentId ?? 'instrument.browser-microphone-web-audio'))];
+    for (const instrumentId of inputInstrumentIds) {
+      const descriptor = instrumentRegistry.get(instrumentId)?.descriptor;
+      const calibration = descriptor?.calibration.status;
+      instruments.push({
+        id: instrumentId,
+        role: 'input',
+        modality: descriptor?.modalities[0] ?? 'acoustic',
+        name: descriptor?.name ?? instrumentId,
+        calibration: calibration === 'not-applicable'
+          ? 'not-applicable'
+          : calibration === 'factory-calibrated' || calibration === 'user-calibrated'
+            ? 'calibrated'
+            : 'uncalibrated',
+      });
+    }
     if (adapter) adapters.push({ id: adapter.id, version: adapter.version });
   }
 
@@ -584,11 +597,10 @@ export function createUniversalExperiment(
 }
 
 export function researchStorageKeyForOwner(ownerUid: string) {
-  const uid = ownerUid.trim();
-  if (!/^[A-Za-z0-9_-]{1,128}$/.test(uid)) {
+  if (typeof ownerUid !== 'string' || ownerUid.length < 1 || ownerUid.length > 128) {
     throw new Error('Sign in to open a valid account-specific research archive.');
   }
-  return `${CELESTIAL_STORAGE_KEY}.${uid}`;
+  return `${CELESTIAL_STORAGE_KEY}.${encodeURIComponent(ownerUid)}`;
 }
 
 export function readResearchSessions(ownerUid: string): ResearchSession[] {

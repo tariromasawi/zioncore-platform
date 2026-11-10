@@ -16,6 +16,7 @@ import {
   type HypothesisStatus, type ResearchObservation, type ResearchSession,
 } from '@/lib/celestial-experiment';
 import { researchAgentRouter, researchGridRegistry } from '@/lib/research-grid';
+import { instrumentRegistry } from '@/lib/hardware-instruments';
 import useLabEngine from '@/hooks/use-lab-engine';
 import {
   Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,
@@ -253,6 +254,7 @@ export default function CelestialExplorationPage({
     const durationSeconds = Math.max(0.1, engine.elapsed);
     const observation: ResearchObservation = {
       id: crypto.randomUUID(),
+      instrumentId: engine.instrumentDiscovery?.instrument.id ?? 'instrument.browser-microphone-web-audio',
       source: {
         type: 'microphone-observation',
         label: 'Local browser microphone',
@@ -472,6 +474,12 @@ export default function CelestialExplorationPage({
           <div className="cex-observe-grid">
             <div className="panel cex-panel cex-observe-panel">
               <div className="cex-capture-copy"><div className="cex-icon-disc"><Mic size={17} /></div><div><h3>Local microphone window</h3><p>{engine.error || engine.status}</p></div></div>
+              <div className="cex-instrument-status" data-testid="panel-instrument-status">
+                <div><span>Instrument</span><strong>{engine.instrumentDiscovery?.instrument.name ?? 'Browser microphone'}</strong></div>
+                <div><span>Operational status</span><strong data-testid="value-instrument-status">{(engine.instrumentDiscovery?.status ?? 'checking').replaceAll('-', ' ')}</strong></div>
+                <p>Audio inputs found: {engine.instrumentDiscovery?.availableInputCount ?? 'not reported'} · calibration: {engine.instrumentDiscovery?.instrument.calibration.status ?? 'pending'}. Device labels and identifiers are not collected.</p>
+              </div>
+              {instrumentRegistry.list().some(instrument => instrument.sourceType === 'simulated') && <p className="cex-simulator-note" data-testid="notice-development-simulator">Development-only synthetic test source is registered. It is not connected to microphone capture and cannot be saved as a live measurement.</p>}
               {engine.reading && <div className="cex-reading-grid" data-testid="panel-live-summary">
                 <div><span>Dominant peak</span><strong data-testid="value-observation-dominant">{engine.reading.dominant == null ? 'No clear peak' : `${engine.reading.dominant.toFixed(1)} Hz`}</strong></div>
                 <div><span>RMS level</span><strong data-testid="value-observation-rms">{engine.reading.rms.toFixed(4)}</strong></div>

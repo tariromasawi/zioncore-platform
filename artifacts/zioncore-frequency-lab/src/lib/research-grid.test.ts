@@ -87,6 +87,11 @@ test('cost-aware routing selects the cheapest compatible agent and enforces cons
     estimatedCostUsd: 0.02,
     enabled: true,
     requiresConsent: true,
+    run: () => ({
+      summary: 'A consent-gated test result.',
+      metrics: [],
+      limitations: ['Test handler only.'],
+    }),
   }]);
   assert.equal(modelOnlyRouter.select({
     task: 'multimodal-interpretation',
@@ -105,6 +110,53 @@ test('cost-aware routing selects the cheapest compatible agent and enforces cons
     maxCostUsd: 0.03,
     consentGranted: true,
   })?.id, 'agent.consent-required');
+});
+
+test('agent execution validates its output and only runs after budget and consent checks', async () => {
+  let runs = 0;
+  const router = new ResearchAgentRouter([{
+    id: 'agent.async-research',
+    label: 'Async research agent',
+    kind: 'ai',
+    provider: 'custom',
+    tasks: ['multimodal-interpretation'],
+    modalities: ['acoustic'],
+    estimatedCostUsd: 0.01,
+    enabled: true,
+    requiresConsent: true,
+    run: async input => {
+      runs += 1;
+      return {
+        summary: `Processed ${input.observations.length} observation(s).`,
+        metrics: [],
+        limitations: ['Research output, not empirical confirmation.'],
+      };
+    },
+  }]);
+  const input = { experimentId: 'test-experiment', observations: [], sessionsWithObservations: 0 };
+
+  assert.equal(await router.execute({
+    task: 'multimodal-interpretation',
+    modalities: ['acoustic'],
+    maxCostUsd: 0.005,
+    consentGranted: true,
+  }, input), null);
+  assert.equal(await router.execute({
+    task: 'multimodal-interpretation',
+    modalities: ['acoustic'],
+    maxCostUsd: 0.02,
+  }, input), null);
+  assert.equal(runs, 0);
+
+  const result = await router.execute({
+    task: 'multimodal-interpretation',
+    modalities: ['acoustic'],
+    maxCostUsd: 0.02,
+    consentGranted: true,
+  }, input);
+  assert.equal(runs, 1);
+  assert.equal(result?.agent.estimatedCostUsd, 0.01);
+  assert.equal(result?.output.summary, 'Processed 0 observation(s).');
 });
 
 test('current registry exposes only the implemented local acoustic path as a prototype', () => {

@@ -31,6 +31,43 @@ The live project was inspected using the existing service account through ADC.
   depleted. Do not add credits, link billing, or change the model without
   approval.
 
+## Latest read-only recheck — 2026-11-10
+
+- ADC access using the existing service-account secret reached
+  `ethereal-throne-b20e6`. Both development and production app IDs match
+  registered Firebase web apps. Each environment's App Check site key matches
+  that app's `RecaptchaEnterpriseConfig`; the development key allows only the
+  current Replit preview hostname, and the production key allows only
+  `zioncore.replit.app`.
+- The published homepage bundle does **not** match that safe environment
+  split: it contains the development Firebase App ID together with the
+  production App Check key. The published homepage did not issue an App Check
+  token-exchange request during a 15-second load. The last observed exchange
+  failure remains HTTP 403 `PERMISSION_DENIED` — `App attestation failed`.
+  Therefore, production token exchange is not confirmed; do not enforce
+  Firestore or Authentication App Check yet.
+- The published navigation includes Messages and Devices pages that are absent
+  from the current workspace UI. This further confirms the production build
+  cannot be treated as the current workspace build or used to infer all
+  production Firestore callers.
+- Current App Check service modes are Firebase AI Logic (`firebaseml.googleapis.com`)
+  `UNENFORCED`, Firestore `UNENFORCED`, and Authentication `UNENFORCED`. Firebase
+  AI Logic was changed from `ENFORCED` to `UNENFORCED` under the owner's
+  instruction to keep enforcement off until token exchange is verified; a
+  read-back confirmed the new mode. This removes an abuse-control layer for AI
+  calls and may increase usage risk. No Firestore or Authentication enforcement
+  mode was changed.
+- The live Firestore release still contains a project-wide public
+  `allow read, write` rule and six public legacy-root rules. The local candidate
+  denies those roots and every other unclassified path. The emulator rules
+  suite passes, including owner-path access, unauthenticated/cross-account
+  denial, and rejection of unclassified paths. This does not prove compatibility
+  with the unclassified production roots or external callers.
+- No Firestore rules or production app bundle were changed. The production
+  bundle must be rebuilt with the production Firebase App ID and provider
+  configuration, then its token exchange must be verified before enforcement
+  is re-enabled. Publishing remains subject to the owner's approval.
+
 ## Before changing Firebase settings
 
 1. Check which Firebase web app ID is active in the target Replit environment.

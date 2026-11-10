@@ -286,6 +286,7 @@ export class SignalAdapterRegistry {
 
 const acousticObservationInputSchema = z.object({
   id: z.string().uuid(),
+  instrumentId: z.string().min(1).max(120).optional(),
   window: z.object({
     startedAt: isoDate,
     endedAt: isoDate,
@@ -348,7 +349,7 @@ signalAdapterRegistry.register({
     return {
       sourceObservationId: observation.id,
       modality: 'acoustic',
-      instrumentId: 'instrument.browser-microphone-web-audio',
+      instrumentId: observation.instrumentId ?? 'instrument.browser-microphone-web-audio',
       window: observation.window,
       metrics,
       provenance: {

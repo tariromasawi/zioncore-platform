@@ -7,4 +7,4 @@ For ZionCore, keep the Replit development preview on its own Firebase web app an
 
 **Why:** Live configuration showed that the development app initially had no App Check registration, while the existing production key was restricted to the production hostname. Each app and hostname therefore needs its own matching registration.
 
-**How to apply:** When changing Firebase App Check or Replit environment variables, preserve the `development`/`production` split, verify token exchange in preview before enforcing services, and do not publish production changes without owner approval.
+**How to apply:** Preserve the `development`/`production` split, verify token exchange before enforcement, and inspect the published bundle itself: correct Replit scopes do not guarantee the deployment used the production app. Do not publish production changes without owner approval.
