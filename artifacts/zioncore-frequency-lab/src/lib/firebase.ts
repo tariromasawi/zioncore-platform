@@ -19,6 +19,8 @@ const firebaseConfig = {
 };
 
 const appCheckSiteKey = env.VITE_FIREBASE_APPCHECK_SITE_KEY;
+const firestoreClientAccessApproved =
+  env.VITE_FIRESTORE_CLIENT_ACCESS_APPROVED === 'true';
 const configMissing = [
   ['VITE_FIREBASE_API_KEY', firebaseConfig.apiKey],
   ['VITE_FIREBASE_AUTH_DOMAIN', firebaseConfig.authDomain],
@@ -72,7 +74,7 @@ if (!firebaseProjectMismatch && configMissing.length === 0) {
 
 export const firebaseAuthConfigured = Boolean(firebaseAuth);
 export const firebaseCloudReady = Boolean(
-  firebaseAuth && firebaseAppCheck && !firebaseInitError,
+  firebaseAuth && firebaseAppCheck && firestoreClientAccessApproved && !firebaseInitError,
 );
 export const firebaseAiReady = Boolean(
   firebaseApp && firebaseAppCheck && !firebaseInitError,
@@ -88,6 +90,9 @@ export function getFirebaseSetupMessage() {
   }
   if (!appCheckSiteKey || !firebaseAppCheck) {
     return 'Firebase is configured, but App Check is not initialized. Add the registered reCAPTCHA Enterprise site key before using cloud history or AI.';
+  }
+  if (!firestoreClientAccessApproved) {
+    return 'Account-linked cloud history is paused until Firestore rules are reviewed, deployed, and verified. Confirm App Check token exchange before enabling client access.';
   }
   return '';
 }

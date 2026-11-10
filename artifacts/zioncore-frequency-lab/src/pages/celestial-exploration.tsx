@@ -15,6 +15,7 @@ import {
   summarizeResearchPatterns, validateResearchSession, writeResearchSessions,
   type HypothesisStatus, type ResearchObservation, type ResearchSession,
 } from '@/lib/celestial-experiment';
+import { downloadFile } from '@/lib/observations';
 import { researchAgentRouter, researchGridRegistry } from '@/lib/research-grid';
 import { instrumentRegistry } from '@/lib/hardware-instruments';
 import useLabEngine from '@/hooks/use-lab-engine';
@@ -37,12 +38,7 @@ function byteCount(value: string) {
 }
 
 function downloadJson(name: string, value: unknown) {
-  const url = URL.createObjectURL(new Blob([JSON.stringify(value, null, 2)], { type: 'application/json' }));
-  const anchor = document.createElement('a');
-  anchor.href = url;
-  anchor.download = name;
-  anchor.click();
-  URL.revokeObjectURL(url);
+  downloadFile(name, JSON.stringify(value, null, 2), 'application/json');
 }
 
 export default function CelestialExplorationPage({

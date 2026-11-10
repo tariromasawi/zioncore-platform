@@ -67,6 +67,11 @@ The live project was inspected using the existing service account through ADC.
   bundle must be rebuilt with the production Firebase App ID and provider
   configuration, then its token exchange must be verified before enforcement
   is re-enabled. Publishing remains subject to the owner's approval.
+- Browser Firestore access now stays disabled unless
+  `VITE_FIRESTORE_CLIENT_ACCESS_APPROVED=true` is explicitly set for that
+  environment. Keep it false until the merged rules have been reviewed,
+  deployed, and verified against real app paths, and App Check token exchange
+  has succeeded. This client-side gate does not change Firebase rules.
 
 ## Before changing Firebase settings
 

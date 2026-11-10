@@ -5,3 +5,4 @@
 - [Measurement interpretation provenance](measurement-interpretation-provenance.md) — persist bounded AI results separately, attached to the exact frozen observation without rewriting signal data.
 - [Experimental session storage](experimental-session-storage.md) — keep private research records out of Firestore until production rules are reviewed and safe to deploy.
 - [ZionCore founding vision](zioncore-founding-vision.md) — align engineering to the seven-stage bidirectional signal loop without overclaiming device capability or interpretation.
+- [Historical signal-analysis branch](historical-signal-analysis.md) — a retained branch has tested DSP features absent from current `main`; assess them before discarding or replacing signal metrics.

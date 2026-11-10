@@ -9,7 +9,7 @@ import type { Observation } from '@/lib/observations';
 
 async function firestoreForCurrentUser() {
   if (!firebaseCloudReady || !firebaseApp || !firebaseAuth?.currentUser) {
-    throw new Error('Sign in and finish Firebase App Check setup before using private cloud history.');
+    throw new Error('Account cloud history is paused until Firestore rules and App Check are verified for this client.');
   }
   const firestore = await import('firebase/firestore');
   const collectionRef = firestore.collection(

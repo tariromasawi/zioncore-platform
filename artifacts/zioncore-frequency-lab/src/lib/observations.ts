@@ -26,9 +26,15 @@ export type SavedInterpretation = {
 
 const STORAGE_KEY = 'zioncore.frequency-lab.observations.v1';
 
-export function readObservations(): Observation[] {
+export function getObservationStorageKey(userId?: string) {
+  return userId
+    ? `${STORAGE_KEY}.account.${encodeURIComponent(userId)}`
+    : STORAGE_KEY;
+}
+
+export function readObservations(userId?: string): Observation[] {
   try {
-    const value = localStorage.getItem(STORAGE_KEY);
+    const value = localStorage.getItem(getObservationStorageKey(userId));
     if (!value) return [];
     const parsed: unknown = JSON.parse(value);
     if (!Array.isArray(parsed)) return [];
@@ -41,11 +47,11 @@ export function readObservations(): Observation[] {
   }
 }
 
-export function writeObservations(items: Observation[]) {
+export function writeObservations(items: Observation[], userId?: string) {
   if (!items.every(item => validateObservation(item).success)) {
     throw new Error('One or more observations failed validation.');
   }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  localStorage.setItem(getObservationStorageKey(userId), JSON.stringify(items));
 }
 
 export function upsertObservation(items: Observation[], observation: Observation) {
@@ -65,15 +71,41 @@ export function downloadFile(name: string, content: string, type: string) {
   const link = document.createElement('a');
   link.href = url;
   link.download = name;
-  link.click();
-  URL.revokeObjectURL(url);
+  document.body.appendChild(link);
+  try {
+    link.click();
+  } finally {
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
 }
 
 export function toCsv(items: Observation[]) {
-  const columns: (keyof Observation)[] = [
+  const columns = [
     'id', 'createdAt', 'sampleRate', 'fftSize', 'frequencyResolutionHz',
     'dominantFrequencyHz', 'topPeaksHz', 'rmsLevel', 'durationSeconds', 'mode', 'notes',
-  ];
+    'interpretationScientificInterpretation', 'interpretationConfidence',
+    'interpretationUncertainty', 'interpretationPossibleSources',
+    'interpretationFaithReflection', 'interpretationModel',
+  ] as const;
   const cell = (value: unknown) => `"${String(Array.isArray(value) ? value.join(';') : value ?? '').replaceAll('"', '""')}"`;
-  return [columns.join(','), ...items.map(item => columns.map(key => cell(item[key])).join(','))].join('\n');
+  const valueFor = (item: Observation, key: typeof columns[number]) => {
+    if (key.startsWith('interpretation')) {
+      const interpretation = item.interpretation;
+      if (!interpretation) return '';
+      switch (key) {
+        case 'interpretationScientificInterpretation': return interpretation.scientificInterpretation;
+        case 'interpretationConfidence': return interpretation.confidence;
+        case 'interpretationUncertainty': return interpretation.uncertainty;
+        case 'interpretationPossibleSources': return interpretation.possibleSources;
+        case 'interpretationFaithReflection': return interpretation.faithReflection;
+        case 'interpretationModel': return interpretation.model;
+      }
+    }
+    return item[key as keyof Observation];
+  };
+  return [
+    columns.join(','),
+    ...items.map(item => columns.map(key => cell(valueFor(item, key))).join(',')),
+  ].join('\n');
 }

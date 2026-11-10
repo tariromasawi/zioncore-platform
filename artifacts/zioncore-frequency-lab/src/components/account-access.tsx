@@ -18,7 +18,7 @@ type AccountAccessProps = {
 };
 
 export function AccountAccess({
-  heading = 'Private cloud history',
+  heading = 'Account cloud history',
   footnote = 'Account access is optional. This panel does not upload microphone audio.',
   configured,
   projectMismatch,
