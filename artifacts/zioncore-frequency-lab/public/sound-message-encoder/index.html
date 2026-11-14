@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Text-to-Sound Message Encoder | ZionCore Frequency Messenger</title>
+    <meta name="description" content="Encode short text or prayers into a BFSK audio packet, play or download it, then decode it nearby and verify its checksum in your browser.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://zioncore.replit.app/sound-message-encoder/">
+    <link rel="stylesheet" href="/seo-pages.css">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="ZionCore">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#f2eee4">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Text-to-Sound Message Encoder | ZionCore Frequency Messenger">
+    <meta property="og:description" content="Encode short text or prayers into a BFSK audio packet, play or download it, then decode it nearby and verify its checksum in your browser.">
+    <meta property="og:url" content="https://zioncore.replit.app/sound-message-encoder/">
+    <meta property="og:site_name" content="ZionCore">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:image" content="https://zioncore.replit.app/og-zioncore.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="ZionCore acoustic message encoding and frequency intelligence">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Text-to-Sound Message Encoder | ZionCore Frequency Messenger">
+    <meta name="twitter:description" content="Encode short text or prayers into a BFSK audio packet, play or download it, then decode it nearby and verify its checksum in your browser.">
+    <meta name="twitter:image" content="https://zioncore.replit.app/og-zioncore.jpg">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {"@type":"Organization","@id":"https://zioncore.replit.app/#organization","name":"ZionCore","url":"https://zioncore.replit.app/"},
+          {"@type":"WebSite","@id":"https://zioncore.replit.app/#website","url":"https://zioncore.replit.app/","name":"ZionCore","publisher":{"@id":"https://zioncore.replit.app/#organization"},"inLanguage":"en-GB"},
+          {"@type":"WebApplication","@id":"https://zioncore.replit.app/sound-message-encoder/#app","name":"ZionCore Frequency Messenger","url":"https://zioncore.replit.app/messages","applicationCategory":"UtilitiesApplication","operatingSystem":"Web browser","description":"A browser-based tool for encoding short text and prayer payloads into acoustic BFSK packets and checking them on a compatible nearby receiver."},
+          {"@type":"WebPage","@id":"https://zioncore.replit.app/sound-message-encoder/#page","url":"https://zioncore.replit.app/sound-message-encoder/","name":"Text-to-Sound Message Encoder","description":"Encode and decode short acoustic messages with ZionCore Frequency Messenger.","datePublished":"2026-11-07","dateModified":"2026-11-07","inLanguage":"en-GB","isPartOf":{"@id":"https://zioncore.replit.app/#website"},"mainEntity":{"@id":"https://zioncore.replit.app/sound-message-encoder/#app"}},
+          {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://zioncore.replit.app/"},{"@type":"ListItem","position":2,"name":"Sound message encoder","item":"https://zioncore.replit.app/sound-message-encoder/"}]}
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <canvas class="seo-matrix" aria-hidden="true"></canvas>
+    <header class="seo-header">
+      <a class="seo-brand" href="/" aria-label="ZionCore home"><span class="seo-brand-mark" aria-hidden="true">∿</span><span>ZIONCORE</span></a>
+      <nav class="seo-nav" aria-label="Explore ZionCore">
+        <a href="/audio-spectrum-analyzer/">Analyzer</a>
+        <a href="/online-tone-generator/">Tone generator</a>
+        <a href="/sound-message-encoder/">Message encoder</a>
+        <a href="/spiritual-frequency-exploration/">Spiritual audio</a>
+      </nav>
+    </header>
+    <main class="seo-main">
+      <p class="seo-breadcrumbs"><a href="/">Home</a> / Sound message encoder</p>
+      <section class="seo-hero">
+        <div class="seo-hero-copy">
+          <span class="seo-kicker">ZionCore Frequency Messenger · Encode · Verify</span>
+          <h1>Turn a short message into an acoustic packet.</h1>
+          <p>Compose text or a short prayer, encode it as a sound signal, then play it nearby or download a WAV file. A compatible receiver can decode the packet and check its integrity.</p>
+          <div class="seo-actions">
+            <a class="seo-button" href="/messages">Open Frequency Messenger</a>
+            <a class="seo-button seo-button--subtle" href="/audio-spectrum-analyzer/">Explore sound analysis</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="seo-section">
+        <h2>How text-to-sound encoding works</h2>
+        <div class="seo-grid">
+          <article class="seo-card"><h3>Compose</h3><p>Write a text payload or choose the prayer label. Messages are limited to 512 UTF-8 bytes.</p></article>
+          <article class="seo-card"><h3>Encode</h3><p>ZionCore converts the payload into a versioned binary frame with a checksum and binary frequency-shift keying (BFSK) tones.</p></article>
+          <article class="seo-card"><h3>Transfer nearby</h3><p>Play the audio through a speaker or move the generated WAV file to another device with a compatible microphone.</p></article>
+          <article class="seo-card"><h3>Verify and recover</h3><p>The receiver reports text only after the packet structure and checksum pass validation.</p></article>
+        </div>
+        <p class="seo-callout">The current protocol uses 1,800 Hz and 2,400 Hz tones at 50 bits per second in a 48 kHz WAV. The CRC checksum can detect accidental changes; it does not authenticate the sender or encrypt the message.</p>
+      </section>
+
+      <section class="seo-section">
+        <h2>A practical sound communication experiment</h2>
+        <p>Acoustic messaging makes a small digital packet audible. It is useful for exploring how information can be represented in sound, learning about modulation, and trying a simple device-to-device transfer in the same room.</p>
+        <p>Speaker and microphone frequency response, room noise, distance, and playback volume can affect recovery. Keep devices nearby and use a comfortable volume. The protocol is intended for a compatible local receiver, not long-range transmission or private communication.</p>
+        <p>Messages are encoded and decoded in the browser. ZionCore does not send the packet to its interpretation service, store it in cloud history, or claim that a checksum proves who transmitted it.</p>
+      </section>
+
+      <section class="seo-section seo-faq">
+        <h2>Acoustic message questions</h2>
+        <details><summary>Can I encode a prayer into sound?</summary><p>Yes. Choose the prayer payload label and enter a short prayer. It is converted into the same acoustic packet format as text.</p></details>
+        <details><summary>Is the acoustic message encrypted?</summary><p>No. The current packet includes a checksum for accidental corruption detection, but does not encrypt or authenticate the sender. Do not use it for confidential information.</p></details>
+        <details><summary>Can any speaker or microphone decode it?</summary><p>Many devices may work at close range, but hardware and room conditions vary. A matching ZionCore receiver must capture enough of the packet for the checksum to pass.</p></details>
+      </section>
+    </main>
+    <footer class="seo-footer">
+      <nav aria-label="Footer navigation"><a href="/">ZionCore home</a><a href="/audio-spectrum-analyzer/">Audio analyzer</a><a href="/online-tone-generator/">Tone generator</a><a href="/discover">Field guide</a></nav>
+      <p>ZionCore Frequency Intelligence · Sound can carry information</p>
+    </footer>
+    <script src="/seo-matrix.js" defer></script>
+  </body>
+</html>
