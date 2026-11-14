@@ -1,0 +1,258 @@
+{
+  "sources": [
+    {
+      "key": "replit-agent-overview",
+      "title": "Replit Agent",
+      "url": "https://docs.replit.com/features/agent/overview",
+      "publishedDate": "Not stated; accessed 2026-11-07",
+      "tier": 3,
+      "savedEvidence": "research/sources/replit-agent-01-overview.md"
+    },
+    {
+      "key": "replit-plan-mode",
+      "title": "Plan Mode",
+      "url": "https://docs.replit.com/features/agent/plan-mode",
+      "publishedDate": "Not stated; accessed 2026-11-07",
+      "tier": 3,
+      "savedEvidence": "research/sources/replit-agent-04-plan-mode.md"
+    },
+    {
+      "key": "replit-app-testing",
+      "title": "App Testing",
+      "url": "https://docs.replit.com/features/agent/app-testing",
+      "publishedDate": "Not stated; accessed 2026-11-07",
+      "tier": 3,
+      "savedEvidence": "research/sources/replit-agent-02-app-testing.md"
+    },
+    {
+      "key": "replit-ai-billing",
+      "title": "Replit AI Billing",
+      "url": "https://docs.replit.com/billing/ai-billing",
+      "publishedDate": "Not stated; accessed 2026-11-07",
+      "tier": 3,
+      "savedEvidence": "research/sources/replit-agent-03-ai-billing.md"
+    },
+    {
+      "key": "replit-spend-controls",
+      "title": "Managing Your Spend",
+      "url": "https://docs.replit.com/billing/managing-spend",
+      "publishedDate": "Not stated; accessed 2026-11-07",
+      "tier": 3,
+      "savedEvidence": "research/sources/replit-agent-05-spend-controls.md"
+    },
+    {
+      "key": "replit-pricing",
+      "title": "Pricing and Plans | Replit",
+      "url": "https://replit.com/pricing",
+      "publishedDate": "Dynamic page observed 2026-11-07",
+      "tier": 3,
+      "savedEvidence": "research/sources/monetization-snippets.md"
+    },
+    {
+      "key": "replit-publishing",
+      "title": "Publishing",
+      "url": "https://docs.replit.com/features/publishing/overview",
+      "publishedDate": "Not stated; accessed 2026-11-07",
+      "tier": 3,
+      "savedEvidence": "research/sources/replit-agent-06-publishing.md"
+    },
+    {
+      "key": "replit-october-23-changelog",
+      "title": "October 23, 2026",
+      "url": "https://docs.replit.com/updates/2026/10/23/changelog",
+      "publishedDate": "2026-10-23",
+      "tier": 3,
+      "savedEvidence": "research/sources/replit-agent-03-october-2026-changelog.md"
+    },
+    {
+      "key": "replit-october-30-changelog",
+      "title": "October 30, 2026",
+      "url": "https://docs.replit.com/updates/2026/10/30/changelog",
+      "publishedDate": "2026-10-30",
+      "tier": 3,
+      "savedEvidence": "research/sources/replit-agent-07-october-30-changelog.md"
+    },
+    {
+      "key": "replit-monitoring-agent",
+      "title": "Replit Monitoring Agent: Your Very Own Software Engineering Team",
+      "url": "https://replit.com/blog/replit-monitoring-agent",
+      "publishedDate": "2026-10-22",
+      "tier": 3,
+      "savedEvidence": "research/sources/replit-agent-08-monitoring-agent.md"
+    },
+    {
+      "key": "capcut-ai-tools",
+      "title": "CapCut AI Tools | Smart Editing for Video, Image & Text",
+      "url": "https://www.capcut.com/tools/ai-tools",
+      "publishedDate": "Tool-page dates shown as 2026-10-21 to 2026-11-03; accessed 2026-11-07",
+      "tier": 3,
+      "savedEvidence": "research/sources/capcut-01-ai-tools.md"
+    },
+    {
+      "key": "capcut-ai-video-editor",
+      "title": "AI Video Editor: Timeline Plus AI Assists in CapCut",
+      "url": "https://www.capcut.com/resource/ai-video-editor-guide",
+      "publishedDate": "2026-11-03",
+      "tier": 3,
+      "savedEvidence": "research/sources/capcut-03-ai-editor-guide.md"
+    },
+    {
+      "key": "capcut-pro-pricing-help",
+      "title": "How Much Does CapCut Pro Cost?",
+      "url": "https://www.capcut.com/help/how-much-does-capcut-pro-cost",
+      "publishedDate": "2026-09-23",
+      "tier": 3,
+      "savedEvidence": "research/sources/capcut-02-pro-pricing-help.md"
+    },
+    {
+      "key": "capcut-regional-pricing",
+      "title": "CapCut Pricing | Choose the Right Plan",
+      "url": "https://web-sg.capcut.com/pricing",
+      "publishedDate": "Dynamic regional page observed 2026-11-07",
+      "tier": 3,
+      "savedEvidence": "research/sources/capcut-05-regional-pricing.md"
+    },
+    {
+      "key": "capcut-credit-types",
+      "title": "How Many Types of Credits Are There?",
+      "url": "https://www.capcut.com/help/credit-types",
+      "publishedDate": "2026-03-25",
+      "tier": 3,
+      "savedEvidence": "research/sources/capcut-04-credit-types.md"
+    },
+    {
+      "key": "capcut-creator-templates",
+      "title": "How Do I Create Templates in CapCut?",
+      "url": "https://www.capcut.com/help/how-to-create-templates-in-capcut",
+      "publishedDate": "2026-01-05",
+      "tier": 3,
+      "savedEvidence": "research/sources/creator-loops-01-capcut-templates.md"
+    },
+    {
+      "key": "capcut-remake-workflow",
+      "title": "How to Make a Remake in CapCut?",
+      "url": "https://www.capcut.com/help/how-to-make-a-remake",
+      "publishedDate": "2026-01-26",
+      "tier": 3,
+      "savedEvidence": "research/sources/capcut-07-remake-workflow.md"
+    },
+    {
+      "key": "capcut-world-2026",
+      "title": "CapCut World: New Tools and Partnerships for Creators",
+      "url": "https://www.capcut.com/zh-tw/newsroom/capcut-world-la",
+      "publishedDate": "2026-10-27",
+      "tier": 3,
+      "savedEvidence": "research/sources/capcut-06-capcut-world-2026.md"
+    },
+    {
+      "key": "replit-revenue-reuters",
+      "title": "AI Software Developer Replit Raises $250 Million at $3 Billion Valuation",
+      "url": "https://www.reuters.com/business/ai-software-developer-replit-raises-250-million-3-billion-valuation-2025-09-10",
+      "publishedDate": "2025-09-10",
+      "tier": 2,
+      "savedEvidence": "research/sources/revenue-01-reuters-replit-2025.md"
+    },
+    {
+      "key": "replit-revenue-businessinsider",
+      "title": "Replit Projects $1 Billion Revenue by End of 2026 As AI Coding Booms",
+      "url": "https://www.businessinsider.com/replit-projects-1-billion-revenue-by-2027-ai-coding-boom-2025-10",
+      "publishedDate": "2025-10-20",
+      "tier": 2,
+      "savedEvidence": "research/sources/revenue-05-businessinsider-replit-2025.md"
+    },
+    {
+      "key": "replit-revenue-target",
+      "title": "Replit Raises $400 Million",
+      "url": "https://replit.com/blog/replit-raises-400-million-dollars",
+      "publishedDate": "2026-03-11",
+      "tier": 3,
+      "savedEvidence": "research/sources/revenue-04-replit-march-2026-announcement.md"
+    },
+    {
+      "key": "replit-revenue-techcrunch",
+      "title": "Replit Makes OpenAI Its Default Over Anthropic, CEO Says",
+      "url": "https://techcrunch.com/2026/10/17/replit-is-no-longer-working-with-anthropic-ceo-says/",
+      "publishedDate": "2026-10-17",
+      "tier": 2,
+      "savedEvidence": "research/sources/revenue-02-techcrunch-replit-2026.md"
+    },
+    {
+      "key": "capcut-combined-revenue-report",
+      "title": "Video Models Could Expand Jianying and CapCut's Market",
+      "url": "https://www.cls.cn/detail/1887900",
+      "publishedDate": "2024-12-13",
+      "tier": 2,
+      "savedEvidence": "research/sources/revenue-03-capcut-combined-2024.md"
+    },
+    {
+      "key": "capcut-appfigures-estimate",
+      "title": "TikTok's Video Editor Is Eating Up the Market as YoY Revenue Rises 412%",
+      "url": "https://appfigures.com/resources/insights/20240426/5-tiktoks-video-editor-is-eating-up-the-market-as-yoy-revenue-rises-412-percent",
+      "publishedDate": "2024-04-26",
+      "tier": 2,
+      "savedEvidence": "research/sources/revenue-07-appfigures-capcut-2024.md"
+    },
+    {
+      "key": "capcut-sensortower-estimate",
+      "title": "CapCut: Photo & Video Editor — Sensor Tower Overview",
+      "url": "https://app.sensortower.com/overview/1500855883?country=us",
+      "publishedDate": "Dynamic page observed 2026-11-07",
+      "tier": 2,
+      "savedEvidence": "research/sources/revenue-06-sensortower-capcut-app.md"
+    },
+    {
+      "key": "posthog-ai-pricing",
+      "title": "PostHog AI Pricing",
+      "url": "https://posthog.com/docs/posthog-ai/pricing",
+      "publishedDate": "Not stated; accessed 2026-11-07",
+      "tier": 3,
+      "savedEvidence": "research/sources/monetization-02-posthog-credit-pricing.md"
+    },
+    {
+      "key": "icpen-dark-patterns",
+      "title": "ICPEN Dark Patterns in Subscription Services Sweep Public Report",
+      "url": "https://www.oaic.gov.au/__data/assets/pdf_file/0018/232623/Public-Report-ICPEN-Dark-Patterns-Sweep.pdf",
+      "publishedDate": "2024-07-02",
+      "tier": 1,
+      "savedEvidence": "research/sources/trust-02-icpen-dark-patterns.md"
+    },
+    {
+      "key": "royal-society-uncertainty",
+      "title": "The Effects of Communicating Uncertainty Around Statistics, on Public Trust",
+      "url": "https://royalsocietypublishing.org/rsos/article/10/11/230604/91800/The-effects-of-communicating-uncertainty-around",
+      "publishedDate": "2023-11-22",
+      "tier": 1,
+      "savedEvidence": "research/sources/trust-01-royal-society-uncertainty.md"
+    }
+  ],
+  "citationOrder": [
+    "replit-agent-overview",
+    "replit-plan-mode",
+    "replit-app-testing",
+    "replit-publishing",
+    "replit-monitoring-agent",
+    "replit-october-23-changelog",
+    "replit-october-30-changelog",
+    "replit-ai-billing",
+    "replit-spend-controls",
+    "replit-pricing",
+    "replit-revenue-reuters",
+    "replit-revenue-businessinsider",
+    "replit-revenue-target",
+    "replit-revenue-techcrunch",
+    "capcut-ai-tools",
+    "capcut-ai-video-editor",
+    "capcut-creator-templates",
+    "capcut-remake-workflow",
+    "capcut-regional-pricing",
+    "capcut-pro-pricing-help",
+    "capcut-credit-types",
+    "capcut-world-2026",
+    "capcut-combined-revenue-report",
+    "capcut-appfigures-estimate",
+    "capcut-sensortower-estimate",
+    "posthog-ai-pricing",
+    "icpen-dark-patterns",
+    "royal-society-uncertainty"
+  ]
+}

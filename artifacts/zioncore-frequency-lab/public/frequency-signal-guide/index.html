@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sound Frequency, FFT &amp; Harmonics Guide | ZionCore</title>
+    <meta name="description" content="Learn how frequency, FFT resolution, harmonics, and spectrograms describe a sound recording. Explore practical listening experiments with ZionCore.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://zioncore.replit.app/frequency-signal-guide/">
+    <link rel="stylesheet" href="/seo-pages.css">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="ZionCore">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#f2eee4">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Sound Frequency, FFT &amp; Harmonics Guide | ZionCore">
+    <meta property="og:description" content="Learn how frequency, FFT resolution, harmonics, and spectrograms describe a sound recording. Explore practical listening experiments with ZionCore.">
+    <meta property="og:url" content="https://zioncore.replit.app/frequency-signal-guide/">
+    <meta property="og:site_name" content="ZionCore">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:image" content="https://zioncore.replit.app/og-zioncore.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="ZionCore sound frequency and FFT field guide">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sound Frequency, FFT &amp; Harmonics Guide | ZionCore">
+    <meta name="twitter:description" content="Learn how frequency, FFT resolution, harmonics, and spectrograms describe a sound recording. Explore practical listening experiments with ZionCore.">
+    <meta name="twitter:image" content="https://zioncore.replit.app/og-zioncore.jpg">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {"@type":"Organization","@id":"https://zioncore.replit.app/#organization","name":"ZionCore","url":"https://zioncore.replit.app/"},
+          {"@type":"WebSite","@id":"https://zioncore.replit.app/#website","url":"https://zioncore.replit.app/","name":"ZionCore","publisher":{"@id":"https://zioncore.replit.app/#organization"},"inLanguage":"en-GB"},
+          {"@type":"WebPage","@id":"https://zioncore.replit.app/frequency-signal-guide/#page","url":"https://zioncore.replit.app/frequency-signal-guide/","name":"Sound Frequency, FFT and Harmonics Guide","description":"A practical guide to understanding frequency measurements and acoustic patterns.","datePublished":"2026-11-07","dateModified":"2026-11-07","inLanguage":"en-GB","isPartOf":{"@id":"https://zioncore.replit.app/#website"}},
+          {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://zioncore.replit.app/"},{"@type":"ListItem","position":2,"name":"Frequency signal guide","item":"https://zioncore.replit.app/frequency-signal-guide/"}]}
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <canvas class="seo-matrix" aria-hidden="true"></canvas>
+    <header class="seo-header">
+      <a class="seo-brand" href="/" aria-label="ZionCore home"><span class="seo-brand-mark" aria-hidden="true">∿</span><span>ZIONCORE</span></a>
+      <nav class="seo-nav" aria-label="Explore ZionCore">
+        <a href="/audio-spectrum-analyzer/">Audio analyzer</a>
+        <a href="/online-tone-generator/">Tone generator</a>
+        <a href="/sound-message-encoder/">Acoustic messaging</a>
+        <a href="/discover">Full field guide</a>
+      </nav>
+    </header>
+    <main class="seo-main">
+      <p class="seo-breadcrumbs"><a href="/">Home</a> / Frequency signal guide</p>
+      <section class="seo-hero">
+        <div class="seo-hero-copy">
+          <span class="seo-kicker">Field Guide · Frequency · Pattern</span>
+          <h1>Understand the signal before its story.</h1>
+          <p>Frequency is one way to describe how quickly a repeating waveform cycles. An audio spectrum analyzer helps reveal which frequency components appear in a captured sound and how they change.</p>
+          <div class="seo-actions">
+            <a class="seo-button" href="/#capture">Try a local measurement</a>
+            <a class="seo-button seo-button--subtle" href="/discover">Explore the full field guide</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="seo-section">
+        <h2>Four ideas that make a spectrum easier to read</h2>
+        <div class="seo-grid">
+          <article class="seo-card"><h3>Frequency</h3><p>Measured in hertz (Hz), frequency counts cycles per second. A single tone may produce a strong peak, while everyday sounds often contain many components.</p></article>
+          <article class="seo-card"><h3>FFT resolution</h3><p>The FFT divides a sampled recording window into frequency bins. Resolution is approximately sample rate divided by FFT size; a larger FFT separates nearby peaks more finely but uses a longer time window.</p></article>
+          <article class="seo-card"><h3>Harmonics</h3><p>Harmonic peaks occur near whole-number multiples of a fundamental frequency. Their spacing can help describe a pattern, but does not by itself identify the source.</p></article>
+          <article class="seo-card"><h3>Spectrogram</h3><p>A spectrogram places frequency against time and uses intensity to show relative spectral strength. It can reveal changing tones, repeated events, or broad-band activity.</p></article>
+        </div>
+      </section>
+
+      <section class="seo-section">
+        <h2>From measurement to interpretation</h2>
+        <p>A sound frequency analyzer can describe peaks, relative levels, harmonics, and temporal patterns. These measurements are different from decoded message content, a source hypothesis, or a spiritual interpretation. Keeping those layers separate makes room for both careful analysis and personal meaning.</p>
+        <p>ZionCore can create an interpretation that connects the measured pattern with context you choose to provide. It can also offer a personal faith reflection when requested. Those interpretations are possibilities to consider, not a substitute for the signal data or your own discernment.</p>
+        <p>Try a repeatable test: keep the same device, position, and duration; change one condition; then compare the resulting spectrum and notes. A controlled comparison often says more than a single dramatic capture.</p>
+      </section>
+
+      <section class="seo-section">
+        <h2>Continue learning</h2>
+        <div class="seo-grid">
+          <article class="seo-card"><h3><a href="/audio-spectrum-analyzer/">Use the online spectrum analyzer</a></h3><p>Capture live microphone audio or analyze a local recording.</p></article>
+          <article class="seo-card"><h3><a href="/sound-message-encoder/">Explore acoustic data transmission</a></h3><p>See how a short text payload can be encoded into a sound packet and verified.</p></article>
+        </div>
+      </section>
+    </main>
+    <footer class="seo-footer">
+      <nav aria-label="Footer navigation"><a href="/">ZionCore home</a><a href="/audio-spectrum-analyzer/">Audio analyzer</a><a href="/plant-bioacoustics/">Environmental sound</a><a href="/spiritual-frequency-exploration/">Spiritual exploration</a></nav>
+      <p>Explore patterns with precision; choose your own meaning.</p>
+    </footer>
+    <script src="/seo-matrix.js" defer></script>
+  </body>
+</html>

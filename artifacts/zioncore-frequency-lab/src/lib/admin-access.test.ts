@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { canShowAdminLink } from './admin-access';
+
+test('admin navigation is shown for either approved verified account', () => {
+  assert.equal(canShowAdminLink({ email: 'masawit1@icloud.com', emailVerified: true }, true), true);
+  assert.equal(canShowAdminLink({ email: 'TARIROMASAWI19@gmail.com', emailVerified: true }, true), true);
+});
+
+test('admin navigation remains hidden for unverified and unlisted accounts', () => {
+  assert.equal(canShowAdminLink({ email: 'masawit1@icloud.com', emailVerified: false }, true), false);
+  assert.equal(canShowAdminLink({ email: 'other@example.com', emailVerified: true }, true), false);
+  assert.equal(canShowAdminLink(null, true), false);
+});
+
+test('verified allowlisted email alone cannot expose admin navigation', () => {
+  assert.equal(canShowAdminLink({ email: 'masawit1@icloud.com', emailVerified: true }, false), false);
+});
+
+test('an owner claim does not expose admin navigation to an unlisted account', () => {
+  assert.equal(canShowAdminLink({ email: 'other@example.com', emailVerified: true }, true), false);
+  assert.equal(canShowAdminLink({ email: null, emailVerified: false }, true), false);
+});
