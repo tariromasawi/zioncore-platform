@@ -1,6 +1,6 @@
 # ZionCore Phase 2 — Source Preservation
 
-**Status:** In progress; Phase 3 is not authorized by this report.  
+**Status:** Source preservation completed on private development branches; Phase 3 has not started.  
 **Controlling scope:** The owner-approved nine-phase plan, Phase 2, “Preserve Everything in Private GitHub.”  
 **Updated:** 2026-11-14
 
@@ -14,24 +14,27 @@ they are not substituted for the approved nine-phase plan. The Genesis
 
 ## Preserved source references
 
-| Source | Branch or worktree | Commit at inspection | Tracked files at commit | Working-tree state |
+| Source snapshot | Private GitHub branch | Snapshot commit | Files | Notes |
 | --- | --- | --- | ---: | --- |
-| Verified production-based source | `phase-87-owner-claims` | `ca6ff0b252155295315beae1f65fc8e71029ebc1` | 610 | 5 changed files |
-| Verified production-based source | `phase-88-dashboard-metrics` | `ca6ff0b252155295315beae1f65fc8e71029ebc1` | 610 | 1 changed and 2 untracked files |
-| Verified production-based source | `phase-89-cost-guards` | `ca6ff0b252155295315beae1f65fc8e71029ebc1` | 610 | 3 changed and 2 untracked files |
-| Verified production-based source | `phase-90-first-load` | `ca6ff0b252155295315beae1f65fc8e71029ebc1` | 610 | 1 untracked runbook |
-| Earlier ZionCore 2nd source candidate | `phase-91-second-source` | `7be5bc14971d67445dc68282aee140b75833b476` | 225 | Clean |
-| Version-architecture work | `phase-91-version-architecture` | `ca6ff0b252155295315beae1f65fc8e71029ebc1` | 610 | 1 untracked decision document |
-| Current isolated integration | `phase-92-integration` | `ca6ff0b252155295315beae1f65fc8e71029ebc1` | 610 | Working tree contains preserved integration work; final inventory pending |
+| Main ZionCore source | `preservation/zioncore-main` | `1ecbfd6dd050d6c05c7049d0fc96459023e492f8` | 360 | Original source snapshot |
+| Phase 87 worktree | `preservation/phase-87-owner-claims` | `ebdb0dacb2930b7a6cc44b6620bbb86967888b99` | 610 | Preserved worktree state |
+| Phase 88 worktree | `preservation/phase-88-dashboard-metrics` | `03572b836212c94b774646196f6c857b32dd9e29` | 612 | Preserved worktree state |
+| Phase 89 worktree | `preservation/phase-89-cost-guards` | `14885b1f6c848057c4d58f4e1ddfe3a774950da7` | 612 | Preserved worktree state |
+| Phase 90 worktree | `preservation/phase-90-recovery-operations` | `eccd549fb2b24b29ea36027698cf7361c19b1413` | 611 | Preserved worktree state |
+| Original ZionCore 2nd source | `preservation/zioncore-2nd-original` | `9629f8892c9b28ffa6a4d9a99ff897c71cb9b9d2` | 225 | Original standalone snapshot |
+| Phase 91 worktree | `preservation/phase-91-version-architecture` | `c5d414f2d94c27195d1d6a7b55e8d20408750205` | 611 | Preserved worktree state |
+| Current Phase 2 source | `phase2/source-preservation` | `1cfe61c4aeb72593ae6fd832c11230b6cad1f74f` | 836 | Current integration worktree snapshot |
+| Main source with lockfile correction | `preservation/zioncore-main-lockfile-fixed` | `87c1d33a762ff360e50c9d4c2e6882e5f1efe8e5` | 360 | One lockfile specifier correction; original snapshot unchanged |
 
 The six earlier task worktrees and the current integration worktree were
 inspected. The root workspace is an additional source line, not one of those
 seven task worktrees: its `main` HEAD is
-`911f124d6e811702d55b7e5599e50e56c37eeab5` and its tracked tree includes 4,386
-files under `generated-artifacts/`. That divergent root tree is not treated as
-the verified production baseline and is not silently merged into this branch.
-The supplied production evidence identifies `ca6ff0b252155295315beae1f65fc8e71029ebc1`
-as the live-source commit.
+`911f124d6e811702d55b7e5599e50e56c37eeab5`. The clean main-source snapshot
+contains 360 source/configuration files; 4,386 paths under `generated-artifacts/`
+(including a 16.7 MB generated ZIP) were excluded. The root source is preserved
+on a separate branch and is not silently merged into the task branch. The
+owner-supplied production evidence identifies
+`ca6ff0b252155295315beae1f65fc8e71029ebc1` as the live-source commit.
 
 ### Earlier worktree changes
 
@@ -95,34 +98,40 @@ unverified. See `ZIONCORE_GENESIS_SEED_INTEGRATION.md` and
   `0418e864d93e929eb60425ba5854beca76763ecf`; it contains no application
   source. The owner has explicitly authorized preserving and pushing the
   Phase 2 source on a separate development branch.
-- The worktree has no GitHub remote; its current branch is
-  `agent/phase-92-integration` at base commit
-  `ca6ff0b252155295315beae1f65fc8e71029ebc1`, with Phase 2 source edits still
-  uncommitted. Only Replit-managed remotes are configured.
+- The local Phase 2 worktree still has no GitHub Git remote; its current branch
+  is `agent/phase-92-integration` at base commit
+  `ca6ff0b252155295315beae1f65fc8e71029ebc1`. Its complete source snapshot is
+  preserved at `phase2/source-preservation`.
 - The Replit GitHub source-control connector remains unavailable. The
-  authenticated GitHub API connection is usable, so the authorized transfer
-  will use Git objects and a development-branch reference while leaving
-  `main` unchanged.
+  authenticated GitHub API connection created and verified the authorized
+  branches without pushing to or changing `main`. The Replit Git pane is not
+  connected for future direct commits.
 - The current Phase 2 worktree contains 836 non-ignored source/configuration
   files. The original standalone source worktree contains 225 files at commit
   `7be5bc14971d67445dc68282aee140b75833b476`; it has 12 documentation/memory
   files absent from the current task tree. Preserve that original snapshot
   separately rather than silently dropping or blending those files.
 - The clean main worktree contains 360 source/configuration files after
-  excluding `generated-artifacts/`. That generated directory contains a
-  16.7 MB source ZIP and extracted generated content; do not copy it into the
-  source-preservation branches.
-- The five earlier development worktrees (Phases 87–91) contain small dirty
-  deltas. Their source files and newer versions are represented in the current
-  integration tree; keep their recoverable states separate and do not treat
-  them as production.
+  excluding `generated-artifacts/`. That directory contains a 16.7 MB generated
+  ZIP and extracted generated content; it is excluded from source preservation.
+- Per-file SHA-256 inventories for all eight original snapshots and the
+  lockfile-corrected main variant are committed on
+  `preservation/source-inventory`, commit
+  `b74f4ad32337e18ecbf3aafd5414691b17b40313`.
+- Committed history for the six development worktrees and two source-candidate
+  refs is preserved on `preservation/worktree-history`, commit
+  `fc01aa97fbf455c89abc5fb62fea017c4f8a19aa`. Its four bundle parts total
+  1,689,659 bytes and reassemble to SHA-256
+  `686dfdb72c3b970a779595c2d1aed43bf58e600ad7604d8c3e743960a90f5797`.
+  The root main worktree's full history is not in this bundle because it reaches
+  the excluded generated ZIP; its source tree is preserved separately.
 - The source worktree contains `.env.example` templates, not a tracked
   credential-bearing `.env` file. The repository has separate `.gitignore` and
   `.replitignore` rules; generated outputs and caches are excluded from the
   proposed source branch.
-- Production credentials, service-account JSON, private keys, and payment
-  secrets are not to be committed. The history scan and clean-copy build remain
-  required before reporting Phase 2 complete.
+- No credential-bearing `.env` file was included. Production credentials,
+  service-account JSON, private keys, and payment secrets were not committed.
+  Clean-source installation, tests, typechecks, and builds are recorded below.
 
 ### Pre-upload scan findings
 
@@ -146,40 +155,59 @@ unverified. See `ZIONCORE_GENESIS_SEED_INTEGRATION.md` and
 
 ## Phase 2 completion gates
 
-Phase 2 is **not complete** until all of the following are verified:
+Phase 2 source preservation is ready for the owner's review. The remaining
+connection and live-service items are explicitly not represented as completed:
 
-1. The owner supplies or confirms the full approved nine-phase plan reference
-   if its original text must be reproduced exactly; the accessible source set
-   did not contain it.
-2. The owner approves the exact private GitHub destination. **Done:** the
-   destination is `tariromasawi/zioncore-platform`, visibility private.
-3. Source snapshots from the clean main workspace, original standalone source,
-   and current Phase 2 integration are committed on separate, non-production
-   branches without actual credentials or secrets.
-4. A fresh checkout installs dependencies, passes the agreed tests, type
-   checks, and build, and has a complete committed file inventory.
-5. The Genesis integration map and source-integrity check below are reviewed.
-6. The source-level mismatch between ZionCore 2nd's client AI path and the
-   server-side Genesis/provider-routing path is resolved and regression-tested;
-   live production App Check and model verification remain an external launch
-   dependency, not a claimed pass.
+1. The original nine-phase plan text was not found in accessible project files,
+   worktrees, or documentation. The owner supplied the controlling Phase 2
+   scope directly; this evidence report does not recreate the missing plan.
+2. The owner approved `tariromasawi/zioncore-platform`; GitHub verified the
+   owner, private visibility, and default branch `main`.
+3. The main source, original ZionCore 2nd source, current Phase 2 source, and
+   each earlier task-worktree state are preserved on separate non-production
+   branches. Source inventories and task-worktree Git history are preserved
+   separately. No actual production credential was committed.
+4. A fresh source tree from the Phase 2 GitHub commit passed frozen dependency
+   installation, typecheck, all listed tests, and production builds. The
+   original main-source snapshot had a catalog/lockfile mismatch; its separate
+   correction branch changes only the `tsx` lockfile specifier and passes clean
+   frozen installation, typecheck, and API/frequency-lab builds.
+5. The original Genesis archive remains byte-identical at the path and SHA-256
+   documented below; source-level runtime integration has regression coverage.
+6. Live production Firebase App Check token exchange, Firebase Authentication
+   and Firestore reads, AI model availability, quota handling, and mobile
+   browser behavior remain unverified. No production configuration was changed.
+7. The Replit GitHub source-control pane is not connected. GitHub source
+   preservation succeeded through the authenticated GitHub API; direct future
+   commits from the Replit Git pane still require that connection.
 
 ## Verification completed on this development branch
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Whole-workspace TypeScript check | Pass | `pnpm -w run typecheck` checked shared libraries, API server, mockup sandbox, ZionCore 2nd, frequency lab, and scripts |
-| Frequency contract and Genesis tests | Pass, 4/4 | `tsx --test lib/frequency-ai-contract/src/*.test.ts`; includes immutable archive SHA-256 and 8,000-character provider-context cap |
+| GitHub Phase 2 source tree | Pass | Freshly fetched all 836 files from commit `1cfe61c4aeb72593ae6fd832c11230b6cad1f74f`; each file's Git blob SHA-1 matched; source size 6,617,542 bytes |
+| Frozen install and workspace typecheck | Pass | `pnpm install --frozen-lockfile`; `pnpm -w run typecheck` in the fresh source tree |
+| Frequency contract and Genesis tests | Pass, 4/4 | Includes immutable archive SHA-256 and bounded provider-context checks |
 | Frequency lab unit tests | Pass, 424/424 | `pnpm --filter @workspace/zioncore-frequency-lab run test:unit` |
 | API server unit tests | Pass, 105/105 | `pnpm --filter @workspace/api-server run test:unit` |
 | ZionCore 2nd unit tests | Pass, 34/34 | `pnpm --filter @workspace/zioncore-2nd run test:unit` |
-| API/Firestore emulator route tests | Pass, 20/20 | `pnpm --filter @workspace/api-server run test:wallet`; includes the quoted base-measurement interpretation route |
-| ZionCore 2nd production build | Pass | `PORT=5173 BASE_PATH=/zioncore-2nd/ pnpm --filter @workspace/zioncore-2nd run build`; emitted `dist/public/zioncore-2nd` with non-fatal large-chunk and dependency-comment warnings |
+| API/Firestore emulator route tests | Pass, 20/20 | `pnpm --filter @workspace/api-server run test:wallet` |
+| ZionCore 2nd production build | Pass | `PORT=5173 BASE_PATH=/zioncore-2nd/ pnpm --filter @workspace/zioncore-2nd run build` |
+| Frequency lab production build | Pass | `PORT=5173 BASE_PATH=/ pnpm --filter @workspace/zioncore-frequency-lab run build` |
+| API server build | Pass | `pnpm --filter @workspace/api-server run build` |
+| Main-source frozen install | Pass on correction branch | Original `preservation/zioncore-main` failed because workspace `tsx` specifier `^4.21.0` differed from lockfile specifier `4.23.15`. The separate `preservation/zioncore-main-lockfile-fixed` changes only `pnpm-lock.yaml`; frozen install, typecheck, frequency-lab build, and API build pass. |
+| Source inventory | Pass | Per-file SHA-256 CSV files and preservation index committed on `preservation/source-inventory`, commit `b74f4ad32337e18ecbf3aafd5414691b17b40313` |
+| Worktree Git history | Pass, with stated exclusion | Bundle on `preservation/worktree-history`, commit `fc01aa97fbf455c89abc5fb62fea017c4f8a19aa`; SHA-256 and remote part contents verified |
+| Repository `main` | Unchanged | Still at initial commit `0418e864d93e929eb60425ba5854beca76763ecf`; all application source is on named preservation branches |
 | Main preview at `/` | Renders | Browser preview shows the local-analysis Live Lab without browser errors |
-| Main preview at `/zioncore-2nd/` | Not integrated yet | Current main-app preview returns “Page not found”; this is an integration phase task, not a completed route |
-| Private GitHub source branches and clean-copy build | Not run | Destination is approved and writable; snapshots still need committing and verification |
-| Production Firebase/App Check/provider checks | Not run | No production configuration, rules, IAM, payment, or deployment changes were made |
+| Main preview at `/zioncore-2nd/` | Not integrated | Current main-app preview returns “Page not found”; integration remains future work |
+| Replit GitHub source-control pane | Not connected | GitHub API source preservation succeeded; Replit Git-pane connection is a remaining setup item |
+| Production Firebase/App Check/provider checks | Not verified | No production configuration, rules, IAM, payment, or deployment changes were made |
 
-No production deployment, main-branch merge, Firebase rules change, IAM change,
-or App Check enforcement change is authorized by this Phase 2 record. Phase 3
-remains blocked until Phase 2 is complete and reviewed.
+The original nine-phase plan text was not found in the accessible workspace;
+this report follows the owner's explicit Phase 2 directive and does not replace
+that plan. Phase 2 source preservation is presented for review. The Replit Git
+pane connection and live Firebase checks remain outstanding; Phase 3 has not
+started. No production deployment, main-branch merge, Firestore rules change,
+IAM change, App Check enforcement change, Stripe change, or customer-data
+operation occurred.
