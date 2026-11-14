@@ -1,0 +1,8 @@
+- [Firestore rule arithmetic](firestore-rule-arithmetic.md) — cast operands to floating point before fractional resolution checks; integer division truncates.
+- [Firebase App Check environment split](firebase-appcheck-env-split.md) — keep preview and production Firebase apps, site keys, and Replit env scopes separate.
+- [Owner authentication continuity](firebase-owner-auth-linking.md) — link Google to the existing owner UID; do not create another account or reassign its claim.
+- [Production source provenance](production-api-source-provenance.md) — require verified source before changing deployed features; minified bundles are not authoritative source.
+- [Measurement interpretation provenance](measurement-interpretation-provenance.md) — persist bounded AI results separately, attached to the exact frozen observation without rewriting signal data.
+- [Experimental session storage](experimental-session-storage.md) — keep private research records out of Firestore until production rules are reviewed and safe to deploy.
+- [ZionCore founding vision](zioncore-founding-vision.md) — align engineering to the seven-stage bidirectional signal loop without overclaiming device capability or interpretation.
+- [Historical signal-analysis branch](historical-signal-analysis.md) — a retained branch has tested DSP features absent from current `main`; assess them before discarding or replacing signal metrics.
