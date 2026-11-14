@@ -1,0 +1,58 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "PSINbvigHAI3KW7snGddx"
+uri = "file://research/notes.md"
+type = "text"
+title = "Research Notes: Replit and CapCut AI"
+description = "Research plan and running findings for the ZionCore product-strategy review."
+logical_id = "3ee7134e-57b7-419c-93e5-ffc8ae634e8c"
+content_hash = "sha256:c413b7cf1810da2f386f46ba6308ade748279b3181ac53ceb997b157d8a697b8"
+size = 3301
+mtime_ms = 1794064278314
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/3ee7134e-57b7-419c-93e5-ffc8ae634e8c/b68e6d90-e61e-4043-bd00-30d300b9a8de"
+storage_version_token = "1794064284460769"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "0rYNOL9nIhKf7h1__cF-9"
+uri = "file://research/replit-capcut-zioncore-strategy.md"
+type = "text"
+title = "Replit, CapCut, and ZionCore Strategy"
+description = "A cited public-source comparison of product workflows, pricing evidence, monetization limits, and a phased ZionCore adoption plan."
+logical_id = "c734c433-1ccf-4cc5-a8a9-1d9cf7da3c49"
+content_hash = "sha256:08f3226eac32dcde0c4fb0b966dcf26804f5de8b89aded6c6399a8a4f11693de"
+size = 16746
+mtime_ms = 1794065034330
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/c734c433-1ccf-4cc5-a8a9-1d9cf7da3c49/76a9e7fe-89d2-4592-b77d-3efff119b261"
+storage_version_token = "1794065085191346"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "ONaJffke5r1zrfzTwBuk4"
+uri = "file://research/zioncore-completion-audit.md"
+type = "text"
+title = "ZionCore completion and payment audit"
+description = "Evidence-based status of payment hardening, strategy implementation, test results, and the remaining production launch requirements."
+logical_id = "f78e2075-fd5d-46d2-92a5-3b1e2d28861b"
+content_hash = "sha256:3073c9a7dd7cdc9f749e88a933b57685e83433240a8ea390408b588db8b471f8"
+size = 8094
+mtime_ms = 1794071466323
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/f78e2075-fd5d-46d2-92a5-3b1e2d28861b/7d0f41cd-707c-489f-b2f8-2980595a1e98"
+storage_version_token = "1794071488609875"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "1JL6j_C4BO0pBlM23TXe7"
+uri = "file://docs/zioncore-report-reconstruction.html"
+type = "html"
+title = "ZionCore report audit and replacement reading"
+description = "37 wording and experience issues, their corrections, and a complete eight-part replacement example."
+logical_id = "da819f57-4514-48ca-9617-2db6fa685ade"
+content_hash = "sha256:b989d6b070e5d0b0791134688ae701bef64d446274f5f79c64367e28a6cdd5a3"
+size = 16633
+mtime_ms = 1794292221697
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/da819f57-4514-48ca-9617-2db6fa685ade/90a0e04f-a4ec-4a0a-b06f-35d8e7044c89"
+storage_version_token = "1794292646722531"
+content_type = "text/html"
