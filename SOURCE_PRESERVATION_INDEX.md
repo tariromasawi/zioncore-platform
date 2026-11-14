@@ -28,7 +28,7 @@ The immutable original is at artifacts/zioncore-2nd/src/content/genesis-declarat
 
 ## Clean-source verification
 
-A fresh source-tree copy was fetched from GitHub objects by commit, with every downloaded blob SHA verified. On phase2/source-preservation: pnpm install --frozen-lockfile and pnpm -w run typecheck passed; unit tests passed (frequency lab 424, API 105, ZionCore 2nd 34, emulator route 20, Genesis contract 4); API, frequency-lab and ZionCore 2nd builds passed with their required environment values. Build output contains non-fatal sourcemap, dependency annotation and large-chunk warnings.
+A fresh source-tree copy was fetched from GitHub objects by commit, with every downloaded blob SHA verified. On the tested source snapshot commit 1cfe61c4aeb72593ae6fd832c11230b6cad1f74f: pnpm install --frozen-lockfile and pnpm -w run typecheck passed; unit tests passed (frequency lab 424, API 105, ZionCore 2nd 34, emulator route 20, Genesis contract 4); API, frequency-lab and ZionCore 2nd builds passed with required environment values. Final branch head 2aec8c42af0c56437ff9ad5b1087335c71a31bdb adds only the Phase 2 evidence report; executable source remains unchanged. Build output contains non-fatal sourcemap, dependency annotation and large-chunk warnings.
 
 The uncorrected preservation/zioncore-main snapshot initially failed frozen install because the workspace catalog declares tsx ^4.21.0 while the lockfile recorded specifier 4.23.15. The original branch is unchanged. The separate preservation/zioncore-main-lockfile-fixed branch changes only pnpm-lock.yaml's tsx catalog specifier; frozen install, typecheck and API/frequency-lab builds then passed.
 
