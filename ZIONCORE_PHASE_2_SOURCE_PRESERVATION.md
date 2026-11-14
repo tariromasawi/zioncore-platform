@@ -116,8 +116,7 @@ unverified. See `ZIONCORE_GENESIS_SEED_INTEGRATION.md` and
   ZIP and extracted generated content; it is excluded from source preservation.
 - Per-file SHA-256 inventories for all eight original snapshots and the
   lockfile-corrected main variant are committed on
-  `preservation/source-inventory`, commit
-  `b74f4ad32337e18ecbf3aafd5414691b17b40313`.
+  `preservation/source-inventory`.
 - Committed history for the six development worktrees and two source-candidate
   refs is preserved on `preservation/worktree-history`, commit
   `fc01aa97fbf455c89abc5fb62fea017c4f8a19aa`. Its four bundle parts total
@@ -186,6 +185,7 @@ connection and live-service items are explicitly not represented as completed:
 | Check | Result | Evidence |
 | --- | --- | --- |
 | GitHub Phase 2 source tree | Pass | Freshly fetched all 836 files from commit `1cfe61c4aeb72593ae6fd832c11230b6cad1f74f`; each file's Git blob SHA-1 matched; source size 6,617,542 bytes |
+| Final report update | Pass | The preservation report was added in a documentation-only follow-up commit; validated executable files are unchanged from the tested source snapshot |
 | Frozen install and workspace typecheck | Pass | `pnpm install --frozen-lockfile`; `pnpm -w run typecheck` in the fresh source tree |
 | Frequency contract and Genesis tests | Pass, 4/4 | Includes immutable archive SHA-256 and bounded provider-context checks |
 | Frequency lab unit tests | Pass, 424/424 | `pnpm --filter @workspace/zioncore-frequency-lab run test:unit` |
@@ -196,7 +196,7 @@ connection and live-service items are explicitly not represented as completed:
 | Frequency lab production build | Pass | `PORT=5173 BASE_PATH=/ pnpm --filter @workspace/zioncore-frequency-lab run build` |
 | API server build | Pass | `pnpm --filter @workspace/api-server run build` |
 | Main-source frozen install | Pass on correction branch | Original `preservation/zioncore-main` failed because workspace `tsx` specifier `^4.21.0` differed from lockfile specifier `4.23.15`. The separate `preservation/zioncore-main-lockfile-fixed` changes only `pnpm-lock.yaml`; frozen install, typecheck, frequency-lab build, and API build pass. |
-| Source inventory | Pass | Per-file SHA-256 CSV files and preservation index committed on `preservation/source-inventory`, commit `b74f4ad32337e18ecbf3aafd5414691b17b40313` |
+| Source inventory | Pass | Per-file SHA-256 CSV files and preservation index committed on `preservation/source-inventory` |
 | Worktree Git history | Pass, with stated exclusion | Bundle on `preservation/worktree-history`, commit `fc01aa97fbf455c89abc5fb62fea017c4f8a19aa`; SHA-256 and remote part contents verified |
 | Repository `main` | Unchanged | Still at initial commit `0418e864d93e929eb60425ba5854beca76763ecf`; all application source is on named preservation branches |
 | Main preview at `/` | Renders | Browser preview shows the local-analysis Live Lab without browser errors |
