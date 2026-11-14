@@ -1,0 +1,26 @@
+{
+  "name": "ZionCore Frequency Intelligence",
+  "short_name": "ZionCore",
+  "description": "Explore sound-frequency analysis, acoustic messages, environmental audio, and personal spiritual reflection.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f2eee4",
+  "theme_color": "#f2eee4",
+  "categories": ["education", "utilities"],
+  "icons": [
+    {
+      "src": "/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

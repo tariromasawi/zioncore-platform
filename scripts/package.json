@@ -1,0 +1,17 @@
+{
+  "name": "@workspace/scripts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "verify:release": "tsx ./src/verify-release.ts",
+    "hello": "tsx ./src/hello.ts",
+    "measure:characters": "tsx ./src/measure-meaningful-characters.ts",
+    "test": "tsx --test ./src/*.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsx": "catalog:"
+  }
+}

@@ -1,0 +1,99 @@
+.zc-device-center { padding-bottom: 68px; }
+.zc-device-hero { display:grid;grid-template-columns:minmax(0,1fr) 210px;align-items:center;gap:30px;margin:12px 0 24px;padding:36px clamp(22px,4vw,52px);border:1px solid #c5c9bd;border-radius:7px;background:linear-gradient(130deg,#f7f5ee 0%,#e9eee8 60%,#e0e9e6 100%);box-shadow:0 18px 48px #122d3210; }
+.zc-device-hero .lead { max-width:780px; }
+.zc-device-hero-actions { display:flex;flex-wrap:wrap;gap:10px;margin-top:20px; }
+.zc-device-hero-actions .btn { width:auto;max-width:100%; }
+.zc-device-hero-mark { display:grid;place-items:center;min-height:190px;border:1px solid #b9c5bd;border-radius:50%;background:radial-gradient(circle,#fff7d4 0,#e5e7dc 30%,#a4c2b9 70%,#c7d2c8 100%);box-shadow:inset 0 0 0 11px #ffffff48,0 0 42px #d5ad5d30; }
+.zc-device-hero-mark>div { display:grid;gap:10px;place-items:center;color:#31585a;text-align:center; }
+.zc-device-hero-mark span { font-size:9px;font-weight:800;letter-spacing:.16em;line-height:1.7; }
+.zc-capability-panel { margin-bottom:32px; }
+.zc-capability-empty { display:flex;align-items:center;gap:10px;color:#64746e;font-size:13px; }
+.zc-device-facts { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px; }
+.zc-device-facts span,.zc-device-metric-grid span { display:grid;gap:6px;padding:11px;border:1px solid #d6dbd2;border-radius:4px;background:#f7f7f2;color:#4b615e;font-size:12px;overflow-wrap:anywhere; }
+.zc-device-facts strong,.zc-device-metric-grid strong { color:#78877e;font-size:9px;letter-spacing:.09em;text-transform:uppercase; }
+.zc-capability-list { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;margin:14px 0 0;padding:0;list-style:none; }
+.zc-capability-list li { display:flex;align-items:center;gap:8px;color:#566963;font-size:11px; }
+.zc-capability-list svg { flex:0 0 auto;color:#3b836d; }
+.zc-section-heading { display:flex;align-items:end;justify-content:space-between;gap:24px;margin:30px 0 14px; }
+.zc-kicker { color:#8b7040;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase; }
+.zc-section-heading h2 { margin:7px 0 0;color:#203c40;font-family:Georgia,serif;font-size:clamp(23px,3vw,34px);font-weight:500; }
+.zc-section-heading>p { max-width:370px;margin:0;color:#6c7972;font-size:11px;line-height:1.65; }
+.zc-adapter-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px; }
+.zc-adapter-card { display:flex;flex-direction:column;min-width:0;padding:17px;border:1px solid #cfd5cc;border-radius:5px;background:#f7f6f0;box-shadow:0 7px 19px #213e3d0a; }
+.zc-adapter-top { display:flex;align-items:center;justify-content:space-between;gap:9px; }
+.zc-adapter-icon { display:grid;width:34px;height:34px;place-items:center;border:1px solid #d5d4c7;border-radius:50%;background:#edeee4;color:#527675; }
+.zc-adapter-status { padding:5px 7px;border:1px solid #d6d9cf;border-radius:20px;color:#697a72;font-size:8px;font-weight:800;letter-spacing:.08em;text-transform:uppercase; }
+.zc-adapter-status.working-browser-path { border-color:#b7d6c8;background:#e8f2eb;color:#32725f; }
+.zc-adapter-status.file-path { border-color:#d8c89f;background:#f7f0df;color:#886c35; }
+.zc-adapter-card h3 { margin:13px 0 5px;color:#29474a;font-family:Georgia,serif;font-size:18px;font-weight:600; }
+.zc-adapter-models { min-height:28px;margin:0 0 12px;color:#77837b;font-size:10px;line-height:1.5; }
+.zc-adapter-card dl { display:grid;gap:8px;margin:0 0 14px; }
+.zc-adapter-card dl>div { display:grid;grid-template-columns:74px 1fr;gap:8px;align-items:start; }
+.zc-adapter-card dt { color:#8a927f;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase; }
+.zc-adapter-card dd { margin:0;color:#596d66;font-size:10px;line-height:1.5;overflow-wrap:anywhere; }
+.zc-adapter-details { margin:0 0 13px;padding-top:2px;color:#68796f;font-size:9px; }
+.zc-adapter-details summary { cursor:pointer;color:#55736a;font-weight:700;line-height:1.5; }
+.zc-adapter-details dl { display:grid;gap:8px;margin:10px 0 0; }
+.zc-adapter-details dl>div { display:grid;grid-template-columns:74px 1fr;gap:8px;align-items:start; }
+.zc-adapter-details dd { font-size:9px; }
+.zc-adapter-doc { display:flex;align-items:center;gap:5px;margin-top:auto;padding-top:10px;border-top:1px solid #e0e1d8;color:#667d73;font-size:10px;text-decoration:none; }
+.zc-adapter-doc:hover { color:#315e59;text-decoration:underline; }
+.zc-device-import { margin-top:30px; }
+.zc-import-intro { max-width:850px;margin:0 0 14px;color:#61716c;font-size:12px;line-height:1.75; }
+.zc-device-file-picker { display:grid;grid-template-columns:20px 1fr;gap:4px 9px;align-items:center;padding:15px;border:1px dashed #bdc7bb;border-radius:4px;background:#f5f5ee;color:#3e5e5b;font-size:12px;font-weight:800;cursor:pointer; }
+.zc-device-file-picker:hover { background:#eef1e7; }
+.zc-device-file-picker svg { grid-row:span 2; }
+.zc-device-file-picker small { color:#7a877d;font-size:9px;font-weight:500; }
+.zc-device-file-picker input { grid-column:1/-1;width:100%;margin-top:7px;font-size:11px; }
+.zc-iq-options { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:13px; }
+.zc-iq-options label,.zc-demod-controls label { display:grid;gap:6px;color:#748177;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase; }
+.zc-iq-options input,.zc-demod-controls select { min-width:0;padding:9px;border:1px solid #cfd6cd;border-radius:3px;background:#fbfaf5;color:#2d4c4d;font-size:12px; }
+.zc-device-status,.zc-device-error { display:flex;align-items:flex-start;gap:7px;margin:14px 0 0;padding:10px 12px;border-left:2px solid #588672;background:#edf3ed;color:#456b5d;font-size:11px;line-height:1.6; }
+.zc-device-error { border-color:#ad6151;background:#f8eeea;color:#874c42; }
+.zc-device-error svg { flex:0 0 auto;margin-top:1px; }
+.zc-import-result { margin-top:14px;padding:15px;border:1px solid #d1d8cd;border-radius:4px;background:#f5f6ef; }
+.zc-import-result h3 { display:flex;align-items:center;gap:8px;margin:0 0 12px;color:#355b57;font-family:Georgia,serif;font-size:17px;font-weight:600; }
+.zc-device-metric-grid { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px; }
+.zc-analysis-result { margin:12px 0 0;color:#4b6962;font-size:11px;line-height:1.65; }
+.zc-analysis-result strong { color:#324e4f; }
+.zc-import-warning { display:flex;gap:7px;align-items:flex-start;color:#856638;font-size:11px;line-height:1.6; }
+.zc-import-warning svg { flex:0 0 auto; }
+.zc-import-result details { margin-top:12px;color:#5d7268;font-size:10px; }
+.zc-import-result summary { cursor:pointer; }
+.zc-import-result details li { margin-top:5px;overflow-wrap:anywhere; }
+.zc-environment-table { margin-top:12px;overflow-x:auto;border:1px solid #d7dcd2;border-radius:3px; }
+.zc-environment-row { display:grid;grid-template-columns:minmax(110px,1.2fr) minmax(65px,.7fr) repeat(3,minmax(95px,1fr));gap:10px;min-width:520px;padding:9px 10px;border-top:1px solid #e1e4db;color:#566e65;font:10px var(--app-font-mono); }
+.zc-environment-row:first-child { border-top:0; }
+.zc-environment-header { background:#e9eee6;color:#788577;font:800 8px var(--app-font-sans);letter-spacing:.1em;text-transform:uppercase; }
+.zc-export-measurement { margin-top:12px; }
+.zc-iq-spectrum { margin:2px 0 13px;padding:11px;border:1px solid #d1d8cd;border-radius:3px;background:#203e43; }
+.zc-iq-spectrum-labels { display:flex;justify-content:space-between;gap:8px;color:#b8c9bd;font:9px var(--app-font-mono); }
+.zc-iq-spectrum svg { display:block;width:100%;height:130px;margin:7px 0;overflow:visible; }
+.zc-iq-grid { fill:none;stroke:#608080;stroke-width:1;stroke-dasharray:3 4;opacity:.58; }
+.zc-iq-trace { fill:none;stroke:#e7b459;stroke-width:2;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 3px #e7b45977); }
+.zc-iq-spectrum small { color:#9cb1a7;font-size:9px; }
+.zc-demod-preview { display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;margin-top:12px;padding:10px;border:1px solid #d1d8cd;border-radius:3px;background:#f5f6ef; }
+.zc-demod-preview span { color:#61746b;font-size:10px; }
+.zc-demod-preview audio { grid-column:1/-1;width:100%;height:34px; }
+.zc-demod-preview a { color:#4e7568;font-size:10px; }
+.zc-demod-controls { display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin-top:13px; }
+.zc-demod-controls label { min-width:230px; }
+.zc-device-bottom-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:20px; }
+.zc-device-bottom-grid .section-body p { color:#61716c;font-size:11px;line-height:1.7; }
+.zc-ai-scope-panel { margin-top:14px; }
+.zc-ai-scope-panel .section-body p { color:#61716c;font-size:11px;line-height:1.7; }
+.zc-bridge-state { display:flex;align-items:center;gap:8px;color:#65746d!important;font-weight:700; }
+.zc-bridge-dot { width:8px;height:8px;border-radius:50%;background:#c49c50;box-shadow:0 0 0 3px #c49c5020; }
+.zc-device-footer { display:flex;gap:7px;align-items:flex-start;margin:20px 0 0;color:#7a857d;font-size:10px;line-height:1.65; }
+.zc-device-footer svg { flex:0 0 auto;margin-top:1px; }
+@media (max-width:900px) { .zc-adapter-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .zc-device-metric-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:640px) {
+  .zc-device-hero { grid-template-columns:1fr;padding:24px 20px; }
+  .zc-device-hero-mark { display:none; }
+  .zc-device-hero-actions { align-items:stretch;flex-direction:column; }
+  .zc-device-hero-actions .btn { justify-content:center; }
+  .zc-capability-list,.zc-device-facts,.zc-adapter-grid,.zc-iq-options,.zc-device-bottom-grid { grid-template-columns:1fr; }
+  .zc-section-heading { align-items:start;flex-direction:column;gap:8px; }
+  .zc-adapter-models { min-height:0; }
+  .zc-device-metric-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}

@@ -1,0 +1,76 @@
+kind = "web"
+previewPath = "/"
+title = "ZionCore Frequency Lab"
+description = "A local-first scientific frequency analysis app for capturing live microphone measurements, exploring spectrum patterns, and saving observations on the device."
+version = "1.0.0"
+id = "artifacts/zioncore-frequency-lab"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18238
+
+[services.development]
+run = "pnpm --filter @workspace/zioncore-frequency-lab run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/zioncore-frequency-lab", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/zioncore-frequency-lab/dist/public"
+
+[[services.production.rewrites]]
+from = "/audio-spectrum-analyzer"
+to = "/audio-spectrum-analyzer/index.html"
+
+[[services.production.rewrites]]
+from = "/audio-spectrum-analyzer/"
+to = "/audio-spectrum-analyzer/index.html"
+
+[[services.production.rewrites]]
+from = "/online-tone-generator"
+to = "/online-tone-generator/index.html"
+
+[[services.production.rewrites]]
+from = "/online-tone-generator/"
+to = "/online-tone-generator/index.html"
+
+[[services.production.rewrites]]
+from = "/sound-message-encoder"
+to = "/sound-message-encoder/index.html"
+
+[[services.production.rewrites]]
+from = "/sound-message-encoder/"
+to = "/sound-message-encoder/index.html"
+
+[[services.production.rewrites]]
+from = "/spiritual-frequency-exploration"
+to = "/spiritual-frequency-exploration/index.html"
+
+[[services.production.rewrites]]
+from = "/spiritual-frequency-exploration/"
+to = "/spiritual-frequency-exploration/index.html"
+
+[[services.production.rewrites]]
+from = "/plant-bioacoustics"
+to = "/plant-bioacoustics/index.html"
+
+[[services.production.rewrites]]
+from = "/plant-bioacoustics/"
+to = "/plant-bioacoustics/index.html"
+
+[[services.production.rewrites]]
+from = "/frequency-signal-guide"
+to = "/frequency-signal-guide/index.html"
+
+[[services.production.rewrites]]
+from = "/frequency-signal-guide/"
+to = "/frequency-signal-guide/index.html"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18238"
+BASE_PATH = "/"
