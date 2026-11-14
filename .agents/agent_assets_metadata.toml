@@ -1,0 +1,380 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "3aR1waoazVyVjgGHFAoRp"
+uri = "file://ZIONCORE_GENESIS_100_PHASE_PLAN.md"
+type = "text"
+title = "ZionCore Genesis: 100-phase plan"
+description = "A non-destructive, review-ready roadmap that translates the Genesis Seed into measurable, secure, human-approved engineering phases."
+logical_id = "3edbc616-316a-4b85-a7ea-5a69ce66109f"
+content_hash = "sha256:71c8708723f05464071d2e52128780a0afa2cd055a62c82714c0a0a33ff82f16"
+size = 18883
+mtime_ms = 1794419012266
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/3edbc616-316a-4b85-a7ea-5a69ce66109f/0062c38b-7ddc-4dec-b089-ddc7ef4beafe"
+storage_version_token = "1794419034256382"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "cfWnHmscsA-HJpufYXx1l"
+uri = "file://ZIONCORE_PHASE_1_BASELINE.md"
+type = "text"
+title = "ZionCore Phase 1 source baseline"
+description = "Verified Git refs, workspace state, and deployment-provenance caveat captured without changing application code."
+logical_id = "53ac3b1a-e142-4fd7-bcb0-67c9cd008df4"
+content_hash = "sha256:52c4445fa9cc24c41c2bb4a515a99daeef05755aa80777afaf20f42842617a37"
+size = 2613
+mtime_ms = 1794420867372
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/53ac3b1a-e142-4fd7-bcb0-67c9cd008df4/b8aaabe5-39b0-4ac1-bd8c-24705e322aae"
+storage_version_token = "1794420896738467"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "O2yOrn68GtkKNYox_w5-a"
+uri = "file://ZIONCORE_PHASE_2_DEPLOYMENT_PROVENANCE.md"
+type = "text"
+title = "ZionCore Phase 2 deployment comparison"
+description = "Read-only comparison of the live site, current Replit deployment metadata, and preserved source refs."
+logical_id = "4ee2bd03-2c69-4427-a643-5ab3139cd186"
+content_hash = "sha256:99f73bf2777e30ca203c1a51dcd2bd82c8a450412aead788b39d09a8776a34e3"
+size = 3453
+mtime_ms = 1794421093371
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/4ee2bd03-2c69-4427-a643-5ab3139cd186/dbe8a227-bdaa-449c-95dc-d72f2a6eae73"
+storage_version_token = "1794421113408520"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "Nr_KdDQ0SM34ORmIddQpI"
+uri = "file://ZIONCORE_PHASE_3_SOURCE_LANES.md"
+type = "text"
+title = "ZionCore Phase 3 source-lane review"
+description = "Verified the main and research-lab histories remain separate; no merge or branch movement was made."
+logical_id = "7367eefd-542b-43f9-99c2-7226ef114d70"
+content_hash = "sha256:9dee141b98b06a435a5e8d8217a7ab7fb972934c8ee0882e462a8641bda2c7ff"
+size = 1761
+mtime_ms = 1794421230136
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/7367eefd-542b-43f9-99c2-7226ef114d70/757df740-ddf7-4b1c-8839-3905e16e8255"
+storage_version_token = "1794421241774370"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "5yGYD68tnPhM5aaM5JNz2"
+uri = "file://ZIONCORE_PHASE_5_PRODUCTION_SERVICES.md"
+type = "text"
+title = "ZionCore Phase 5 production service inventory"
+description = "Read-only map of Firebase, Stripe, AI, storage, scheduled work, deployment settings, and API availability for both source lines."
+logical_id = "f72f306e-d8c4-47bd-9162-64d3d54651fc"
+content_hash = "sha256:cceb625f8d483b83675e31fa82516837e0df6d6f7f0c962d8f9501cbb80e33ff"
+size = 7925
+mtime_ms = 1794421625035
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/f72f306e-d8c4-47bd-9162-64d3d54651fc/89d458c7-b552-418b-b73d-130c53265f51"
+storage_version_token = "1794421644768662"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "lyc1yj_3PlF6HZQCFKMwH"
+uri = "file://ZIONCORE_PHASE_6_FEATURE_MATRIX.md"
+type = "text"
+title = "ZionCore Phase 6 feature comparison matrix"
+description = "Maps core features in the main source and research lab to implementation, dependencies, current evidence, and preservation tests."
+logical_id = "64864fbd-3440-4699-bea7-7db3df8810d0"
+content_hash = "sha256:1898826bc98f97208fc597354d2a99182963c261a3a8ab8686c4dbf5fe85b760"
+size = 9558
+mtime_ms = 1794421727463
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/64864fbd-3440-4699-bea7-7db3df8810d0/13d795f5-6376-4930-91b5-5b30ac13fb89"
+storage_version_token = "1794421744394286"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "ePzFKm3vCLbawxUbyTOUe"
+uri = "file://ZIONCORE_PHASE_7_DATA_CONTRACTS.md"
+type = "text"
+title = "ZionCore Phase 7 data contracts and privacy boundaries"
+description = "Source-based inventory of record contents, ownership, storage, retention, export/deletion controls, and production verification gaps."
+logical_id = "4d2df2c9-2125-4f0a-a503-86c5b2401544"
+content_hash = "sha256:880f37e26b30bab6d97fdc7068b98ba1a501d4690c05757b4e2f212ece37f086"
+size = 11399
+mtime_ms = 1794421886841
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/4d2df2c9-2125-4f0a-a503-86c5b2401544/6df89580-58c0-47cd-99d2-fc8fa858e9c4"
+storage_version_token = "1794421912612758"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "eSgRA6Cruei0gRwQvi8Wj"
+uri = "file://ZIONCORE_PHASE_8_ACCEPTANCE_SCORECARD.md"
+type = "text"
+title = "ZionCore Phase 8 acceptance scorecard"
+description = "Defines measurable pass criteria and evidence for capture, message recovery, authentication, private records, AI costs, billing, owner access, and release alignment."
+logical_id = "7ea88f48-759a-4c4e-b726-1028357f1a10"
+content_hash = "sha256:26ba39647fbff8776e81b0dd8ab6685949ca4a230b6fef94237736454c38f450"
+size = 8551
+mtime_ms = 1794421996588
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/7ea88f48-759a-4c4e-b726-1028357f1a10/60ee1fc3-541c-447f-95b1-53f4e51b00f3"
+storage_version_token = "1794422008669044"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "CSViGaUe1dl2Gk0ZyIaNi"
+uri = "file://ZIONCORE_PHASE_9_APPROVAL_GATES.md"
+type = "text"
+title = "ZionCore Phase 9 approval gates"
+description = "Defines what can proceed locally and what needs explicit approval for Firebase, customer data, billing, owner access, hardware, and publishing."
+logical_id = "315738ef-dc33-4a82-bd5b-853e216e05b7"
+content_hash = "sha256:604b97eb52f75e1d258cba1d8336a28654934e2badde824fcb66be646f1bc22a"
+size = 7863
+mtime_ms = 1794422076499
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/315738ef-dc33-4a82-bd5b-853e216e05b7/a03fca41-3ec0-4dee-bac9-77c2c383f88e"
+storage_version_token = "1794422095962095"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "zakplDs4_fXu8sY050-pE"
+uri = "file://ZIONCORE_PHASE_10_PROJECT_CHARTER.md"
+type = "text"
+title = "ZionCore Phase 10 approved project charter"
+description = "Founder-approved boundaries for preserving both versions and separately gating production Firebase, data, finance, privileged access, and publishing."
+logical_id = "bbcaf8a8-1dba-4ef0-9d26-aceb2687883f"
+content_hash = "sha256:a404b819e8f5238f849741a15a1fe40d7a59b370f6c17afbc5b222d78f4062bb"
+size = 7082
+mtime_ms = 1794422709487
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/bbcaf8a8-1dba-4ef0-9d26-aceb2687883f/b5eccdd7-6ad9-4da9-8bfb-835336b0afd6"
+storage_version_token = "1794422715144039"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "RlNWmYYain1S0Dy7tauwD"
+uri = "file://ZIONCORE_PHASE_12_FIREBASE_AUTH_INSPECTION.md"
+type = "text"
+title = "ZionCore Phase 12 Firebase Auth inspection"
+description = "Read-only report of live Auth providers, authorized domains, source callback behavior, local auth tests, and sign-in log availability."
+logical_id = "35575e31-21b4-4e3f-b689-91caa2326ab9"
+content_hash = "sha256:1b793dd42e96190c28f74a50a7cee942be7eab14e1a975954735361487d7ca71"
+size = 5478
+mtime_ms = 1794423024804
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/35575e31-21b4-4e3f-b689-91caa2326ab9/e71b8301-1afd-4e32-97ac-758d557cff8d"
+storage_version_token = "1794423047732536"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "jW2O8vuiMNHKx7klh8JtM"
+uri = "file://ZIONCORE_PHASE_13_FIREBASE_WEB_APPS.md"
+type = "text"
+title = "ZionCore Phase 13 Firebase web-app comparison"
+description = "Confirms separate registered Development and Production Firebase App IDs and documents the remaining App Check secret-scope uncertainty."
+logical_id = "f42ad54c-a5dd-4d34-93d6-4f39a5aade15"
+content_hash = "sha256:7412d0a133aea5e0146fe191ed379792ebed57961300aa0ab212af8800ac57fb"
+size = 3790
+mtime_ms = 1794423206031
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/f42ad54c-a5dd-4d34-93d6-4f39a5aade15/5c0fdb71-7030-4f7a-8906-21c54995e49a"
+storage_version_token = "1794423240298470"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "QhW09hPn0EtCd4Yj5F-Vp"
+uri = "file://ZIONCORE_PHASE_14_APPCHECK_VALIDATION.md"
+type = "text"
+title = "ZionCore Phase 14 App Check validation"
+description = "Read-only verification of registered keys, hostname allowlists, enforcement status, and the production token-exchange failure."
+logical_id = "7d9e3fa1-6f6e-4bc7-8d6d-60a150deec5a"
+content_hash = "sha256:c7d99d63043d8c073e07ed0bde939bdcf344301cb9f88d7dd1d69804f20863a3"
+size = 2639
+mtime_ms = 1794423809023
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/7d9e3fa1-6f6e-4bc7-8d6d-60a150deec5a/6e803b50-381c-409d-8db2-63ca4257ed03"
+storage_version_token = "1794423880182935"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "6PwH1946oQumPKwhUlVKK"
+uri = "file://ZIONCORE_PHASE_15_APPCHECK_FAILURE_PATHS.md"
+type = "text"
+title = "ZionCore Phase 15 App Check failure-path results"
+description = "Records actual missing-token and invalid-token responses, local error-message tests, and why successful token acceptance remains unverified."
+logical_id = "3b6697e4-3949-4a5e-af94-10c8e90b87b7"
+content_hash = "sha256:95062a8d9eb139da21533a43cdea8153d2a39abd3a265e39a2c8d212a609b3d8"
+size = 1740
+mtime_ms = 1794424161581
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/3b6697e4-3949-4a5e-af94-10c8e90b87b7/daa7c1b8-563f-4a1b-9f13-e70019835b24"
+storage_version_token = "1794424188769570"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "vuVbKXlOF-qy20lR-YYkD"
+uri = "file://ZIONCORE_PHASE_16_FIRESTORE_PATH_INVENTORY.md"
+type = "text"
+title = "ZionCore Phase 16 Firestore path inventory"
+description = "Maps the deployed public rules, six legacy roots, the observation path, and the unresolved production API compatibility gap."
+logical_id = "eb55e3d6-f59b-4a41-acc4-4b115cacd5e8"
+content_hash = "sha256:104c9316f08cc4264c09e9b6ae7f49d2da2707de91686202dc66dba9baf8f576"
+size = 4281
+mtime_ms = 1794424397420
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/eb55e3d6-f59b-4a41-acc4-4b115cacd5e8/5e249fb0-cb60-4586-aa37-9847091e8901"
+storage_version_token = "1794424453731302"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "Bx4J0tJwOJq6rPD2QhfkI"
+uri = "file://ZIONCORE_PHASE_17_RULE_DIFF_REVIEW.md"
+type = "text"
+title = "ZionCore Phase 17 Firestore rules review"
+description = "Compares every production grant with the local candidate and documents additive-rule overlaps and compatibility blockers."
+logical_id = "9c6ad98f-d83e-4d7e-99b2-0277637485f8"
+content_hash = "sha256:fb4d290239812dd8228b1c019bf1a4953571be8616b7187b80b0f757a656ffaa"
+size = 3620
+mtime_ms = 1794424571402
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/9c6ad98f-d83e-4d7e-99b2-0277637485f8/f4cc6285-6d81-437f-aa04-832f70688bba"
+storage_version_token = "1794424596978757"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "cI3WJQvBwkD2Cf0P4yTNU"
+uri = "file://ZIONCORE_PHASE_18_CUSTOMER_ISOLATION_TESTS.md"
+type = "text"
+title = "ZionCore Phase 18 customer isolation results"
+description = "Local emulator evidence for owner-only observation access, including cross-account list and delete denials; production remains unchanged."
+logical_id = "c7bd9674-aa84-4f25-a476-55b2dc1bde0f"
+content_hash = "sha256:c4ce73c69cd04c7683d8cf54ca495c2a63eaf51b9ccb8f04278c66c845c736fe"
+size = 1066
+mtime_ms = 1794424665503
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/c7bd9674-aa84-4f25-a476-55b2dc1bde0f/0ebaf7fd-ca6f-4089-b87e-cc170fedb920"
+storage_version_token = "1794424686182406"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "9Z98IazZ7ml3wrFIVrsTW"
+uri = "file://ZIONCORE_PHASE_20_SECURITY_DEPLOYMENT_GATE.md"
+type = "text"
+title = "ZionCore Phase 20 security deployment gate"
+description = "Documents why production Firestore rules and App Check enforcement are not ready, with the required evidence before requesting separate approval."
+logical_id = "4fae930b-ac1c-4ab2-9747-21788b53e56c"
+content_hash = "sha256:b9f002c75c540b05213367cbb91f7af79a9fec6edae9a5e0e3d871eef970c4ee"
+size = 2170
+mtime_ms = 1794424874156
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/4fae930b-ac1c-4ab2-9747-21788b53e56c/25e99450-1164-4fc8-893f-89b89c211d55"
+storage_version_token = "1794424894067844"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "8TCoR9-orsFJ2d9hb3S_q"
+uri = "file://.agent-worktrees/phase-92-integration/generated-artifacts/ZionCore-2nd-Complete-Source.zip"
+type = "unspecified"
+title = "ZionCore 2nd — complete app source"
+description = "The original second-app archive, preserved unchanged. Pair it with the missing-source supplement."
+logical_id = "9558a134-9e60-41d4-9ef0-8fca19761736"
+content_hash = "sha256:758221151def103d76d193ab5393539fbc240ad9bc0387afd354f8f8c1f6f2e1"
+size = 361112
+mtime_ms = 1794504816223
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/9558a134-9e60-41d4-9ef0-8fca19761736/d43aa470-8981-4cc0-96e3-7caacbd1eb64"
+storage_version_token = "1794507317886448"
+content_type = "application/octet-stream"
+
+[[outputs]]
+id = "fiOofP3LMpTQ2t4-L8PB4"
+uri = "file://.agent-worktrees/phase-92-integration/generated-artifacts/ZionCore-2nd-Archive-Manifest.txt"
+type = "text"
+title = "ZionCore 2nd — archive manifest"
+description = "Complete included-file list with byte sizes and SHA-256 checksums; confirms the Genesis source checksum and archive contents."
+logical_id = "cb3c23d6-23bd-447c-8abd-2b9fece2f708"
+content_hash = "sha256:0af9a84e61dc7321d4f9c0b8dda6f64b6d69627abe96170143ddf343a67c8e19"
+size = 14213
+mtime_ms = 1794504816176
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/cb3c23d6-23bd-447c-8abd-2b9fece2f708/490a0c17-56e7-4651-82d2-a253fdd44de4"
+storage_version_token = "1794504833554123"
+content_type = "text/plain"
+
+[[outputs]]
+id = "OuOBmmd5R-grW5c0BhU6j"
+uri = "file://.agent-worktrees/phase-92-integration/generated-artifacts/ZionCore-Genesis-Seed-Corrected.txt"
+type = "text"
+title = "ZionCore Genesis Seed — copyedited text"
+description = "Complete seed in a separate plain-text copy with clear spelling, grammar, punctuation, and spacing corrections. Original source remains unchanged; embedded code is preserved as inert text. SHA-256: 66d5d8cbad8fac21b7f2f501568a1d7197c93267582ccc05c1849f1163253860."
+logical_id = "ae4201fa-fa83-4880-966d-ec0b0b0248f1"
+content_hash = "sha256:66d5d8cbad8fac21b7f2f501568a1d7197c93267582ccc05c1849f1163253860"
+size = 172814
+mtime_ms = 1794505808391
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/ae4201fa-fa83-4880-966d-ec0b0b0248f1/50f74370-1a7a-4111-9091-2953a7dc9314"
+storage_version_token = "1794505827268736"
+content_type = "text/plain"
+
+[[outputs]]
+id = "M2UC2W_mJZkHmeGWsKC6q"
+uri = "file://.agent-worktrees/phase-92-integration/generated-artifacts/ZionCore-2nd-Missing-Source.zip"
+type = "unspecified"
+title = "ZionCore 2nd — missing source supplement"
+description = "Companion folder with existing main-app, API, shared-library source, tests, and the supplied Voice V2 sample."
+logical_id = "1322cf86-0b54-44c2-bc07-81e9ab473d39"
+content_hash = "sha256:7902f87df918910fd8022c7be9b5d622d11f90cf0b99a5a16da805e1efb421d3"
+size = 1610133
+mtime_ms = 1794507301650
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/1322cf86-0b54-44c2-bc07-81e9ab473d39/713c9f21-a97f-442f-91ff-97a48a88d18b"
+storage_version_token = "1794507318524750"
+content_type = "application/octet-stream"
+
+[[outputs]]
+id = "nmrBB1DfVWuTetd8HWLwU"
+uri = "file://.agent-worktrees/phase-92-integration/generated-artifacts/ZionCore-2nd-Missing-Source/MISSING-SOURCE-CATALOG.md"
+type = "text"
+title = "Missing-source capability catalog"
+description = "Maps Exploration, Missions, Astronomy, Bioacoustics, Voice V2, and Access to the included source and current limitations."
+logical_id = "d7ad860b-c948-4081-9779-e4103ceb3bc1"
+content_hash = "sha256:8ef65cb26eedc106f9afbaaab3781cd2dfc9dd011c1a194dc477d2aec650f006"
+size = 4138
+mtime_ms = 1794507259253
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/d7ad860b-c948-4081-9779-e4103ceb3bc1/98451883-1763-4c82-a0b0-c934faf67c11"
+storage_version_token = "1794507319107011"
+content_type = "text/markdown"
+
+[[outputs]]
+id = "_I9sW1kVnYEkmW5ri1ACg"
+uri = "file://.agent-worktrees/phase-92-integration/generated-artifacts/ZionCore-2nd-Missing-Source/SOURCE-MANIFEST.txt"
+type = "text"
+title = "Supplement source manifest"
+description = "SHA-256 hashes and paths for every file in the supplemental source folder."
+logical_id = "3d615204-97bb-4b73-87d0-148fe6ee409c"
+content_hash = "sha256:e02f57a1211ecaf35d8855298538356964db937ad1b40a7d17048f282c2aec1a"
+size = 55854
+mtime_ms = 1794507301461
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/3d615204-97bb-4b73-87d0-148fe6ee409c/9780db8c-cc26-40da-bf18-7a5abb5e20bc"
+storage_version_token = "1794507319725728"
+content_type = "text/plain"
+
+[[outputs]]
+id = "SzYy5CO6-ATRYHylI4gwF"
+uri = "file://generated-artifacts/ZionCore-Complete-Project-Source.zip"
+type = "unspecified"
+title = "ZionCore — complete project source snapshot"
+description = "Verified bundle containing the baseline, current source, six earlier worktrees, and all named feature source. Its manifest and limitations are inside."
+logical_id = "94f7d3e9-55b2-40a2-a3d0-c0bdbd59df5c"
+content_hash = "sha256:d7f61b3434e889f24f744d13fcf106d7211de60316b1cd0449c6e4929e16a989"
+size = 16733413
+mtime_ms = 1794507629426
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/94f7d3e9-55b2-40a2-a3d0-c0bdbd59df5c/011a74f5-fe90-4f39-82fa-5fcdde160a08"
+storage_version_token = "1794537056438761"
+content_type = "application/octet-stream"
+
+[[outputs]]
+id = "GXG0Nizwy0GGQ9TioEZt3"
+uri = "file://generated-artifacts/ZionCore-Complete-Project-Source.sha256"
+type = "unspecified"
+title = "Project archive SHA-256"
+description = "Checksum for verifying the complete project source ZIP."
+logical_id = "11a9076a-a50b-4c19-8254-fd946d4c485d"
+content_hash = "sha256:4235bc5a8cee6b5e2243ca179d47d965916f6c5338bc2decd33adfebd7485bef"
+size = 103
+mtime_ms = 1794507629980
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/11a9076a-a50b-4c19-8254-fd946d4c485d/0e798051-e5b1-4849-84b6-3c592d6252a3"
+storage_version_token = "1794507675537726"
+content_type = "application/octet-stream"
+
+[[outputs]]
+id = "K-KixqFn3507OPwGvwDH6"
+uri = "file://generated-artifacts/ZionCore-Complete-Project-Source/CONTENT-MANIFEST.tsv"
+type = "unspecified"
+title = "Complete project file manifest"
+description = "Every packaged file path, size, and SHA-256 hash."
+logical_id = "85f09f7c-f6d9-4fde-98dc-8d4ac09c0c63"
+content_hash = "sha256:5c65edf6c64f06e9c7d51cda39cd30eaa52f47bc864d19e7da00fc5625b004d6"
+size = 812114
+mtime_ms = 1794507627430
+storage_uri = "gcs://replit-rams-assets-spock/rams/assets/repl:c9c8012c-55d1-412b-af8f-e60455c226a4/85f09f7c-f6d9-4fde-98dc-8d4ac09c0c63/9656fb69-3447-4a86-b886-22a7ccb56fe8"
+storage_version_token = "1794537057052623"
+content_type = "application/octet-stream"

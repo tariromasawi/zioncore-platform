@@ -1,0 +1,68 @@
+.zc-experiment { overflow:hidden; }
+.zc-experiment .section-body { padding-top:14px; }
+.zc-experiment-intro { max-width:720px;margin:0 0 18px;color:#71807b;font-size:11px;line-height:1.65; }
+.zc-experiment-inputs { display:grid;grid-template-columns:minmax(190px,.72fr) minmax(0,1.28fr);gap:16px; }
+.zc-experiment-field { display:grid;align-content:start;gap:7px;color:#71807b;font:9px var(--app-font-mono);letter-spacing:.07em;text-transform:uppercase; }
+.zc-experiment-field select,.zc-experiment-field textarea { width:100%;border:1px solid #d9d3c7;border-radius:3px;background:#faf8f1;color:#405b59;padding:11px 12px;font:12px/1.55 var(--app-font-sans);letter-spacing:normal;text-transform:none; }
+.zc-experiment-field select { min-height:42px; }
+.zc-experiment-field textarea { min-height:88px;resize:vertical; }
+.zc-experiment-field select:focus,.zc-experiment-field textarea:focus { outline:2px solid #b3c2ae;outline-offset:2px;border-color:#779286; }
+.zc-experiment-field select:disabled,.zc-experiment-field textarea:disabled { opacity:.65;cursor:not-allowed; }
+.zc-experiment-session-summary,.zc-experiment-count { color:#87918b;font:9px/1.5 var(--app-font-mono);letter-spacing:0;text-transform:none; }
+.zc-experiment-count { text-align:right; }
+.zc-experiment-privacy { display:flex;gap:11px;align-items:flex-start;margin-top:16px;padding:13px 14px;background:#e9ece4;border:1px solid #d8ded3;border-radius:3px;color:#4b6860; }
+.zc-experiment-privacy > svg { flex:0 0 auto;margin-top:1px;color:#668779; }
+.zc-experiment-privacy strong { color:#49645c;font:700 9px var(--app-font-mono);letter-spacing:.06em;text-transform:uppercase; }
+.zc-experiment-privacy p { margin:5px 0 0;color:#70827a;font-size:10px;line-height:1.6; }
+.zc-experiment-consent { display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px 13px;background:#263f42;border-radius:3px;color:#f2eee3;cursor:pointer; }
+.zc-experiment-consent input { flex:0 0 auto;width:15px;height:15px;margin:2px 0 0;accent-color:#d9a84f; }
+.zc-experiment-consent span { display:grid;gap:5px; }
+.zc-experiment-consent strong { font-size:10px;line-height:1.55;font-weight:600; }
+.zc-experiment-consent small { color:#aab9b0;font-size:9px;line-height:1.5; }
+.zc-experiment-generate { width:auto;min-height:38px;margin-top:14px;padding:10px 14px; }
+.zc-experiment-generate:disabled { cursor:not-allowed;opacity:.52;transform:none; }
+.zc-experiment-generate svg { flex:0 0 auto; }
+.zc-experiment-error { display:flex;gap:9px;align-items:flex-start;margin-top:13px;padding:11px 12px;border-left:2px solid #bb6253;background:#f7ebe6;color:#85483e;font-size:10px;line-height:1.55; }
+.zc-experiment-error svg { flex:0 0 auto;margin-top:1px; }
+.zc-experiment .permission-note { margin:10px 0 0;font-size:10px;line-height:1.6; }
+.zc-experiment-loading { display:grid;gap:9px;margin-top:20px;padding:18px;background:#f3f0e7;border:1px solid #e3ded2; }
+.zc-experiment-loading .zc-skeleton-line { display:block;height:9px;border-radius:2px;background:linear-gradient(90deg,#e5e1d7,#f0ede5,#e5e1d7);background-size:200% 100%;animation:zc-experiment-shimmer 1.8s ease-in-out infinite; }
+.zc-experiment-loading .wide { width:90%; }.zc-experiment-loading .short { width:56%; }
+@keyframes zc-experiment-shimmer { from { background-position:100% 0; } to { background-position:-100% 0; } }
+.zc-experiment-empty { display:flex;gap:11px;align-items:center;margin-top:18px;padding:14px;background:#f3f0e7;border:1px dashed #d9d3c7;color:#7d8982; }
+.zc-experiment-empty p { margin:0;font-size:10px;line-height:1.6; }
+.zc-experiment-empty-mark { width:9px;height:9px;flex:0 0 auto;border:1px solid #82938a;border-radius:50%; }
+.zc-experiment-output { margin-top:20px;padding:18px;background:#f5f2e9;border:1px solid #ddd7ca;border-top:3px solid #d3a34e;border-radius:3px; }
+.zc-experiment-output-head { display:flex;justify-content:space-between;align-items:flex-start;gap:16px; }
+.zc-experiment-status { color:#8a7140;font:9px var(--app-font-mono);letter-spacing:.08em;text-transform:uppercase; }
+.zc-experiment-output h3 { margin:7px 0 0;color:#29474a;font:25px/1.18 var(--app-font-serif);font-weight:400; }
+.zc-experiment-export { flex:0 0 auto; }
+.zc-experiment-question { margin:15px 0;padding:13px 14px;background:#e8e9df;border-left:2px solid #6f9581;color:#48645d;font:16px/1.5 var(--app-font-serif); }
+.zc-experiment-result-section { min-width:0;padding:13px 14px;background:#faf8f1;border:1px solid #e4dfd4; }
+.zc-experiment-result-section h4,.zc-experiment-rule h4 { margin:0 0 7px;color:#718078;font:9px var(--app-font-mono);letter-spacing:.07em;text-transform:uppercase; }
+.zc-experiment-result-section p,.zc-experiment-result-section li,.zc-experiment-rule p { color:#526a63;font-size:10px;line-height:1.65;overflow-wrap:anywhere; }
+.zc-experiment-result-section p,.zc-experiment-rule p { margin:0; }
+.zc-experiment-result-section ul,.zc-experiment-result-section ol { display:grid;gap:6px;margin:0;padding-left:17px; }
+.zc-experiment-result-section li::marker { color:#c1923e; }
+.zc-experiment-output > .zc-experiment-result-section { margin-top:9px; }
+.zc-experiment-result-grid { display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px; }
+.zc-experiment-rule { margin-top:9px;padding:13px 14px;background:#e9e6da;border-left:2px solid #d3a34e; }
+.zc-experiment-limitations { display:grid;grid-template-columns:minmax(0,1.3fr) minmax(180px,.7fr);gap:9px;margin-top:9px; }
+.zc-experiment-limitations > p { align-self:stretch;margin:0;padding:13px 14px;background:#f7ebe6;border:1px solid #ead8d0;color:#8a6258;font-size:9px;line-height:1.65; }
+.zc-experiment-meta { margin-top:13px;padding-top:10px;border-top:1px solid #e1dbce;color:#89938b;font:8px/1.6 var(--app-font-mono); }
+.zc-experiment-loading-icon { animation:zc-experiment-rotate 1.2s linear infinite; }
+@keyframes zc-experiment-rotate { to { transform:rotate(360deg); } }
+@media (max-width:760px) {
+  .zc-experiment-inputs { grid-template-columns:1fr;gap:12px; }
+  .zc-experiment-limitations { grid-template-columns:1fr; }
+}
+@media (max-width:520px) {
+  .zc-experiment-output { padding:14px; }
+  .zc-experiment-output-head { flex-direction:column; }
+  .zc-experiment-output-head .zc-experiment-export { width:100%; }
+  .zc-experiment-result-grid { grid-template-columns:1fr; }
+  .zc-experiment-generate { width:100%; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .zc-experiment-loading .zc-skeleton-line,.zc-experiment-loading-icon { animation:none; }
+}

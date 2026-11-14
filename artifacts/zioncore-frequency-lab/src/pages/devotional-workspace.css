@@ -1,0 +1,60 @@
+.devotional-page { padding-top:44px;padding-bottom:60px; }
+.devotional-hero { max-width:960px; }
+.devotional-title-row { display:flex;justify-content:space-between;align-items:flex-start;gap:20px; }
+.devotional-title-row .page-title { margin-top:13px; }
+.devotional-title-row .lead { max-width:810px; }
+.devotional-mark { width:58px;height:58px;flex:0 0 auto;border:1px solid #d6c9ad;border-radius:50%;display:grid;place-items:center;background:#f1ecdf;color:#a1773d; }
+.devotional-privacy { display:flex;align-items:flex-start;gap:12px;margin-top:22px;padding:15px 17px;border-left:3px solid #d2a04c;background:#ece9de;color:#526760; }
+.devotional-privacy>svg { flex:0 0 auto;margin-top:2px;color:#6c8376; }
+.devotional-privacy strong { display:block;color:#405b53;font-size:11px; }
+.devotional-privacy p { margin:5px 0 0;color:#6a7972;font-size:10px;line-height:1.65; }
+.devotional-grid { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:17px;align-items:start; }
+.devotional-compose,.devotional-records { min-width:0; }
+.devotional-form { display:grid;gap:16px; }
+.devotional-form .form-item { display:grid;gap:7px; }
+.devotional-form .form-label { color:#536761;font-size:10px;font-weight:600; }
+.devotional-form .form-description { color:#87918b;font-size:9px;line-height:1.5; }
+.devotional-form .form-message { color:#a55f48;font-size:9px; }
+.devotional-form-row { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
+.devotional-optional { margin-left:5px;color:#9aa199;font:8px var(--app-font-mono);text-transform:uppercase; }
+.devotional-textarea { min-height:140px;resize:vertical;line-height:1.6; }
+.devotional-character-count { color:#9aa199;font:8px var(--app-font-mono);text-align:right; }
+.devotional-submit { display:inline-flex;align-items:center;justify-content:center;gap:7px;width:auto;justify-self:start; }
+.devotional-records-head { flex-wrap:wrap;gap:10px; }
+.devotional-count { display:inline-grid;place-items:center;min-width:19px;height:19px;margin-left:6px;padding:0 5px;border-radius:50%;background:#e9e4d8;color:#61746e;font:9px var(--app-font-mono); }
+.devotional-record-actions { display:flex;gap:7px; }
+.devotional-record-actions .btn { width:auto;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 9px;font-size:9px; }
+.devotional-clear { color:#8d6b54; }
+.devotional-message { margin:0;padding:10px 17px;border-bottom:1px solid #e7e2d7;color:#567265;font-size:9px;line-height:1.5; }
+.devotional-message.is-error { color:#965f4e;background:#faf0eb; }
+.devotional-record-list { padding:0 17px; }
+.devotional-record { padding:16px 1px;border-bottom:1px solid #e7e2d7; }
+.devotional-record:last-child { border-bottom:0; }
+.devotional-record-top { display:flex;justify-content:space-between;align-items:flex-start;gap:10px; }
+.devotional-record-type { color:#8b7859;font:8px var(--app-font-mono);letter-spacing:.04em;text-transform:uppercase; }
+.devotional-record h2 { margin:5px 0 0;color:#345052;font:20px/1.2 var(--app-font-serif);font-weight:400;overflow-wrap:anywhere; }
+.devotional-remove { display:grid;place-items:center;width:30px;height:30px;flex:0 0 auto;border:1px solid #e0d9ca;border-radius:3px;background:transparent;color:#8d7970;cursor:pointer; }
+.devotional-remove:hover { border-color:#cbb6a8;background:#f5ece7;color:#9b604c; }
+.devotional-person { margin:9px 0 0;color:#6a7b73;font:9px var(--app-font-mono); }
+.devotional-record-content { margin:10px 0;color:#68766f;font-size:11px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere; }
+.devotional-record time { color:#9ba198;font:8px var(--app-font-mono); }
+.devotional-empty { display:grid;justify-items:start;padding:28px 18px;color:#76847d; }
+.devotional-empty .empty-glyph { width:42px;height:42px;margin-bottom:10px; }
+.devotional-empty h2 { margin:0;color:#44615a;font:22px var(--app-font-serif);font-weight:400; }
+.devotional-empty p { max-width:360px;margin:6px 0 0;font-size:10px;line-height:1.6; }
+.devotional-footer-note { display:flex;align-items:center;gap:7px;margin:16px 0 0;color:#87928b;font-size:9px; }
+.devotional-footer-note svg { color:#688174; }
+
+@media(max-width:900px) {
+  .devotional-grid { grid-template-columns:1fr; }
+}
+@media(max-width:560px) {
+  .devotional-page { padding-top:30px; }
+  .devotional-title-row { gap:8px; }
+  .devotional-mark { width:42px;height:42px; }
+  .devotional-title-row .page-title { font-size:38px; }
+  .devotional-privacy { padding:12px; }
+  .devotional-form-row { grid-template-columns:1fr; }
+  .devotional-records-head { align-items:flex-start; }
+  .devotional-record-actions { flex-wrap:wrap; }
+}

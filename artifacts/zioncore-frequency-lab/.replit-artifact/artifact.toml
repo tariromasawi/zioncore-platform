@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "ZionCore Frequency Lab"
+description = "A local-first scientific frequency analysis app for capturing live microphone measurements, exploring spectrum patterns, and saving observations on the device."
+version = "1.0.0"
+id = "artifacts/zioncore-frequency-lab"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18238
+
+[services.development]
+run = "pnpm --filter @workspace/zioncore-frequency-lab run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/zioncore-frequency-lab", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/zioncore-frequency-lab/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18238"
+BASE_PATH = "/"
