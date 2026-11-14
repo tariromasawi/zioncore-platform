@@ -1,0 +1,101 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function ownsUserPath(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function validPeak(peaks, index, nyquist) {
+      return peaks.size() <= index
+        || (peaks[index] is number && peaks[index] > 0 && peaks[index] <= nyquist);
+    }
+
+    function validObservation(data) {
+      return data.keys().hasAll([
+          'createdAt',
+          'updatedAt',
+          'sampleRate',
+          'fftSize',
+          'frequencyResolutionHz',
+          'dominantFrequencyHz',
+          'topPeaksHz',
+          'rmsLevel',
+          'durationSeconds',
+          'mode'
+        ])
+        && data.keys().hasOnly([
+          'createdAt',
+          'updatedAt',
+          'sampleRate',
+          'fftSize',
+          'frequencyResolutionHz',
+          'dominantFrequencyHz',
+          'topPeaksHz',
+          'rmsLevel',
+          'durationSeconds',
+          'mode',
+          'notes'
+        ])
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp
+        && data.createdAt == request.time
+        && data.updatedAt == request.time
+        && data.sampleRate is int
+        && data.sampleRate >= 8000
+        && data.sampleRate <= 192000
+        && data.fftSize in [2048, 4096, 8192]
+        && data.frequencyResolutionHz is number
+        && data.frequencyResolutionHz > 0
+        && data.frequencyResolutionHz == data.sampleRate * 1.0 / data.fftSize
+        && (data.dominantFrequencyHz == null
+          || (data.dominantFrequencyHz is number
+            && data.dominantFrequencyHz > 0
+            && data.dominantFrequencyHz <= data.sampleRate * 1.0 / 2))
+        && data.topPeaksHz is list
+        && data.topPeaksHz.size() <= 6
+        && validPeak(data.topPeaksHz, 0, data.sampleRate * 1.0 / 2)
+        && validPeak(data.topPeaksHz, 1, data.sampleRate * 1.0 / 2)
+        && validPeak(data.topPeaksHz, 2, data.sampleRate * 1.0 / 2)
+        && validPeak(data.topPeaksHz, 3, data.sampleRate * 1.0 / 2)
+        && validPeak(data.topPeaksHz, 4, data.sampleRate * 1.0 / 2)
+        && validPeak(data.topPeaksHz, 5, data.sampleRate * 1.0 / 2)
+        && data.rmsLevel is number
+        && data.rmsLevel >= 0
+        && data.rmsLevel <= 1
+        && data.durationSeconds is number
+        && data.durationSeconds >= 0
+        && data.durationSeconds <= 86400
+        && data.mode in ['microphone', 'audio-file']
+        && (!data.keys().hasAny(['notes'])
+          || (data.notes is string && data.notes.size() <= 4000));
+    }
+
+    match /users/{uid}/frequency_observations/{observationId} {
+      allow get, list, delete: if ownsUserPath(uid);
+      allow create: if ownsUserPath(uid) && validObservation(request.resource.data);
+      allow update: if false;
+    }
+
+    match /users/{uid}/membership/{membershipId} {
+      allow get: if ownsUserPath(uid) && membershipId == 'current';
+      allow list, create, update, delete: if false;
+    }
+
+    match /users/{uid}/wallet/{walletId} {
+      allow read, write: if false;
+    }
+
+    match /users/{uid}/credit_transactions/{transactionId} {
+      allow read, write: if false;
+    }
+
+    match /users/{uid}/credit_reservations/{reservationId} {
+      allow read, write: if false;
+    }
+
+    match /users/{uid}/ai_interpretation_jobs/{jobId} {
+      allow read, write: if false;
+    }
+  }
+}

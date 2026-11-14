@@ -1,0 +1,1613 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: audio
+    description: Curated ZionCore listening-library audio.
+  - name: visuals
+    description: Public original ZionCore visual artworks.
+  - name: wallet
+    description: Authenticated credit wallet operations
+  - name: billing
+    description: Stripe-backed billing catalog and hosted checkout
+  - name: ai
+    description: Authenticated frequency interpretation with bounded provider fallback
+  - name: admin
+    description: Read-only, administrator-only ZionCore operations and billing overview
+paths:
+  /owner/summary:
+    get:
+      operationId: getAdminDashboardSummary
+      tags: [admin]
+      summary: Read the administrator operations dashboard
+      description: Returns aggregated account, payment, webhook, provider-configuration, and current-process diagnostics. No secrets or customer-level payment details are returned.
+      security:
+        - FirebaseBearer: []
+      responses:
+        "200":
+          description: Administrator dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminDashboardSummary"
+        "401":
+          description: A valid Firebase sign-in is required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: A verified administrator identity is required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Dashboard services are temporarily unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /owner/firebase-diagnostics:
+    get:
+      operationId: getOwnerFirebaseDiagnostics
+      tags: [admin]
+      summary: Run read-only Firebase connection diagnostics
+      description: Checks the configured Firebase Admin identity, effective Firestore permissions, a bounded cleanup query, and the expiry index. Returns statuses only and never returns document contents, keys, or tokens.
+      security:
+        - FirebaseBearer: []
+      responses:
+        "200":
+          description: Firebase diagnostics completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OwnerFirebaseDiagnostics"
+        "401":
+          description: A valid Firebase sign-in is required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "403":
+          description: A verified administrator identity is required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /resonance-audio/{assetId}:
+    get:
+      operationId: getResonanceAudio
+      tags: [audio]
+      summary: Stream a curated listening-library recording
+      description: Streams one allowlisted public audio asset, supporting byte-range playback.
+      parameters:
+        - name: assetId
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - low-tone-20hz
+              - low-tone-100hz
+              - reference-1000hz
+              - high-tone-8khz
+              - high-tone-18khz
+              - copper-resonance-matrix
+              - copper-resonance-challenge
+              - solfeggio-cascade-1
+              - solfeggio-cascade-2
+              - solfeggio-cascade-3
+        - name: Range
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Optional single HTTP byte range used by audio players.
+      responses:
+        "200":
+          description: Complete audio asset
+          content:
+            audio/wav:
+              schema:
+                type: string
+                format: binary
+            audio/mpeg:
+              schema:
+                type: string
+                format: binary
+        "206":
+          description: Requested audio byte range
+          content:
+            audio/wav:
+              schema:
+                type: string
+                format: binary
+            audio/mpeg:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Unknown asset or audio file not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "416":
+          description: Invalid or unsatisfiable byte range
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Audio storage is temporarily unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /resonance-visuals/{assetId}:
+    get:
+      operationId: getResonanceVisual
+      tags: [visuals]
+      summary: Serve an allowlisted ZionCore visual
+      description: Serves one original, uncropped visual asset from public App Storage.
+      parameters:
+        - name: assetId
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - community-globe
+              - radiant-convergence
+              - golden-gathering
+              - life-growth-map
+              - dove-circuit
+              - radiant-figure
+              - path-to-light
+              - golden-orbit
+              - blueprint-of-resonance
+              - celestial-blueprint
+              - symbolic-atlas
+              - blue-center-mandala
+              - radiant-symbolic-wheel
+              - molecular-mandala
+              - night-sky-diagram
+              - radiant-city
+              - golden-flower
+              - cosmic-lattice
+              - radiant-face
+      responses:
+        "200":
+          description: Complete visual asset
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Unknown visual or file not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Visual storage is temporarily unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /ai/interpretation/pricing:
+    get:
+      operationId: getPublicInterpretationPricing
+      tags: [ai]
+      summary: Public approved interpretation prices without a wallet lookup
+      responses:
+        "200":
+          description: Approved base prices; a signed account quote is still required for processing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicInterpretationPricing"
+  /ai/interpretation/quote:
+    get:
+      operationId: getAiInterpretationQuote
+      tags: [ai]
+      summary: Quote one frequency interpretation
+      description: Returns a versioned credit quote for frequency analysis or spiritual interpretation and the signed-in user's available balance.
+      parameters:
+        - name: faith
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ["0", "1"]
+            default: "0"
+          description: "1 includes the separately priced spiritual interpretation layer."
+      security:
+        - FirebaseBearer: []
+          FirebaseAppCheck: []
+      responses:
+        "200":
+          description: Current price and wallet affordability
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIInterpretationQuote"
+        "401":
+          description: Firebase Authentication or App Check verification failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Interpretation price or wallet service is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /ai/interpretation/audio-quote:
+    get:
+      operationId: getAiAudioInterpretationQuote
+      tags: [ai]
+      summary: Quote one opt-in external audio interpretation
+      description: Returns a signed quote based on recording duration, file size, reading type and the signed-in user's available balance.
+      parameters:
+        - name: durationSeconds
+          in: query
+          required: true
+          schema:
+            type: number
+            minimum: 3
+            maximum: 600
+        - name: fileBytes
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 25165824
+        - name: faith
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: ["0", "1"]
+      security:
+        - FirebaseBearer: []
+          FirebaseAppCheck: []
+      responses:
+        "200":
+          description: Current advanced audio price, limits and wallet affordability
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AudioInterpretationQuote"
+        "401":
+          description: Firebase Authentication or App Check verification failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Advanced audio pricing or wallet service is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /ai/interpretation/audio:
+    post:
+      operationId: createAiAudioInterpretation
+      tags: [ai]
+      summary: Request an explicitly consented audio interpretation
+      description: Sends bounded PCM WAV segments to Gemini after explicit consent. The recording is processed in memory and is not stored by ZionCore. Derived measurements, segment summaries and chosen context may be sent to Gemini or to OpenAI as a text-only fallback.
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 80
+        - name: X-ZionCore-Quoted-Credits
+          in: header
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000000
+        - name: X-ZionCore-Pricing-Version
+          in: header
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 64
+        - name: X-ZionCore-Quote-Token
+          in: header
+          required: true
+          schema:
+            type: string
+            minLength: 32
+            maxLength: 4096
+      security:
+        - FirebaseBearer: []
+          FirebaseAppCheck: []
+      requestBody:
+        required: true
+        content:
+          application/vnd.zioncore.audio-analysis+json:
+            schema:
+              $ref: "#/components/schemas/AudioInterpretationInput"
+      responses:
+        "200":
+          description: Validated interpretation with audio-review metadata
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIInterpretationResponse"
+        "400":
+          description: Invalid audio, measurement, context or consent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Firebase Authentication or App Check verification failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "402":
+          description: The user's available wallet balance is below the quoted price
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: The price changed or an idempotency key conflicts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "502":
+          description: Gemini could not complete the audio review
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Provider, wallet or job service is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /ai/interpretation:
+    post:
+      operationId: createAiInterpretation
+      tags: [ai]
+      summary: Interpret a measured frequency snapshot
+      description: Sends derived frequency values and opted-in context to Gemini, with one validated OpenAI fallback.
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 80
+        - name: X-ZionCore-Quoted-Credits
+          in: header
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000000
+        - name: X-ZionCore-Pricing-Version
+          in: header
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 64
+        - name: X-ZionCore-Quote-Token
+          in: header
+          required: true
+          schema:
+            type: string
+            minLength: 32
+            maxLength: 4096
+      security:
+        - FirebaseBearer: []
+          FirebaseAppCheck: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AIInterpretationRequest"
+      responses:
+        "200":
+          description: Validated frequency interpretation and provider metadata
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIInterpretationResponse"
+        "400":
+          description: Invalid measurement or interpretation request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "402":
+          description: The user's available wallet balance is below the quoted price
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Firebase Authentication or App Check verification failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: The quote changed or this idempotency key was already used
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "429":
+          description: Per-user request cooldown is active
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "502":
+          description: Neither provider returned a valid interpretation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: AI provider capacity is temporarily unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /wallet:
+    get:
+      operationId: getWallet
+      tags: [wallet]
+      summary: Read the signed-in user's wallet
+      security:
+        - FirebaseBearer: []
+          FirebaseAppCheck: []
+      responses:
+        "200":
+          description: Current server-managed credit balances
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WalletSnapshot"
+        "401":
+          description: Firebase Authentication or App Check verification failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Firebase Admin is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /wallet/transactions:
+    get:
+      operationId: listWalletTransactions
+      tags: [wallet]
+      summary: List recent wallet ledger entries
+      security:
+        - FirebaseBearer: []
+          FirebaseAppCheck: []
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+      responses:
+        "200":
+          description: Recent server-managed wallet ledger entries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WalletTransactionsResponse"
+        "400":
+          description: Invalid transaction-history limit
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Firebase Authentication or App Check verification failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Firebase Admin is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /billing/catalog:
+    get:
+      operationId: getBillingCatalog
+      tags: [billing]
+      summary: Read active ZionCore billing offers
+      responses:
+        "200":
+          description: Active offers discovered from the Stripe catalog
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingCatalogResponse"
+        "503":
+          description: Stripe billing catalog is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /billing/checkout:
+    post:
+      operationId: createCheckoutSession
+      tags: [billing]
+      summary: Create a hosted checkout session for the signed-in account
+      security:
+        - FirebaseBearer: []
+          FirebaseAppCheck: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCheckoutSessionRequest"
+      responses:
+        "200":
+          description: Hosted Checkout URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutSessionResponse"
+        "400":
+          description: Invalid offer or return origin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Firebase Authentication or App Check verification failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Checkout is not enabled or Stripe is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /billing/portal:
+    post:
+      operationId: createBillingPortalSession
+      tags: [billing]
+      summary: Create a billing portal session for the signed-in account
+      security:
+        - FirebaseBearer: []
+          FirebaseAppCheck: []
+      responses:
+        "200":
+          description: Hosted billing portal URL
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutSessionResponse"
+        "400":
+          description: Invalid return origin
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "401":
+          description: Firebase Authentication or App Check verification failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: No Stripe customer is associated with this account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Billing portal is not available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+components:
+  securitySchemes:
+    FirebaseBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    FirebaseAppCheck:
+      type: apiKey
+      in: header
+      name: X-Firebase-AppCheck
+  schemas:
+    PublicInterpretationPricing:
+      type: object
+      required: [standardCredits, spiritualCredits, freeLocal]
+      properties:
+        standardCredits:
+          type: [integer, "null"]
+          minimum: 1
+        spiritualCredits:
+          type: [integer, "null"]
+          minimum: 1
+        freeLocal:
+          type: boolean
+    OwnerFirebaseDiagnostics:
+      type: object
+      additionalProperties: false
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        runtimeEnvironment:
+          type: string
+          enum: [development, production, other]
+        credential:
+          $ref: "#/components/schemas/OwnerFirebaseDiagnosticCredential"
+        permissions:
+          $ref: "#/components/schemas/OwnerFirebaseDiagnosticPermissions"
+        cleanupQuery:
+          $ref: "#/components/schemas/OwnerFirebaseDiagnosticQuery"
+        expiresAtIndex:
+          $ref: "#/components/schemas/OwnerFirebaseDiagnosticIndex"
+      required: [generatedAt, runtimeEnvironment, credential, permissions, cleanupQuery, expiresAtIndex]
+    OwnerFirebaseDiagnosticCredential:
+      type: object
+      additionalProperties: false
+      properties:
+        source:
+          type: string
+          enum: [FIREBASE_SERVICE_ACCOUNT_JSON]
+        serviceAccountEmail:
+          type: [string, "null"]
+        projectId:
+          type: [string, "null"]
+        databaseId:
+          type: string
+        status:
+          type: string
+          enum: [configured, unavailable]
+      required: [source, serviceAccountEmail, projectId, databaseId, status]
+    OwnerFirebaseDiagnosticPermissions:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: string
+          enum: [checked, unavailable]
+        entitiesGet:
+          type: [boolean, "null"]
+        entitiesList:
+          type: [boolean, "null"]
+        entitiesCreate:
+          type: [boolean, "null"]
+        entitiesUpdate:
+          type: [boolean, "null"]
+        entitiesDelete:
+          type: [boolean, "null"]
+        indexesList:
+          type: [boolean, "null"]
+      required: [status, entitiesGet, entitiesList, entitiesCreate, entitiesUpdate, entitiesDelete, indexesList]
+    OwnerFirebaseDiagnosticQuery:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: string
+          enum: [pass, permission_denied, index_not_ready, unavailable]
+        checkedAt:
+          type: string
+          format: date-time
+      required: [status, checkedAt]
+    OwnerFirebaseDiagnosticIndex:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: string
+          enum: [ready, building, missing, unavailable]
+        checkedAt:
+          type: string
+          format: date-time
+      required: [status, checkedAt]
+    AdminDashboardSummary:
+      type: object
+      additionalProperties: false
+      properties:
+        generatedAt:
+          type: string
+          format: date-time
+        firebase:
+          $ref: "#/components/schemas/AdminFirebaseSummary"
+        billing:
+          $ref: "#/components/schemas/AdminBillingSummary"
+        providers:
+          $ref: "#/components/schemas/AdminProviderSummary"
+        stripe:
+          $ref: "#/components/schemas/AdminStripeSummary"
+        economics:
+          $ref: "#/components/schemas/AdminEconomicsSummary"
+        webhooks:
+          $ref: "#/components/schemas/AdminWebhookSummary"
+        performance:
+          $ref: "#/components/schemas/AdminPerformanceSummary"
+      required: [generatedAt, firebase, billing, providers, stripe, economics, webhooks, performance]
+    AdminFirebaseSummary:
+      type: object
+      additionalProperties: false
+      properties:
+        projectId:
+          type: [string, "null"]
+        identityVerification:
+          type: string
+          enum: [active]
+        firestoreStatus:
+          type: string
+          enum: [connected, unavailable]
+        accountDirectoryStatus:
+          type: string
+          enum: [connected, unavailable]
+        accountCount:
+          type: integer
+          minimum: 0
+        disabledAccountCount:
+          type: integer
+          minimum: 0
+        accountCountIsLowerBound:
+          type: boolean
+      required: [projectId, identityVerification, firestoreStatus, accountDirectoryStatus, accountCount, disabledAccountCount, accountCountIsLowerBound]
+    AdminBillingSummary:
+      type: object
+      additionalProperties: false
+      properties:
+        checkoutMode:
+          type: string
+          enum: [disabled, test, live]
+        checkoutEnabled:
+          type: boolean
+      required: [checkoutMode, checkoutEnabled]
+    AdminProviderSummary:
+      type: object
+      additionalProperties: false
+      properties:
+        geminiConfigured:
+          type: boolean
+        openaiConfigured:
+          type: boolean
+        configurationOnly:
+          type: boolean
+      required: [geminiConfigured, openaiConfigured, configurationOnly]
+    AdminStripeSummary:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: string
+          enum: [connected, unavailable, not_enabled]
+        mode:
+          type: string
+          enum: [disabled, test, live]
+        periodDays:
+          type: integer
+          minimum: 0
+        truncated:
+          type: boolean
+        currencyTotals:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminCurrencyTotals"
+      required: [status, mode, periodDays, truncated, currencyTotals]
+    AdminEconomicsSummary:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: string
+          enum: [connected, unavailable]
+        jobsScanned:
+          type: integer
+          minimum: 0
+        settledJobs:
+          type: integer
+          minimum: 0
+        auditedJobs:
+          type: integer
+          minimum: 0
+        unauditedSettledJobs:
+          type: integer
+          minimum: 0
+        creditsSpent:
+          type: integer
+          minimum: 0
+        grossServiceValueMinor:
+          type: integer
+          minimum: 0
+        estimatedProviderCostMicroUsd:
+          type: ["integer", "null"]
+          minimum: 0
+        truncated:
+          type: boolean
+      required: [status, jobsScanned, settledJobs, auditedJobs, unauditedSettledJobs, creditsSpent, grossServiceValueMinor, estimatedProviderCostMicroUsd, truncated]
+    AdminCurrencyTotals:
+      type: object
+      additionalProperties: false
+      properties:
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+        paymentCount:
+          type: integer
+          minimum: 0
+        grossMinor:
+          type: integer
+        refundCount:
+          type: integer
+          minimum: 0
+        refundedMinor:
+          type: integer
+          minimum: 0
+        netSalesMinor:
+          type: integer
+        stripeNetMinor:
+          type: integer
+      required: [currency, paymentCount, grossMinor, refundCount, refundedMinor, netSalesMinor, stripeNetMinor]
+    AdminWebhookSummary:
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: string
+          enum: [ready, needs_setup, unavailable, not_enabled]
+        appRoute:
+          type: string
+        signatureVerification:
+          type: string
+          enum: [required]
+        signingSecretConfigured:
+          type: boolean
+        inventoryTruncated:
+          type: boolean
+        endpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminWebhookEndpoint"
+      required: [status, appRoute, signatureVerification, signingSecretConfigured, inventoryTruncated, endpoints]
+    AdminWebhookEndpoint:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+          format: uri
+        enabled:
+          type: boolean
+        livemode:
+          type: boolean
+        enabledEventCount:
+          type: integer
+          minimum: 0
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, url, enabled, livemode, enabledEventCount, createdAt]
+    AdminPerformanceSummary:
+      type: object
+      additionalProperties: false
+      properties:
+        uptimeSeconds:
+          type: integer
+          minimum: 0
+        rssBytes:
+          type: integer
+          minimum: 0
+        heapUsedBytes:
+          type: integer
+          minimum: 0
+        nodeVersion:
+          type: string
+      required: [uptimeSeconds, rssBytes, heapUsedBytes, nodeVersion]
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    AIInterpretationQuote:
+      type: object
+      additionalProperties: false
+      properties:
+        quoteId:
+          type: string
+          format: uuid
+        quoteToken:
+          type: string
+          minLength: 32
+          maxLength: 4096
+        expiresAt:
+          type: string
+          format: date-time
+        currency:
+          type: string
+          enum: [gbp]
+        amountMinor:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+        credits:
+          type: integer
+          minimum: 1
+        availableCredits:
+          type: integer
+          minimum: 0
+        canAfford:
+          type: boolean
+        pricingVersion:
+          type: string
+      required:
+        - quoteId
+        - quoteToken
+        - expiresAt
+        - currency
+        - amountMinor
+        - credits
+        - availableCredits
+        - canAfford
+        - pricingVersion
+    AudioInterpretationQuote:
+      type: object
+      additionalProperties: false
+      properties:
+        quoteId:
+          type: string
+          format: uuid
+        quoteToken:
+          type: string
+          minLength: 32
+          maxLength: 4096
+        expiresAt:
+          type: string
+          format: date-time
+        currency:
+          type: string
+          enum: [gbp]
+        amountMinor:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+        credits:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+        baseCredits:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+        addOnCredits:
+          type: integer
+          minimum: 1
+          maximum: 1000000
+        availableCredits:
+          type: integer
+          minimum: 0
+        canAfford:
+          type: boolean
+        pricingVersion:
+          type: string
+          minLength: 1
+          maxLength: 64
+        maxDurationSeconds:
+          type: integer
+          enum: [600]
+        maxFileBytes:
+          type: integer
+          enum: [25165824]
+        acceptedMimeTypes:
+          type: array
+          items:
+            type: string
+            enum: [audio/wav]
+      required: [quoteId, quoteToken, expiresAt, currency, amountMinor, credits, baseCredits, addOnCredits, availableCredits, canAfford, pricingVersion, maxDurationSeconds, maxFileBytes, acceptedMimeTypes]
+    WalletSnapshot:
+      type: object
+      additionalProperties: false
+      properties:
+        purchasedCredits:
+          type: integer
+          minimum: 0
+        promotionalCredits:
+          type: integer
+          minimum: 0
+        reservedCredits:
+          type: integer
+          minimum: 0
+        availableCredits:
+          type: integer
+          minimum: 0
+        updatedAt:
+          type: ["string", "null"]
+          format: date-time
+      required:
+        - purchasedCredits
+        - promotionalCredits
+        - reservedCredits
+        - availableCredits
+        - updatedAt
+    WalletTransaction:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [purchase, promotional_grant, reservation, settlement, release]
+        purchasedDelta:
+          type: integer
+        promotionalDelta:
+          type: integer
+        reservedDelta:
+          type: integer
+        creditDelta:
+          type: integer
+        relatedOperationId:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - type
+        - purchasedDelta
+        - promotionalDelta
+        - reservedDelta
+        - creditDelta
+        - relatedOperationId
+        - createdAt
+    WalletTransactionsResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: "#/components/schemas/WalletTransaction"
+      required:
+        - transactions
+    ApiError:
+      type: object
+      additionalProperties: false
+      properties:
+        error:
+          type: string
+      required:
+        - error
+    BillingOffer:
+      type: object
+      additionalProperties: false
+      properties:
+        key:
+          type: string
+          enum: [credits-250, credits-500, credits-1050, credits-2750, credits-5750, premium-monthly]
+        kind:
+          type: string
+          enum: [credit_pack, premium_subscription]
+        name:
+          type: string
+        credits:
+          type: ["integer", "null"]
+          minimum: 1
+        currency:
+          type: string
+          enum: [gbp]
+        amountMinor:
+          type: integer
+          minimum: 1
+        purchasable:
+          type: boolean
+        interval:
+          type: ["string", "null"]
+          enum: [month, null]
+      required:
+        - key
+        - kind
+        - name
+        - credits
+        - currency
+        - amountMinor
+        - purchasable
+        - interval
+    BillingCatalogResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        checkoutEnabled:
+          type: boolean
+        portalEnabled:
+          type: boolean
+        offers:
+          type: array
+          items:
+            $ref: "#/components/schemas/BillingOffer"
+      required:
+        - checkoutEnabled
+        - portalEnabled
+        - offers
+    CreateCheckoutSessionRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        offerKey:
+          type: string
+          enum: [credits-250, credits-500, credits-1050, credits-2750, credits-5750, premium-monthly]
+      required:
+        - offerKey
+    CheckoutSessionResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        url:
+          type: string
+          format: uri
+      required:
+        - url
+    AIInterpretationRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        measurement:
+          $ref: "#/components/schemas/AnalysisMeasurement"
+        includeFaithReflection:
+          type: boolean
+        listeningContext:
+          type: string
+          maxLength: 700
+      required:
+        - measurement
+        - includeFaithReflection
+        - listeningContext
+    AudioInterpretationInput:
+      type: object
+      additionalProperties: false
+      properties:
+        audioBase64:
+          type: string
+          minLength: 4
+          maxLength: 33554432
+          description: Base64 PCM WAV bytes held in memory for this request only.
+        audioMimeType:
+          type: string
+          enum: [audio/wav]
+        externalAudioConsent:
+          type: boolean
+          enum: [true]
+        consentVersion:
+          type: string
+          enum: [external-audio-v1]
+        measurement:
+          $ref: "#/components/schemas/AnalysisMeasurement"
+        includeFaithReflection:
+          type: boolean
+        listeningContext:
+          type: string
+          maxLength: 700
+      required: [audioBase64, audioMimeType, externalAudioConsent, consentVersion, measurement, includeFaithReflection, listeningContext]
+    AnalysisMeasurement:
+      type: object
+      additionalProperties: false
+      properties:
+        captureSource:
+          type: string
+          enum: [microphone, audio-file]
+        sampleRate:
+          type: integer
+          minimum: 8000
+          maximum: 192000
+        fftSize:
+          type: integer
+          enum: [2048, 4096, 8192]
+        frequencyResolutionHz:
+          type: number
+          exclusiveMinimum: 0
+        dominantFrequencyHz:
+          type: [number, "null"]
+          exclusiveMinimum: 0
+        topPeaksHz:
+          type: array
+          maxItems: 6
+          items:
+            type: number
+            exclusiveMinimum: 0
+        rmsLevel:
+          type: number
+          minimum: 0
+          maximum: 1
+        durationSeconds:
+          type: number
+          minimum: 0
+          maximum: 86400
+        signalFeatures:
+          $ref: "#/components/schemas/SignalFeatures"
+        spectralMatrixAnalysis:
+          $ref: "#/components/schemas/SpectralMatrixAnalysis"
+      required:
+        - captureSource
+        - sampleRate
+        - fftSize
+        - frequencyResolutionHz
+        - dominantFrequencyHz
+        - topPeaksHz
+        - rmsLevel
+        - durationSeconds
+        - signalFeatures
+        - spectralMatrixAnalysis
+    SpectralMatrixAnalysis:
+      type: object
+      additionalProperties: false
+      description: Five-band temporal correlation matrix derived locally from the rendered spectrogram. Correlation describes co-variation, not causation or source identity.
+      properties:
+        status:
+          type: string
+          enum: [sufficient, insufficient_frames, silent, static]
+        frameCount:
+          type: integer
+          minimum: 0
+          maximum: 120
+        bandLabels:
+          type: array
+          minItems: 5
+          maxItems: 5
+          items:
+            type: string
+            maxLength: 32
+        correlationMatrix:
+          type: array
+          minItems: 5
+          maxItems: 5
+          items:
+            type: array
+            minItems: 5
+            maxItems: 5
+            items:
+              type: number
+              minimum: -1
+              maximum: 1
+        principalDirection:
+          type: array
+          minItems: 5
+          maxItems: 5
+          items:
+            type: number
+            minimum: -1
+            maximum: 1
+        principalVarianceShare:
+          type: [number, "null"]
+          minimum: 0
+          maximum: 1
+      required:
+        - status
+        - frameCount
+        - bandLabels
+        - correlationMatrix
+        - principalDirection
+        - principalVarianceShare
+    SignalFeatures:
+      type: object
+      additionalProperties: false
+      properties:
+        spectralCentroidHz:
+          type: [number, "null"]
+          exclusiveMinimum: 0
+        spectralFlatness:
+          type: number
+          minimum: 0
+          maximum: 1
+        spectralEntropy:
+          type: number
+          minimum: 0
+          maximum: 1
+        peakToMedianContrastDb:
+          type: [number, "null"]
+          minimum: 0
+          maximum: 120
+        rolloff85Hz:
+          type: [number, "null"]
+          exclusiveMinimum: 0
+        harmonicity:
+          type: number
+          minimum: 0
+          maximum: 1
+        zeroCrossingRate:
+          type: number
+          minimum: 0
+          maximum: 1
+        dominantFrequencyStabilityHz:
+          type: [number, "null"]
+          minimum: 0
+        dominantFrequencyDriftHz:
+          type: [number, "null"]
+        amplitudeVariationCoefficient:
+          type: [number, "null"]
+          minimum: 0
+        temporalWindowSeconds:
+          type: number
+          minimum: 0
+          maximum: 6
+      required:
+        - spectralCentroidHz
+        - spectralFlatness
+        - spectralEntropy
+        - peakToMedianContrastDb
+        - rolloff85Hz
+        - harmonicity
+        - zeroCrossingRate
+        - dominantFrequencyStabilityHz
+        - dominantFrequencyDriftHz
+        - amplitudeVariationCoefficient
+        - temporalWindowSeconds
+    DomainPerspective:
+      type: object
+      additionalProperties: false
+      properties:
+        domain:
+          type: string
+          enum: [acoustics, signal_processing, mathematics, communications, environmental_bioacoustics]
+        relevance:
+          type: string
+          enum: [direct, tentative, needs_more_data]
+        analysis:
+          type: string
+          minLength: 1
+          maxLength: 1800
+        evidenceBoundary:
+          type: string
+          minLength: 1
+          maxLength: 900
+      required: [domain, relevance, analysis, evidenceBoundary]
+    CandidateExplanation:
+      type: object
+      additionalProperties: false
+      properties:
+        label:
+          type: string
+          minLength: 1
+          maxLength: 160
+        rationale:
+          type: string
+          minLength: 1
+          maxLength: 1100
+        evidenceFor:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        evidenceAgainst:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        confidence:
+          type: string
+          enum: [low, moderate, high]
+        whatWouldDiscriminate:
+          type: string
+          minLength: 1
+          maxLength: 1000
+      required: [label, rationale, evidenceFor, evidenceAgainst, confidence, whatWouldDiscriminate]
+    FollowUpExperiment:
+      type: object
+      additionalProperties: false
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 140
+        method:
+          type: string
+          minLength: 1
+          maxLength: 1100
+        whatToRecord:
+          type: string
+          minLength: 1
+          maxLength: 700
+      required: [title, method, whatToRecord]
+    AIInterpretationContent:
+      type: object
+      additionalProperties: false
+      properties:
+        signalFamily:
+          type: string
+          enum: [tonal, harmonic, broadband, mixed, insufficient]
+        executiveSummary:
+          type: string
+          minLength: 1
+          maxLength: 1800
+        integratedReading:
+          type: string
+          minLength: 1
+          maxLength: 3200
+        patternSignature:
+          type: string
+          minLength: 1
+          maxLength: 1200
+        harmonicAnalysis:
+          type: string
+          minLength: 1
+          maxLength: 1800
+        temporalAnalysis:
+          type: string
+          minLength: 1
+          maxLength: 1800
+        modulationAnalysis:
+          type: string
+          minLength: 1
+          maxLength: 1800
+        domainPerspectives:
+          type: array
+          minItems: 5
+          maxItems: 5
+          items:
+            $ref: "#/components/schemas/DomainPerspective"
+        keyTakeaways:
+          type: array
+          minItems: 3
+          maxItems: 6
+          items:
+            type: string
+            minLength: 1
+            maxLength: 700
+        confidence:
+          type: string
+          enum: [low, moderate, high]
+        confidenceScope:
+          type: string
+          minLength: 1
+          maxLength: 700
+        uncertainty:
+          type: string
+          minLength: 1
+          maxLength: 1800
+        dataQuality:
+          type: string
+          minLength: 1
+          maxLength: 1600
+        candidateExplanations:
+          type: array
+          maxItems: 5
+          items:
+            $ref: "#/components/schemas/CandidateExplanation"
+        followUpExperiments:
+          type: array
+          minItems: 2
+          maxItems: 5
+          items:
+            $ref: "#/components/schemas/FollowUpExperiment"
+        reflectionQuestions:
+          type: array
+          minItems: 2
+          maxItems: 4
+          items:
+            type: string
+            minLength: 1
+            maxLength: 500
+        faithReflection:
+          type: [string, "null"]
+          maxLength: 4000
+      required:
+        - signalFamily
+        - executiveSummary
+        - integratedReading
+        - patternSignature
+        - harmonicAnalysis
+        - temporalAnalysis
+        - modulationAnalysis
+        - domainPerspectives
+        - keyTakeaways
+        - confidence
+        - confidenceScope
+        - uncertainty
+        - dataQuality
+        - candidateExplanations
+        - followUpExperiments
+        - reflectionQuestions
+        - faithReflection
+    AIInterpretationResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        analysis:
+          $ref: "#/components/schemas/AIInterpretationContent"
+        provider:
+          type: string
+          enum: [gemini, openai]
+        model:
+          type: string
+          minLength: 1
+          maxLength: 100
+        fallbackUsed:
+          type: boolean
+        audioReview:
+          $ref: "#/components/schemas/AudioReview"
+      required: [analysis, provider, model, fallbackUsed]
+    AudioReview:
+      type: object
+      additionalProperties: false
+      properties:
+        provider:
+          type: string
+          enum: [gemini]
+        model:
+          type: string
+          minLength: 1
+          maxLength: 100
+        segmentCount:
+          type: integer
+          minimum: 1
+          maximum: 12
+        summary:
+          type: string
+          minLength: 1
+          maxLength: 6000
+      required: [provider, model, segmentCount, summary]
+

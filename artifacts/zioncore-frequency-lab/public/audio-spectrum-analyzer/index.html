@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Online Audio Spectrum Analyzer with FFT | ZionCore</title>
+    <meta name="description" content="Analyze microphone or local audio in your browser with FFT, peak tracking, a spectrogram, and temporal trends. Explore measurable patterns with ZionCore.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://zioncore.replit.app/audio-spectrum-analyzer/">
+    <link rel="stylesheet" href="/seo-pages.css">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="ZionCore">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#f2eee4">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Online Audio Spectrum Analyzer with FFT | ZionCore">
+    <meta property="og:description" content="Analyze microphone or local audio in your browser with FFT, peak tracking, a spectrogram, and temporal trends. Explore measurable patterns with ZionCore.">
+    <meta property="og:url" content="https://zioncore.replit.app/audio-spectrum-analyzer/">
+    <meta property="og:site_name" content="ZionCore">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:image" content="https://zioncore.replit.app/og-zioncore.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="ZionCore frequency analysis and acoustic discovery">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Online Audio Spectrum Analyzer with FFT | ZionCore">
+    <meta name="twitter:description" content="Analyze microphone or local audio in your browser with FFT, peak tracking, a spectrogram, and temporal trends. Explore measurable patterns with ZionCore.">
+    <meta name="twitter:image" content="https://zioncore.replit.app/og-zioncore.jpg">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {"@type":"Organization","@id":"https://zioncore.replit.app/#organization","name":"ZionCore","url":"https://zioncore.replit.app/"},
+          {"@type":"WebSite","@id":"https://zioncore.replit.app/#website","url":"https://zioncore.replit.app/","name":"ZionCore","publisher":{"@id":"https://zioncore.replit.app/#organization"},"inLanguage":"en-GB"},
+          {"@type":"WebApplication","@id":"https://zioncore.replit.app/audio-spectrum-analyzer/#app","name":"ZionCore Frequency Lab","url":"https://zioncore.replit.app/","applicationCategory":"MultimediaApplication","operatingSystem":"Web browser","description":"Browser-based acoustic frequency analysis with FFT measurements, spectrum and spectrogram views, and optional ZionCore interpretation."},
+          {"@type":"WebPage","@id":"https://zioncore.replit.app/audio-spectrum-analyzer/#page","url":"https://zioncore.replit.app/audio-spectrum-analyzer/","name":"Online Audio Spectrum Analyzer with FFT","description":"Analyze microphone or local audio in your browser with FFT and explore measured patterns with ZionCore.","datePublished":"2026-11-07","dateModified":"2026-11-07","inLanguage":"en-GB","isPartOf":{"@id":"https://zioncore.replit.app/#website"},"mainEntity":{"@id":"https://zioncore.replit.app/audio-spectrum-analyzer/#app"}},
+          {"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://zioncore.replit.app/"},{"@type":"ListItem","position":2,"name":"Audio spectrum analyzer","item":"https://zioncore.replit.app/audio-spectrum-analyzer/"}]}
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <canvas class="seo-matrix" aria-hidden="true"></canvas>
+    <header class="seo-header">
+      <a class="seo-brand" href="/" aria-label="ZionCore home"><span class="seo-brand-mark" aria-hidden="true">∿</span><span>ZIONCORE</span></a>
+      <nav class="seo-nav" aria-label="Explore ZionCore">
+        <a href="/audio-spectrum-analyzer/">Analyzer</a>
+        <a href="/online-tone-generator/">Tone generator</a>
+        <a href="/sound-message-encoder/">Message encoder</a>
+        <a href="/discover">Field guide</a>
+      </nav>
+    </header>
+    <main class="seo-main">
+      <p class="seo-breadcrumbs"><a href="/">Home</a> / Audio spectrum analyzer</p>
+      <section class="seo-hero">
+        <div class="seo-hero-copy">
+          <span class="seo-kicker">Frequency Lab · Receive · Measure</span>
+          <h1>Audio spectrum analysis, made personal.</h1>
+          <p>Use ZionCore as an online audio spectrum analyzer: capture a sound with your microphone or choose a local recording, then explore its frequency pattern, harmonics, and changes over time.</p>
+          <div class="seo-actions">
+            <a class="seo-button" href="/#capture">Open the frequency lab</a>
+            <a class="seo-button seo-button--subtle" href="/discover">Read the field guide</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="seo-section">
+        <h2>What the analyzer measures</h2>
+        <div class="seo-grid">
+          <article class="seo-card"><h3>Frequency peaks</h3><p>See dominant peaks and compare their spacing to explore whether a sound is tonal, harmonic, broadband, or mixed.</p></article>
+          <article class="seo-card"><h3>Signal shape</h3><p>Review spectral centroid, flatness, entropy, harmonicity, relative level, and peak-to-median contrast.</p></article>
+          <article class="seo-card"><h3>Change over time</h3><p>Use a time-frequency spectrogram and recent trend plot to notice drift, stability, and amplitude variation.</p></article>
+          <article class="seo-card"><h3>Relationship matrix</h3><p>Compare co-variation across five spectral bands. The matrix is a pattern tool, not a source detector.</p></article>
+        </div>
+        <p class="seo-callout">Microphone and imported audio are analyzed in the browser. If you request a ZionCore interpretation, the service receives derived measurements and the context you choose—not the original recording or full spectrogram.</p>
+      </section>
+
+      <section class="seo-section">
+        <h2>How FFT frequency analysis works</h2>
+        <p>The Fast Fourier Transform (FFT) converts a short sampled waveform into frequency bins. ZionCore displays the strongest measured peaks and related features using the selected FFT size. Frequency resolution depends on the sample rate and FFT size: sample rate divided by the number of FFT points.</p>
+        <p>A longer FFT can separate nearby frequencies more finely, while a shorter window responds more quickly to changes. The analyzer offers 2,048, 4,096, and 8,192-point settings so you can compare these trade-offs on your own recording.</p>
+        <p>The microphone records acoustic sound. It can measure a tone played by a speaker, but it is not a direct radio-frequency receiver. A frequency value describes the captured pattern; it does not identify who or what created it.</p>
+      </section>
+
+      <section class="seo-section seo-faq">
+        <h2>Questions about sound analysis</h2>
+        <details><summary>Does ZionCore upload my recording?</summary><p>No. Live capture and local file analysis run in the browser. A requested ZionCore interpretation sends derived measurements and your chosen context, not raw audio.</p></details>
+        <details><summary>Can an audio spectrum analyzer identify the source?</summary><p>It can describe measured frequency patterns. Source identification needs additional evidence and cannot be established from a peak alone.</p></details>
+        <details><summary>Can a phone microphone analyze radio signals?</summary><p>No. A phone microphone measures acoustic pressure within its supported audio range. Direct RF measurement requires compatible receiver hardware.</p></details>
+      </section>
+
+      <section class="seo-section">
+        <h2>Continue exploring with ZionCore</h2>
+        <p>Try a reference tone, encode a short acoustic message, or explore how sound and personal meaning can meet in a user-led reflection.</p>
+        <div class="seo-grid">
+          <article class="seo-card"><h3><a href="/online-tone-generator/">Online tone generator</a></h3><p>Create a short reference sine tone and compare it with a microphone reading.</p></article>
+          <article class="seo-card"><h3><a href="/sound-message-encoder/">Acoustic message encoder</a></h3><p>Turn text or a short prayer into a playable, checksum-verified audio packet.</p></article>
+        </div>
+      </section>
+    </main>
+    <footer class="seo-footer">
+      <nav aria-label="Footer navigation"><a href="/">ZionCore home</a><a href="/discover">Field guide</a><a href="/spiritual-frequency-exploration/">Spiritual audio</a><a href="/plant-bioacoustics/">Environmental sound</a></nav>
+      <p>ZionCore Frequency Intelligence · Measure locally · Explore with care</p>
+    </footer>
+    <script src="/seo-matrix.js" defer></script>
+  </body>
+</html>
