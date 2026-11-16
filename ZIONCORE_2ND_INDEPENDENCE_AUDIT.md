@@ -8,7 +8,9 @@ production readiness are not established.
 
 - Current private repository: `https://github.com/tariromasawi/zioncore-platform`
 - Current recovery branch: `zioncore-2nd/recovery-phase3`
-- Recovery baseline: `df0a612a6752a87a3b1114dd16267fa2acbdcb56`
+- Earlier recovery baseline: `df0a612a6752a87a3b1114dd16267fa2acbdcb56`
+- Latest verified source commit: `e2e0901fa02b8caf60f99e66dad997845d4f7900`
+- Tracked source files at that commit: 843
 - The main ZionCore production application and its deployment were not changed.
 - The original standalone ZionCore 2nd Replit project, its Git history, and its
   checkpoints were not accessible from this workspace. The supplied task
@@ -99,7 +101,9 @@ billable request was made.
 
 ## Build, tests, security, and automation
 
-- Workspace typecheck and production builds pass.
+- A clean clone of the pushed branch installed with
+  `pnpm install --frozen-lockfile`, passed workspace typecheck and production
+  build, ran all 611 tests successfully, and remained clean after validation.
 - Current post-change test suite: **611 tests passed, 0 failed** across API
   unit tests (108), ZionCore 2nd artifact unit tests (34), Frequency Lab unit
   tests (425), Firebase Auth client/server emulator tests (3), the two
@@ -119,6 +123,10 @@ billable request was made.
   this recovery branch replaces it with the tested allowlist policy. The
   workspace scan's Firebase browser configuration findings concern public
   client configuration values, not Admin credentials.
+- The branch secret scan found no private keys, GitHub/Slack tokens, or
+  non-fixture Stripe credentials. Stripe-shaped strings are explicit
+  placeholders/fixtures in test files; the only tracked environment files are
+  `.env.example` templates.
 
 ## Release blockers and approvals
 
