@@ -1,0 +1,48 @@
+.astronomy-page { padding-top:48px;padding-bottom:64px; }
+.astronomy-hero { max-width:920px;padding-bottom:24px; }
+.astronomy-hero .page-title { margin-top:14px; }
+.astronomy-hero .lead { max-width:850px; }
+.astronomy-source,.astronomy-provenance,.astronomy-observations { padding:20px 22px;margin-top:16px; }
+.astronomy-source-top { display:flex;justify-content:space-between;align-items:flex-start;gap:18px; }
+.astronomy-source h2,.astronomy-provenance h2,.astronomy-observations h2 { margin:7px 0 8px;color:#29474a;font:25px/1.12 var(--app-font-serif);font-weight:400; }
+.astronomy-source-top p { margin:0;color:#71807e;font-size:11px;line-height:1.6; }
+.astronomy-source-badge { display:inline-flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid #cedbd0;border-radius:3px;background:#eff4ed;color:#466b5b;font:8px var(--app-font-mono);white-space:nowrap; }
+.astronomy-actions { display:flex;flex-wrap:wrap;gap:9px;margin-top:15px; }
+.astronomy-actions .btn { display:inline-flex;align-items:center;justify-content:center;gap:7px;width:auto; }
+.astronomy-status,.astronomy-error { margin:12px 0 0;padding:9px 11px;border-left:2px solid #57836e;background:#eef2e9;color:#536b62;font-size:10px;line-height:1.55; }
+.astronomy-error { border-left-color:#b77456;background:#faf0eb;color:#8a5a4a; }
+.astronomy-provenance h2 { margin-top:0;font-size:22px; }
+.astronomy-provenance dl { display:grid;gap:0;margin:0; }
+.astronomy-provenance dl>div { display:grid;grid-template-columns:140px 1fr;gap:12px;padding:10px 0;border-top:1px solid #e8e3d8; }
+.astronomy-provenance dt { color:#667873;font:8px var(--app-font-mono);letter-spacing:.06em;text-transform:uppercase; }
+.astronomy-provenance dd { margin:0;color:#6f7d77;font-size:10px;line-height:1.55; }
+.astronomy-reference-links { display:flex;flex-wrap:wrap;gap:10px 18px;padding-top:12px;border-top:1px solid #e8e3d8; }
+.astronomy-reference-links a { display:inline-flex;align-items:center;gap:5px;color:#55736a;font-size:9px;text-decoration:none; }
+.astronomy-reference-links a:hover { text-decoration:underline; }
+.astronomy-empty { margin-top:16px;padding:16px;color:#7b8781;font-size:10px;line-height:1.6; }
+.astronomy-summary { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px; }
+.astronomy-summary .panel { display:grid;align-content:start;gap:6px;padding:13px; }
+.astronomy-summary span { color:#7b8781;font:8px var(--app-font-mono); }
+.astronomy-summary strong { color:#3e5c55;font:20px var(--app-font-serif);font-weight:400; }
+.astronomy-summary small { color:#89928c;font-size:8px; }
+.astronomy-observations { margin-top:16px; }
+.astronomy-table-heading { display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:12px; }
+.astronomy-table-heading h2 { margin-bottom:0; }
+.astronomy-table-heading>span { color:#87918a;font:8px/1.5 var(--app-font-mono); }
+.astronomy-table-wrap { max-height:420px;overflow:auto;border:1px solid #e4dfd4; }
+.astronomy-table-wrap table { width:100%;border-collapse:collapse;color:#63736d;font:9px var(--app-font-mono);white-space:nowrap; }
+.astronomy-table-wrap th,.astronomy-table-wrap td { padding:8px 10px;border-bottom:1px solid #e9e4da;text-align:left; }
+.astronomy-table-wrap thead th { position:sticky;top:0;background:#f1eee4;color:#687973;font-size:8px;text-transform:uppercase; }
+.astronomy-table-wrap tbody tr:last-child td { border-bottom:0; }
+.astronomy-table-note { margin:10px 0 0;color:#89928c;font-size:9px;line-height:1.5; }
+.astronomy-local-note { display:grid;gap:4px;margin-top:15px;padding:13px 15px;border-left:3px solid #d5a34e;background:#e8e9df;color:#61736b;font-size:10px;line-height:1.6; }
+.astronomy-local-note strong { color:#455e55; }
+
+@media (max-width:760px) {
+  .astronomy-page { padding-top:30px; }
+  .astronomy-source,.astronomy-provenance,.astronomy-observations { padding:15px; }
+  .astronomy-source-top,.astronomy-table-heading { flex-direction:column;align-items:flex-start; }
+  .astronomy-summary { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .astronomy-provenance dl>div { grid-template-columns:1fr;gap:5px; }
+  .astronomy-actions .btn { flex:1 1 auto; }
+}

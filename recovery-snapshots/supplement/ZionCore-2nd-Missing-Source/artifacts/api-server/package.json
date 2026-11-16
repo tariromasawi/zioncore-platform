@@ -1,0 +1,42 @@
+{
+  "name": "@workspace/api-server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "export NODE_ENV=development && pnpm run build && pnpm run start",
+    "build": "node ./build.mjs",
+    "start": "node --enable-source-maps ./dist/index.mjs",
+    "test:unit": "tsx --test src/routes/wallet.test.ts src/routes/ai-interpretation-pricing-public.test.ts src/middlewares/firebase-identity.test.ts src/lib/owner-access.test.ts src/lib/owner-dashboard-data.test.ts src/lib/firebase-diagnostics.test.ts src/lib/task-pricing.test.ts src/lib/signed-service-quote.test.ts src/lib/ai-interpretation-pricing.test.ts src/lib/ai-audio-pricing.test.ts src/lib/ai-audio-input.test.ts src/lib/paid-reservation-recovery.test.ts src/lib/ai-interpretation-quality.test.ts src/lib/ai-output-normalizer.test.ts src/lib/ai-provider-clients.test.ts src/lib/billing-catalog.test.ts src/lib/stripe-webhook.test.ts src/lib/stripe-webhook-delivery.test.ts src/lib/ai-provider-router.test.ts src/lib/ai-request-guard.test.ts src/lib/public-asset-safety.test.ts src/lib/provider-execution.test.ts src/lib/emulator-test-safety.test.ts",
+    "test:wallet": "pnpm --filter @workspace/zioncore-frequency-lab exec firebase emulators:exec --project demo-zioncore-frequency-lab --only firestore --config firebase.emulator.json \"pnpm --filter @workspace/api-server exec tsx --test src/lib/credit-ledger.test.ts src/lib/ai-interpretation-jobs.test.ts src/lib/stripe-fulfillment.test.ts src/lib/stripe-membership.test.ts src/routes/ai-interpretation.integration.test.ts\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^8.4.0",
+    "@google/genai": "^1.52.0",
+    "@workspace/api-zod": "workspace:*",
+    "@workspace/db": "workspace:*",
+    "@workspace/frequency-ai-contract": "workspace:*",
+    "@workspace/integrations-gemini-ai": "workspace:*",
+    "@workspace/integrations-openai-ai-server": "workspace:*",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "drizzle-orm": "catalog:",
+    "express": "^5.3.0",
+    "firebase-admin": "^14.5.0",
+    "google-auth-library": "11.3.3",
+    "pino": "^9.14.0",
+    "pino-http": "^10.5.0"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "catalog:",
+    "esbuild": "0.28.2",
+    "esbuild-plugin-pino": "^2.3.3",
+    "pino-pretty": "^13.2.0",
+    "thread-stream": "3.1.0",
+    "tsx": "catalog:"
+  }
+}

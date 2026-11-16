@@ -1,0 +1,14 @@
+Excluded content summary. Directory counts are pruned roots, not descendant file counts.
+Git worktree pointer files: 7
+directory:.agent-worktrees: 1
+directory:.cache: 1
+directory:.config: 1
+directory:.git: 1
+directory:.local: 1
+directory:dist: 16
+directory:generated-artifacts: 1
+directory:node_modules: 46
+transient logs/cache/compiler/source-map files: 18
+Firebase key values redacted in .replit files: 32
+
+No actual .env, service-account, credentials, or private-key files were copied. Reinstallable packages are represented by manifests and lockfiles.

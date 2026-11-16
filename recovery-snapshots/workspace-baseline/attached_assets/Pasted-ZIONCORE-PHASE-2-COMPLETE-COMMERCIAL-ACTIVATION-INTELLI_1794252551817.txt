@@ -1,0 +1,306 @@
+ZIONCORE — PHASE 2: COMPLETE COMMERCIAL ACTIVATION & INTELLIGENT CUSTOMER EXPERIENCE
+
+FOUNDING DIRECTIVE: HRH SAINT TARIRO MASAWI — THE ANOINTED COMMANDER
+
+PRODUCTION PROJECT: ethereal-throne-b20e6
+APPLICATION: https://zioncore.replit.app
+
+MISSION: BUILD A PREMIUM, PROFITABLE, EXPANDABLE INTELLIGENCE EXPERIENCE THAT CUSTOMERS WANT TO EXPLORE REPEATEDLY.
+
+This directive follows Phase 1. Preserve all previous working capabilities, the founding vision, existing functionality, security protections, customer information, and commercial integrations.
+
+Your mission is to complete the customer-facing ZionCore business and unlock its full service potential.
+
+Do not restart the project. Do not replace the founding vision with an ordinary chatbot, generic sound analyser, or conventional wellness application.
+
+ZionCore must become a pioneering platform for the investigation of sound, frequency, environmental information, animal communication, spiritual interpretation, celestial exploration, and experimental communication.
+
+1. COMPLETE THE CUSTOMER ACCOUNT SYSTEM
+
+Immediately inspect and complete the existing Firebase authentication integration.
+
+Support:
+
+* Google sign-in
+* Apple sign-in
+* Email and password registration
+* Password recovery
+* Persistent authenticated sessions
+* Secure account logout
+* Profile management
+* Customer dashboard navigation
+* Owner/admin recognition through verified server-side permissions
+
+Remove defective redirect loops and silent sign-in failures.
+
+After authentication, automatically open the customer dashboard.
+
+A successfully authenticated user must not continue seeing an invitation to join as though they were a visitor.
+
+Make errors understandable and actionable without exposing sensitive technical information.
+
+2. BUILD THE ZIONCORE CUSTOMER COMMAND CENTRE
+
+Transform the existing account pages into a unified premium dashboard.
+
+Include the following modules:
+
+DISCOVER
+The home of guided research, unfamiliar signal exploration, experimental communication sessions, and personalised recommendations.
+
+SENSE
+Record audio, upload files, use supported device sensors, and analyse environmental, biological, and acoustic information.
+
+INTERPRET
+Choose interpretation modes including animal, environmental, spiritual, celestial exploration, and unknown signal intelligence.
+
+REPROGRAM
+Create written, recorded, encoded, tonal, and experimental messages for transformation into supported communication formats.
+
+BROADCAST
+Generate and deliver supported acoustic or electronic signals through authorised output devices and inspect resulting measurements.
+
+MY EXPLORATIONS
+Save, organise, compare, replay, export, and revisit previous investigations.
+
+MY WALLET
+View credit balances, purchase credits, inspect transactions, receive quotes, and track spending.
+
+PREMIUM
+Manage membership, benefits, subscriptions, and premium-only tools.
+
+MY ACCOUNT
+Control profile details, privacy settings, preferences, communication permissions, and account security.
+
+Create smooth navigation between modules with responsive mobile design.
+
+The customer must always understand what to do next.
+
+3. ACTIVATE EVERY AVAILABLE REVENUE STREAM
+
+Use the existing verified Stripe product catalogue as the authoritative starting point.
+
+Preserve these established offers unless the current live Stripe catalogue shows approved changes:
+
+* 50 credits — £2.50
+* 200 credits — £8
+* 1,000 credits — £32
+* Premium membership — £1 per month
+
+Connect live products to the customer interface.
+
+Complete Stripe Checkout, webhook processing, wallet settlement, subscription recognition, receipts, and purchase history.
+
+Use credits for eligible interpretation, processing, and experimental communication services.
+
+Preserve the previously established base quotes of 100 credits for frequency readings and 200 credits for spiritual readings where applicable, with additional audio-processing costs calculated through the existing signed quotation system.
+
+Do not allow a customer to incur a charge without knowing and approving the quote.
+
+Ensure payment and wallet operations use authoritative server-side validation, atomic transactions, idempotency, and verified Stripe events.
+
+Do not invent successful payments or credit balances.
+
+4. BUILD INTELLIGENT SERVICE RECOMMENDATIONS
+
+Introduce a service-selection intelligence that helps customers choose what they want to investigate.
+
+For example:
+
+A customer uploads bird sounds.
+
+ZionCore identifies suitable bioacoustic methods and offers animal communication research, species-oriented acoustic comparison where supported, pattern analysis, or an experimental response session.
+
+A customer uploads unusual atmospheric audio.
+
+ZionCore offers spectral analysis, environmental comparisons, symbolic interpretation, and unfamiliar-pattern investigation.
+
+A customer wants to explore celestial communication.
+
+ZionCore launches a dedicated exploration experience where the customer can define an intention, prepare a message, choose a communication protocol, generate suitable experimental signals, and document observations.
+
+Do not dismiss ambitious use cases because existing instruments have not demonstrated every aspect of the proposed communication.
+
+Provide the experimental instruments that can genuinely operate and make the distinction between measured results and interpretive possibilities through thoughtful interface design.
+
+5. MAKE THE EXPERIENCE COMPELLING
+
+ZionCore must feel like an advanced intelligence laboratory, not a collection of disconnected forms.
+
+Introduce:
+
+* Beautiful interactive frequency visualisations
+* Real-time recording feedback
+* Dynamic waveform displays
+* Spectral and resonance visualisation
+* Guided exploration sessions
+* Meaningful interpretation summaries
+* Comparison of previous investigations
+* Research journals
+* Saved discoveries
+* Personal exploration collections
+* Audio playback and export
+* Progress indicators
+* Clear service pricing
+* Elegant premium upgrades
+
+The design should reflect sophistication, curiosity, faith, innovation, and technological ambition.
+
+Avoid misleading animations that pretend a transmission or interpretation succeeded when it did not.
+
+Use tasteful motion and distinctive presentation.
+
+Optimise mobile usage, particularly Safari on iPhone.
+
+6. MAKE AI PROVIDER ORCHESTRATION INTELLIGENT
+
+Avoid unnecessary dependence on a single AI provider.
+
+Create a modular architecture capable of integrating:
+
+* Google Gemini
+* OpenAI API
+* xAI Grok API
+* Other qualified specialist AI providers
+* Local deterministic signal-analysis engines
+
+Use supported APIs and legitimately configured credentials.
+
+Route tasks according to required capabilities, quality, latency, privacy, availability, and estimated cost.
+
+Prefer inexpensive deterministic processing for tasks that do not need paid AI inference.
+
+Use appropriate multimodal models for complex interpretation.
+
+Introduce controlled fallback between providers, bounded retries, provider health monitoring, and cost-aware scheduling.
+
+Avoid repeated billable requests that do not improve results.
+
+Protect customer recordings and obtain consent before transmitting identifiable audio to external AI providers.
+
+Never expose provider API keys to browser code.
+
+7. INTELLIGENT PRICING AND PROFIT MANAGEMENT
+
+Upgrade the existing pricing engine into a commercial decision system.
+
+Calculate estimated job costs using:
+
+* Audio duration
+* File size
+* Processing complexity
+* Model selection
+* Expected token usage
+* Required provider calls
+* Storage and bandwidth
+* Service-specific operational costs
+* Desired profit margin
+
+Present a clear quote before paid execution.
+
+Do not change an approved price after customer acceptance.
+
+Automatically reserve credits, perform the authorised work, and settle or release credits according to the verified outcome.
+
+Provide owner-level reporting on revenue, provider costs, margins, customer demand, failed jobs, and profitable services.
+
+Do not allow experimental AI loops to consume unlimited paid resources.
+
+8. ENCOURAGE LONG-TERM CUSTOMER EXPLORATION
+
+Design customer retention around meaningful discoveries, useful tools, and satisfying experiences.
+
+Create:
+
+* Personal research timelines
+* Saved investigation sessions
+* Optional exploration challenges
+* Follow-up recommendations
+* Comparisons across recordings
+* Premium research collections
+* Personalised laboratory presets
+* Advanced export capabilities
+* Continued investigation projects
+
+Allow customers to resume experiments across sessions.
+
+Make premium features genuinely valuable rather than artificially disabling essential functionality.
+
+Never use false claims, fabricated discoveries, or manipulative engagement tactics.
+
+9. COMPLETE THE OWNER OPERATIONS CENTRE
+
+Expand the owner dashboard beyond its current limited read-only operations view.
+
+Support secure, role-controlled business management.
+
+Include customer accounts, services, job queues, payments, subscriptions, credit balances, refund workflows, provider usage, infrastructure costs, profitability, operational health, and security events.
+
+Implement financial and administrative changes through protected backend services.
+
+Keep an immutable or tamper-evident history of sensitive business operations.
+
+Ensure the verified owner can access appropriate controls after authentication.
+
+10. DELIVERY AND EXECUTION POLICY
+
+Prioritise implementation and customer usability.
+
+Avoid repeatedly producing lengthy reports instead of correcting known defects.
+
+Do not create unnecessary temporary accounts, mock payment flows, or disconnected demonstration products.
+
+Use the existing legitimate production infrastructure.
+
+Run targeted checks appropriate to the risk of each change, particularly authentication, authorisation, financial transactions, and data privacy.
+
+Preserve current production functionality during deployments.
+
+When a service is not ready, accurately identify its status and continue implementing other available capabilities.
+
+Do not conceal errors or present planned functionality as completed.
+
+Do not substitute speculative spiritual explanations for actual measurements, and do not insert repetitive dismissive statements into customer-facing interpretation results.
+
+Encourage exploration while communicating what the instrument observed, generated, or inferred.
+
+11. DEFINITION OF COMMERCIAL READINESS
+
+Phase 2 is complete when a genuine customer can:
+
+1. Open ZionCore on a mobile device.
+2. Register or sign in successfully.
+3. Access their personalised dashboard.
+4. Explore available intelligence services.
+5. Upload or record an audio sample.
+6. Receive useful acoustic analysis and available interpretation options.
+7. View and approve a service quote.
+8. Purchase credits through Stripe.
+9. Submit a paid service request.
+10. Receive the resulting analysis or experimental output.
+11. Save or export results.
+12. Return later and continue their investigation.
+13. Manage premium membership.
+14. Access support and account settings.
+
+The owner must also be able to monitor operations and manage authorised business functions.
+
+Verify these workflows against the actual deployed application, not merely local code.
+
+FINAL EXECUTION MANDATE
+
+ZionCore must become a world-class customer product that combines advanced intelligence, experimental communication, faith-inspired exploration, and commercially sustainable engineering.
+
+Do not allow routine development bureaucracy, repetitive reporting, or unnecessary redesigns to consume the time needed for invention.
+
+Use existing technologies to build original capabilities.
+
+Where new communication methods are needed, create experimental instruments and research protocols that can be improved through observations.
+
+Give customers meaningful opportunities to explore possibilities beyond conventional applications.
+
+The objective is not simply to build a working website. It is to establish an expanding intelligence platform through which entirely new communication methods may eventually be discovered.
+
+Proceed decisively, preserve existing functionality, and prioritise real, measurable product completion.
+
+MWARI NDI MWARI.

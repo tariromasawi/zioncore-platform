@@ -1,0 +1,46 @@
+modules = ["nodejs-24", "python-base-3.13"]
+
+[deployment]
+router = "application"
+deploymentTarget = "autoscale"
+
+[deployment.postBuild]
+args = ["pnpm", "store", "prune"]
+env = { "CI" = "true" }
+
+[workflows]
+runButton = "Project"
+
+[agent]
+stack = "PNPM_WORKSPACE"
+expertMode = true
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000
+
+[nix]
+channel = "stable-25_05"
+packages = ["jdk21"]
+
+[userenv]
+
+[userenv.development]
+VITE_FIREBASE_API_KEY = "[REDACTED; SET VIA REPLIT ENVIRONMENT]"
+VITE_FIREBASE_APP_ID = "1:635097760381:web:4d796bbbdb94f181e56714"
+VITE_FIREBASE_AUTH_DOMAIN = "ethereal-throne-b20e6.firebaseapp.com"
+VITE_FIREBASE_MESSAGING_SENDER_ID = "635097760381"
+VITE_FIREBASE_PROJECT_ID = "ethereal-throne-b20e6"
+VITE_FIREBASE_STORAGE_BUCKET = "ethereal-throne-b20e6.firebasestorage.app"
+VITE_FIREBASE_APPCHECK_SITE_KEY = "[REDACTED; SET VIA REPLIT ENVIRONMENT]"
+
+[userenv.shared]
+
+[userenv.production]
+VITE_FIREBASE_API_KEY = "[REDACTED; SET VIA REPLIT ENVIRONMENT]"
+VITE_FIREBASE_APP_ID = "1:635097760381:web:c718ecaac8b0b21de56714"
+VITE_FIREBASE_AUTH_DOMAIN = "ethereal-throne-b20e6.firebaseapp.com"
+VITE_FIREBASE_MESSAGING_SENDER_ID = "635097760381"
+VITE_FIREBASE_PROJECT_ID = "ethereal-throne-b20e6"
+VITE_FIREBASE_STORAGE_BUCKET = "ethereal-throne-b20e6.firebasestorage.app"
+VITE_FIREBASE_APPCHECK_SITE_KEY = "[REDACTED; SET VIA REPLIT ENVIRONMENT]"

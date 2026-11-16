@@ -1,0 +1,123 @@
+.zc-premium-page {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: clamp(24px, 5vw, 54px) clamp(18px, 4vw, 38px);
+  color: #18293d;
+}
+
+.zc-premium-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #806322;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .16em;
+}
+
+.zc-premium-page h1 {
+  max-width: 760px;
+  margin: 16px 0 10px;
+  color: #17283b;
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.04;
+  letter-spacing: -.04em;
+}
+
+.zc-premium-intro {
+  max-width: 720px;
+  color: #536276;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.zc-premium-value,
+.zc-premium-delta {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin: 24px 0;
+  padding: 15px 17px;
+  border: 1px solid rgba(128, 99, 34, .24);
+  border-radius: 14px;
+  background: linear-gradient(115deg, rgba(215, 189, 122, .18), rgba(76, 115, 167, .08));
+  color: #57451d;
+}
+
+.zc-premium-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 26px 0;
+  padding: 22px;
+  border: 1px solid rgba(143, 168, 204, .2);
+  border-radius: 16px;
+  background: rgba(13, 23, 41, .78);
+  color: #c5d0e1;
+}
+
+.zc-premium-state p { margin: 0; line-height: 1.6; }
+.zc-premium-state small { color: #8f9cb2; line-height: 1.55; }
+.zc-premium-error { border-color: rgba(235, 137, 137, .4); }
+
+.zc-premium-selectors {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
+  gap: 14px;
+  margin: 30px 0 18px;
+}
+
+.zc-premium-selectors label { display: grid; gap: 8px; color: #aab7cd; font-size: 12px; }
+.zc-premium-selectors select {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid rgba(43, 66, 98, .24);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .92);
+  color: #17283b;
+}
+
+.zc-premium-versus {
+  padding-bottom: 14px;
+  color: #806322;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.zc-premium-comparison-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.zc-premium-session {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid rgba(143, 168, 204, .22);
+  border-radius: 16px;
+  background: linear-gradient(155deg, rgba(20, 34, 57, .94), rgba(12, 21, 38, .94));
+}
+
+.zc-premium-session-top { display: flex; justify-content: space-between; gap: 10px; color: #9eacc1; font-size: 11px; }
+.zc-premium-session h3 { margin: 15px 0 18px; color: #f0dba8; font-size: clamp(22px, 4vw, 31px); font-variant-numeric: tabular-nums; }
+.zc-premium-session dl { display: grid; gap: 11px; margin: 0; }
+.zc-premium-session dl div { display: grid; grid-template-columns: minmax(95px, .7fr) 1.3fr; gap: 12px; }
+.zc-premium-session dt { color: #8e9bb1; font-size: 12px; }
+.zc-premium-session dd { margin: 0; color: #e2e9f4; font-size: 13px; overflow-wrap: anywhere; }
+.zc-premium-session-note { margin: 17px 0 0; padding-top: 13px; border-top: 1px solid rgba(143,168,204,.14); color: #afbdd2; font-size: 12px; line-height: 1.55; }
+
+.zc-premium-delta { align-items: flex-start; flex-direction: column; gap: 5px; color: #e5d6ad; }
+.zc-premium-delta span { color: #bdc9dc; font-variant-numeric: tabular-nums; }
+.zc-premium-footnote { color: #5b6879; font-size: 12px; line-height: 1.6; }
+.zc-premium-manage { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; color: #765b20; font-size: 13px; text-decoration: none; }
+.zc-premium-manage:hover { text-decoration: underline; }
+
+@media (max-width: 700px) {
+  .zc-premium-selectors { grid-template-columns: 1fr; }
+  .zc-premium-versus { text-align: center; padding: 0; }
+  .zc-premium-comparison-grid { grid-template-columns: 1fr; }
+  .zc-premium-session-top { flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zc-premium-page *, .zc-premium-page *::before, .zc-premium-page *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}

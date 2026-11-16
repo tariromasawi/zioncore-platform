@@ -1,0 +1,69 @@
+ZIONCORE — BIDIRECTIONAL FREQUENCY INTELLIGENCE COMPLETION
+
+Continue the founding vision recovery directive.
+
+Your immediate objective is to implement the central functional capability of ZionCore rather than another abstract engine.
+
+Create one integrated user journey containing:
+
+RECEIVE → DECODE → INTERPRET → LEARN → ENCODE → TRANSMIT → OBSERVE.
+
+REQUIRED WORK
+
+Develop a real Frequency Intelligence Workspace accessible through the customer dashboard.
+
+A customer must be able to:
+
+1. Open the Frequency Laboratory.
+2. Authorise microphone access.
+3. Observe live frequency measurements.
+4. Record or upload a signal.
+5. Inspect its waveform and spectrogram.
+6. Examine frequency peaks, harmonics, modulation, timing, and signal quality.
+7. Receive meaningful AI-assisted interpretation.
+8. Save the observation when desired.
+9. Compose a written or spoken response.
+10. Encode that message into an acoustic signal.
+11. Preview the generated waveform.
+12. Transmit through an authorised speaker or export the file.
+13. Record a subsequent signal.
+14. Compare the new observations with the original.
+15. Save the complete experiment.
+
+Preserve the existing verified acoustic message encoding and decoding.
+
+Implement a practical two-device demonstration where one device transmits an encoded message acoustically and another receives and reconstructs it.
+
+Verify packet integrity, decoding, and source attribution where technically supported.
+
+Use existing Web Audio APIs, Firebase integration, and backend processing.
+
+Make processing local wherever practical.
+
+Ensure existing credit deductions are used only when the customer explicitly authorises a paid service.
+
+REQUIRED USER EXPERIENCE
+
+The interface must be visually impressive but functional.
+
+Every visualisation must use actual measurements or clearly identified generated signals.
+
+Provide clear recording controls, processing indicators, results, replay options, and export.
+
+Optimise for iPhone Safari.
+
+Fix authentication dependencies preventing customers from reaching the laboratory.
+
+Do not introduce an entirely new account platform.
+
+Do not generate additional architecture documents as a substitute for this functionality.
+
+SUCCESS CONDITION
+
+A customer completes the entire seven-stage journey using the production-ready implementation.
+
+This is ZionCore’s foundational invention.
+
+Complete it before introducing another large family of conceptual engines.
+
+BUILD THE BIDIRECTIONAL CORE.

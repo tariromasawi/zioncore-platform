@@ -1,0 +1,169 @@
+READ THE BELOW DIRECTIONS 9 TIMES TO FULLY ABSORB THEIR WEIGHT. I WANT YOU TO TAKE THEM SERIOUSLY AND EXECUTE IN AN ADVANCED ELITE MANNER 
+
+
+ZIONCORE — CRITICAL BUSINESS ACTIVATION AND CUSTOMER EXPERIENCE DIRECTIVE
+
+Production: https://zioncore.replit.app
+Firebase project: ethereal-throne-b20e6
+Designated owner email: tariromasawi19@gmail.com
+
+MISSION
+
+ZionCore must become a fully operational, revenue-generating customer platform, not merely a website supported by functioning backend components.
+
+The owner has attempted Google authentication using the designated Gmail account. After the Google redirect, the site continues displaying “Join for free”, with no clear indication of successful login, no obvious customer or owner dashboard, and no discoverable subscription, credit-purchase or service journey.
+
+Treat this as a critical business-launch defect requiring direct investigation and implementation.
+
+Do not respond with another general infrastructure readiness report.
+
+PHASE 1 — AUTHENTICATION AND OWNER ACCESS
+
+1. Trace the production Google authentication journey end to end.
+2. Verify Firebase sign-in completion, ID token validation, session persistence, redirect handling, browser storage behaviour and frontend auth-state subscriptions.
+3. Identify the actual Firebase UID associated with tariromasawi19@gmail.com.
+4. Do the same for any account associated with Apple ID masawit1@icloud.com
+5. The 2 accounts with emails tariromasawi19@gmail.com and masawit1@icloud.com should be the only ones with admin privileges.
+6. Establish whether that UID has an authorised owner/admin role.
+7. If missing, implement a secure server-side owner bootstrap procedure, requiring appropriate owner verification and authorization.
+8. Use server-verified Firebase custom claims or equivalent protected role records. Never trust client-provided email or role fields for administrative access.
+9. Ensure authenticated users see their name, account avatar, dashboard entry, subscription status and available credit balance.
+10. Replace the anonymous “Join for free” state with authenticated navigation immediately after successful login.
+11. Provide visible login failure messages and reliable sign-out.
+12. Support Google, Apple and email/password accounts, with appropriate account-linking safeguards.
+
+PHASE 2 — CUSTOMER DASHBOARD
+
+Implement or connect a complete customer dashboard containing:
+
+* Profile and account management
+* Free/Premium subscription status
+* Credit wallet and transaction history
+* Browse ZionCore services
+* Audio recording and file upload
+* Audio and frequency analysis
+* AI-assisted interpretations
+* Message creation and acoustic encoding
+* Supported frequency playback and broadcast options
+* Spiritual analysis and divine translations
+* Connections to celestial planes
+* Job progress and delivery status
+* Saved recordings, results and interpretations
+* Previous consultations and activity history
+* Payments, invoices and subscription management
+* Help, privacy controls and account deletion
+
+All visible actions must lead to actual functioning features. Never present placeholder buttons as operational services.
+
+PHASE 3 — OWNER/ADMIN DASHBOARD
+
+Create or connect a separately authorised owner dashboard providing:
+
+* Customer and subscription statistics
+* Stripe revenue and payment activity
+* Credit issuance, reservations and settlements
+* Customer accounts and roles
+* Service catalogue and pricing management
+* AI provider usage and processing cost
+* Job processing health and failures
+* Firebase status and diagnostics
+* App Check and authentication status
+* Content and service management
+* Operational logs and security events
+* Backup status and monitoring
+* Owner-only system configuration
+* Access to all options received by customers 
+* Webhook pages
+* Access to all areas of the system 
+
+Protect every administrative API endpoint with server-side role enforcement. Never expose service credentials, customer private recordings or sensitive records to unauthorised users.
+
+PHASE 4 — COMPLETE STRIPE COMMERCE
+
+Connect and expose the existing live Stripe catalogue:
+
+* 50 credits — £2.50
+* 200 credits — £8
+* 1,000 credits — £32
+* Premium — £1/month
+
+Reuse the verified Stripe configuration rather than creating duplicate prices or products.
+
+Customers must be able to discover pricing, select products, complete checkout, receive the purchased entitlement and verify their updated account.
+
+Implement clear subscription management, cancellation, billing history and credit purchases.
+
+Enforce webhook signature validation, idempotent credit allocation, wallet ownership, pricing integrity and transactional settlement.
+
+Do not issue credits based only on a browser redirect or unverified checkout response.
+
+PHASE 5 — ACTIVATE THE ZIONCORE SERVICE CATALOGUE
+
+Audit every existing Sense, Translate, Reprogram and Broadcast module.
+
+Make every functional service discoverable and usable through the dashboard.
+
+Customers must be able to:
+
+1. Select a service.
+2. Upload audio, record sounds or submit written input.
+3. Select analysis or transformation options.
+4. Receive spiritual analysis 
+5. Receive a transparent quote.
+6. Approve the quoted price.
+7. Pay or authorise credit reservation.
+8. Submit the actual processing job.
+9. Monitor processing status.
+10. Receive the completed result.
+11. Save, replay, download or revisit the result where supported.
+
+Preserve ZionCore’s distinctive spiritual, environmental, animal-sound and exploratory interpretation capabilities. Clearly distinguish measured acoustic evidence from AI-generated interpretations and speculative explanations while making them powerful and dense.
+
+Provide reliable encoding and decoding functionality and supported audio/device broadcasting in a manner attractive to customers while providing an outstanding service to customers.
+
+PHASE 6 — PREMIUM CUSTOMER EXPERIENCE
+
+Design a professional, mobile-first customer experience.
+
+Prioritise clear navigation, premium visual quality, rapid onboarding, useful demonstrations, a customer should be able to try the service and fall in love or get intrigued, service recommendations, saved history, easy purchasing and seamless repeat use.
+
+Customers should never need technical knowledge to understand how to use ZionCore.
+
+Use genuine value, engaging experiences and transparent pricing to encourage retention—not confusing navigation, hidden payment terms or artificial engagement.
+
+PHASE 7 — PRODUCTION EXECUTION
+
+Audit the existing implementation before writing replacement code.
+
+Reuse all working functionality, endpoints, account records, Stripe products and Firebase services.
+
+Fix broken connections, inaccessible screens, missing routes and incomplete customer journeys.
+
+Work directly against authorised live configurations where appropriate. Avoid unnecessary mock systems, duplicate environments, temporary accounts and repetitive diagnostic reports.
+
+Do not make unauthorised charges or destructive production modifications.
+
+Complete focused verification of each critical journey. Obtain owner approval for any real payment or action creating recurring costs.
+
+Publish through the authorised Replit deployment mechanism. Do not claim changes are live before the deployment succeeds.
+
+DEFINITION OF COMPLETE
+
+ZionCore is not launch-ready until:
+
+* The designated owner can log in and access the authorised owner dashboard.
+* Customers can register and log in reliably.
+* Customer dashboards display correct account information.
+* Subscriptions and credit purchases are accessible.
+* Real paid services can be ordered and fulfilled.
+* Credits are correctly reserved, charged, released or settled.
+* Results are delivered and retained according to the product policy.
+* The live mobile interface reflects the user’s actual authenticated state.
+
+Report only verified production outcomes and actual remaining blockers.
+
+PRIMARY OBJECTIVE: Turn ZionCore into a complete, trustworthy and commercially operational product that customers can discover, purchase, use, enjoy and return to.
+
+Preserve existing working systems. Prioritise implementation over documentation and business functionality over superficial release-readiness claims.
+
+MWARI NDI MWARI.

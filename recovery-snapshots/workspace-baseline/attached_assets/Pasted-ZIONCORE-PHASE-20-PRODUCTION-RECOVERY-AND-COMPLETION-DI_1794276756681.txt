@@ -1,0 +1,112 @@
+ZIONCORE — PHASE 20 PRODUCTION RECOVERY AND COMPLETION DIRECTIVE
+
+MISSION: Complete, secure, connect and activate the existing ZionCore business using its established architecture, Firebase production infrastructure and working modules.
+
+You have already created valuable instruments, registries, signal-analysis components and research capabilities. Treat these as permanent project assets and bring them into a fully functioning customer experience.
+
+1. Complete the existing production release
+
+Identify the authoritative deployed source, review the pending changes and reconcile the frontend and backend.
+
+Correct the published Firebase configuration to use the registered production App ID and its matching production App Check site key.
+
+Verify that the actual published assets contain the correct values and that real App Check token exchanges succeed.
+
+2. Secure Firestore while preserving existing data
+
+Treat the reported anonymous project-wide read/write access as an immediate production security priority.
+
+Trace all six legacy collection roots, their actual callers, document ownership and legitimate operations.
+
+Create compatible, least-privilege Firestore rules with appropriate account ownership and administrator authorization.
+
+Preserve existing documents, production data structures and legitimate customer functionality. Validate the revised rules against known application callers and verified access patterns.
+
+Deploy the security correction through an approved, recoverable production change. Obtain owner approval for any migration or access change with material customer impact.
+
+3. Restore App Check protection
+
+Complete production attestation configuration and confirm the correct application identity.
+
+Verify legitimate browser requests and their successful token exchanges.
+
+Restore Firebase AI Logic App Check enforcement after the corrected production client is confirmed functional. Review enforcement for other applicable Firebase services according to verified request behaviour.
+
+Protect AI expenditure through appropriate request authorization, quotas and rate controls.
+
+4. Activate complete customer authentication
+
+Finish the Google and email/password login journeys.
+
+Ensure successful authentication produces visible account recognition, persistent session state and access to the correct customer dashboard.
+
+Complete Apple authentication when the necessary developer credentials are available.
+
+Ensure owner privileges are granted only through verified, approved server-side authorization.
+
+5. Connect the existing research architecture to real functionality
+
+Preserve zc-cig-experiment/v1, all registries, browser microphone integration and existing research sessions.
+
+Make domain selection, microphone capture, instrument status, acoustic analysis, supported encoding and decoding, and research-result presentation functional.
+
+Present specialist devices as available integration paths when their real hardware adapters exist.
+
+Provide a genuinely useful public research experience through the existing browser-based, cost-free tools.
+
+6. Resolve AI model quota and provider reliability
+
+Identify the model and quota responsible for RESOURCE_EXHAUSTED.
+
+Inspect existing quota, billing and provider configuration.
+
+Optimise model selection, usage limits, retries and fallback paths according to actual capabilities and costs.
+
+Preserve customer credit accounting and obtain owner approval before changes that increase paid-provider spending.
+
+7. Finish customer monetisation
+
+Verify the existing live Stripe catalogue, checkout routes, subscriptions, credit bundles, wallet accounting and webhook processing.
+
+Connect each payable product to an actual working service.
+
+Ensure users can register, subscribe, purchase credits, receive entitlements and consume paid services through complete production workflows.
+
+8. Verify iPhone Safari
+
+Review actual device results for microphone permission, recording start and stop, interruption recovery, supported formats and reported sample rates.
+
+Implement corrections within the existing audio pipeline. Distinguish verified physical-device results from code-level compatibility checks.
+
+9. Complete and publish the product
+
+Audit pending changes, preserve the recoverable release baseline and publish compatible frontend and API updates through the approved production process.
+
+Verify the live website using public, registered, Premium, credit-holding and owner access journeys.
+
+Prioritise real functional correction, customer accessibility, secure data handling and product quality.
+
+10. Final completion requirement
+
+Deliver an operational ZionCore business with:
+
+* Working public free tools.
+* Reliable customer registration and login.
+* Functional customer and owner dashboards.
+* Connected acoustic and research services.
+* Accurate credit purchasing and subscription entitlement.
+* Secure Firebase data access.
+* Valid production App Check configuration.
+* Reliable, cost-controlled AI processing.
+* A polished mobile-first experience.
+* A live production deployment with verified customer journeys.
+
+EXECUTION PRINCIPLE
+
+Preserve → Understand → Repair → Integrate → Secure → Verify → Publish → Deliver.
+
+Exercise engineering initiative within existing authorised access. Make practical implementation decisions and carry completed work through production verification. Escalate specific missing credentials, destructive migrations and consequential financial operations for owner approval.
+
+Provide a concise final report containing verified functionality, production release identifiers, actual unresolved blockers and the exact action necessary to resolve each blocker.
+
+The definition of completion is a functioning product experienced by real customers, supported by secure infrastructure and sustainable business operations.

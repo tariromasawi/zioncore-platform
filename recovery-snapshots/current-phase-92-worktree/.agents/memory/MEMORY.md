@@ -1,0 +1,24 @@
+- [Firestore rule arithmetic](firestore-rule-arithmetic.md) — cast operands to floating point before fractional resolution checks; integer division truncates.
+- [Production Firebase identity](firebase-runtime-identity.md) — owner-confirmed Admin principal for IAM checks; compare active credential identity without exposing its JSON.
+- [ZionCore product direction](zioncore-product-direction.md) — user wants advanced design, decoding, AI interpretation, and results rather than a basic experience.
+- [Membership entitlements](membership-entitlements.md) — Premium must be backed by server-verified membership state; clients can read their record but never grant it.
+- [Credit wallet accounting](credit-wallet-accounting.md) — wallet mutations are server-only and idempotent; promotional credits are consumed before purchased credits.
+- [Stripe app credentials](stripe-app-credentials.md) — agent MCP access does not give the server an API credential; verify app-side access separately and keep checkout disabled until it exists.
+- [App Storage sidecar auth](app-storage-sidecar-auth.md) — local shell jobs may lack default GCS credentials; use Replit’s sidecar configuration for App Storage operations.
+- [App Storage stream lifecycle](app-storage-stream-lifecycle.md) — early cancellation can crash the transport before its response pipeline is ready.
+- [Capture recovery lifecycle](capture-recovery-lifecycle.md) — recovery boundaries must not hide microphone controls while leaving the capture owner running.
+- [MediaRecorder MP4 chunking](media-recorder-mp4-chunking.md) — validate the final decoded recording; time-sliced MP4 fragments can yield truncated standalone Blobs.
+- [Audio time-series coverage](audio-time-series-coverage.md) — imported-file summaries must sample start to finish; live capture remains an intentionally rolling window.
+- [Production index approval](production-index-approval.md) — the owner declined the cleanup-index change; obtain new approval before creating it.
+- [Browser storage runtime](browser-storage-runtime.md) — Node navigator globals are not a browser; use browser-only locks and injected test coordination.
+- [Static SEO routing](seo-static-routing.md) — public landing pages must bypass the SPA fallback in both development and production.
+- [Resonance profile consistency](resonance-engine.md) — keep the versioned deterministic signal profile shared between the live monitor and AI interpretation prompt.
+- [ZionCore visual artwork](zioncore-artwork.md) — preserve submitted imagery whole; present it in a randomized matrix without obscuring controls.
+- [Audio provider consent](audio-provider-consent.md) — keep analysis local by default; raw imported audio needs explicit per-request consent and an approved price.
+- [Observation history retention](observation-history-retention.md) — local records are browser-profile scoped and unencrypted; cloud observations persist until user deletion, so avoid automatic expiry.
+- [AI interpretation quality gates](ai-interpretation-quality.md) — prompts alone did not prevent internal attribution or unsupported signal claims; validate output server-side and fail safely.
+- [Free-reading regression coverage](free-reading-regression-coverage.md) — protect measured values, access, privacy and report structure; avoid tests coupled to editable prose.
+- [ZionCore hardware roadmap](zioncore-hardware-roadmap.md) — no hardware will be supplied; implement software adapters/imports and distinguish file paths, bridge requirements, and physical verification.
+- [GCS stream lifecycle](gcs-stream-listener-warning.md) — fix repeated pipeline listeners with explicit backpressure and cancellation handling; never mask the warning with listener caps.
+- [Artifact validation from worktrees](artifact-validation-worktrees.md) — duplicate preview paths can block manifest validation in an isolated worktree; validate after the branch is active.
+- [Genesis prompt boundaries](genesis-prompt-boundaries.md) — retain the full founder-provided source, but send only compact, selected context to AI providers.

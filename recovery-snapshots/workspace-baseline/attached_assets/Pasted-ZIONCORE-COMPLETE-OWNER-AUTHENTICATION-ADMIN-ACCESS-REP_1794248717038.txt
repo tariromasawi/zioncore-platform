@@ -1,0 +1,36 @@
+ZIONCORE — COMPLETE OWNER AUTHENTICATION & ADMIN ACCESS REPAIR
+
+Proceed with inspecting the production sign-in system, authentication callbacks, owner permissions and dashboard routes.
+
+My existing owner Google account is tariromasawi19@gmail.com.
+
+Firebase project: ethereal-throne-b20e6.
+
+Your objective is to make the existing Google sign-in work correctly so I can access ZionCore as the authorised owner and administrator.
+
+1. Trace the full Google OAuth login and redirect process.
+2. Investigate why the website previously returned to the homepage without clearly showing a signed-in session.
+3. Verify that Firebase Authentication correctly recognises my existing account and UID.
+4. Establish secure, UID-based owner-role assignment using an authorised administrative process.
+5. Ensure the frontend correctly restores login sessions and displays the authenticated user’s identity.
+6. Create or repair the owner dashboard and its protected navigation.
+7. Provide access to Firebase diagnostics, customer management, subscriptions, credit accounting, AI usage and application health.
+8. Ensure owner-only endpoints require a valid Firebase ID token and verified owner privileges.
+9. Retain separate customer and administrator permissions.
+10. Do not use a service-account credential as a substitute for owner login.
+11. Fix actual authentication defects and verify all available functionality.
+12. Do not bypass authentication, expose tokens, create unnecessary accounts or weaken security.
+13. Preserve existing production data and functionality.
+14. Do not publish changes without my explicit approval.
+
+Use your existing Firebase administrator permissions for authorised server-side inspection and repair.
+
+Complete everything possible without my interactive session.
+
+Once the owner sign-in flow is ready, provide the precise production URL and the steps necessary for me to authenticate and run the remaining protected diagnostics.
+
+Do not stop at another diagnostic report. Repair the underlying sign-in and dashboard problems.
+
+I SHOULD BE ABLE TO ACCESS EVERY PART OF THE SYSTEM FROM THIS ACCOUNT SO GIVE ME MAXIMUM ACCESS POSSIBLE. I SHOULD BE ABLE TO SEE WHAT CUSTOMERS SEE ON THEIR DASHBOARD SO I CAN TEST AND MONITOR THEM. ALSO REMEMBER THE EMAIL AND ICLOUD ID masawit1@icloud.com also belongs to the admin and can log in as email and also using the Apple and google authentication channels.
+
+MWARI NDI MWARI.

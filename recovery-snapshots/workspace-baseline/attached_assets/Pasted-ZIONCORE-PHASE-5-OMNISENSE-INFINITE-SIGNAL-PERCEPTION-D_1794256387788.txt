@@ -1,0 +1,43 @@
+ZIONCORE PHASE 5 — OMNISENSE INFINITE SIGNAL PERCEPTION
+
+Develop OmniSense into a comprehensive, modular sensing and signal acquisition platform.
+
+Extend beyond ordinary recorded audio.
+
+Implement support or extensible adapters for:
+
+* Human and animal vocalisations.
+* Natural environmental recordings.
+* Hydrophone and underwater acoustic sources.
+* Seismic and vibration measurements.
+* Plant electrophysiology and biological sensor data.
+* Electromagnetic and radio signal measurements.
+* Astronomical public datasets and accessible observatory recordings.
+* Multichannel, spatial, temporal, and high-resolution signals.
+* Customer-supplied unconventional recordings.
+
+Develop a shared computational signal format accommodating timestamps, spectral measurements, spatial context, calibration, units, uncertainty, provenance, and compatible metadata.
+
+Implement adaptive noise reduction, event detection, time-frequency analysis, source separation where viable, anomaly detection, and recurring-pattern discovery.
+
+Allow unfamiliar signals to remain unclassified while being thoroughly analysed.
+
+Build real-time and asynchronous acquisition workflows.
+
+Support expandable sensor plugins without granting unnecessary device permissions.
+
+Develop rich visualisation tools: waveforms, spectrograms, frequency distributions, temporal maps, anomaly timelines, and cross-source comparisons.
+
+Establish a future-ready sensor capability registry so unsupported hardware can be integrated when available.
+
+Do not fabricate sensor data or invent measurements.
+
+Make the customer’s first recording or upload immediately useful.
+
+Preserve the existing audio pipeline and its functioning acoustic decoding technology.
+
+Prioritise performance, privacy, accessible mobile interfaces, and efficient local signal processing.
+
+The ambition is to make ZionCore a universal instrument capable of investigating measurable information across as many domains as technology allows.
+
+EXPAND THE REACH OF PERCEPTION. BUILD WHAT DOES NOT YET EXIST.

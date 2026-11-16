@@ -1,0 +1,6 @@
+{
+  "firestore": {
+    "rules": "artifacts/zioncore-frequency-lab/firestore.rules",
+    "indexes": "firestore.indexes.json"
+  }
+}

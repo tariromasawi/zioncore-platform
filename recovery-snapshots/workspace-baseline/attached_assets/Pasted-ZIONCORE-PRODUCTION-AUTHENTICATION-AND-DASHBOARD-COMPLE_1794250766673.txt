@@ -1,0 +1,34 @@
+ZIONCORE — PRODUCTION AUTHENTICATION AND DASHBOARD COMPLETION DIRECTIVE
+
+The latest workspace changes have been published, but production authentication remains defective.
+
+Observed failures:
+
+* Google sign-in completes its external process but returns to ZionCore without displaying an authenticated account or dashboard.
+* Apple sign-in produces a brief page flicker without completing the login experience.
+* There is no confirmed authenticated customer session or automatic dashboard navigation.
+
+Execute the following:
+
+1. Audit the actual implementation of /history, /wallet, /premium, and /admin. Establish whether these are functional dashboards with working backend integration or merely pages, routes, or placeholders.
+2. Diagnose Google and Apple Firebase authentication, including provider configuration, authorised domains, redirect handling, Firebase App Check, auth-state persistence, session creation, API token verification, and browser errors.
+3. Repair authentication so successful sign-in creates or retrieves the customer profile, persists the session, changes account navigation, and opens the customer dashboard automatically.
+4. Ensure tariromasawi19@gmail.com is recognised as the intended owner account. Verify the corresponding Firebase UID and assign owner privileges securely through the backend. Never grant admin access merely because an unverified email matches.
+5. Verify that the admin dashboard is protected, operational, and shows the correct owner information.
+6. Complete customer dashboard integration for profile management, saved history, credit balance, purchases, subscription status, and service access.
+7. Ensure that customers can register, sign in, purchase credits, subscribe, submit paid jobs, and view results through clearly visible navigation.
+8. Diagnose and fix root causes rather than hiding errors or simply redirecting users.
+9. Use existing production infrastructure and real authorised accounts. Do not create unnecessary temporary accounts or disconnected demonstration dashboards.
+10. Preserve existing working modules, financial safeguards, and customer data.
+
+Required completion report:
+
+For each dashboard, report whether it is implemented, connected to production data, accessible after authentication, and fully functional.
+
+Identify the exact causes of Google and Apple login failures and the changes applied.
+
+Verify the production customer journey end to end. Clearly distinguish checks executed successfully from functionality that still requires my participation.
+
+Do not declare the platform operational based solely on compiled code, passing unit tests, or existing routes.
+
+Priority: Fix the live authentication and dashboard experience before adding unrelated features.

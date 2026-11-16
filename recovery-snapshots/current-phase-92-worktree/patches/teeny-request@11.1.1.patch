@@ -1,0 +1,49 @@
+diff --git a/build/src/index.js b/build/src/index.js
+index 3feb6bcac60c56b254af79f35a2c379f63a971cc..b3be0d026604a39bda4e49a3bd2019fe1aa11128 100644
+--- a/build/src/index.js
++++ b/build/src/index.js
+@@ -452,13 +452,20 @@ function teenyRequest(reqOpts, callback) {
+         const requestStream = streamEvents(new stream_1.PassThrough());
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         let responseStream;
++        let responsePiped = false;
++        const pipeResponse = () => {
++            if (!responseStream || responsePiped || requestStream.destroyed)
++                return;
++            responsePiped = true;
++            responseStream.pipe(requestStream);
++        };
+         requestStream.once('reading', () => {
+             if (responseStream) {
+-                (0, stream_1.pipeline)(responseStream, requestStream, () => { });
++                pipeResponse();
+             }
+             else {
+                 requestStream.once('response', () => {
+-                    (0, stream_1.pipeline)(responseStream, requestStream, () => { });
++                    pipeResponse();
+                 });
+             }
+         });
+@@ -467,8 +474,19 @@ function teenyRequest(reqOpts, callback) {
+         fetch(uri, options).then(res => {
+             teenyRequest.stats.requestFinished();
+             responseStream = res.body;
+-            responseStream.on('error', (err) => {
+-                requestStream.emit('error', err);
++            responseStream.once('error', (err) => {
++                if (!requestStream.destroyed)
++                    requestStream.destroy(err);
++            });
++            responseStream.once('close', () => {
++                if (!responseStream.readableEnded && !requestStream.destroyed) {
++                    requestStream.destroy(new Error('Response stream closed before its body completed.'));
++                }
++            });
++            requestStream.once('close', () => {
++                if (!responseStream.readableEnded && !responseStream.destroyed) {
++                    responseStream.destroy();
++                }
+             });
+             const response = fetchToRequestResponse(options, res);
+             requestStream.emit('response', response);

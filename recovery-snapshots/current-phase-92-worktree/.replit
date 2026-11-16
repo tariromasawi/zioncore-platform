@@ -1,0 +1,83 @@
+modules = ["nodejs-24", "python-base-3.13", "postgresql-16"]
+
+[deployment]
+router = "application"
+deploymentTarget = "autoscale"
+
+[deployment.postBuild]
+args = ["pnpm", "store", "prune"]
+env = { "CI" = "true" }
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "zioncore-release"
+
+[[workflows.workflow]]
+name = "zioncore-release"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pnpm run verify:release"
+
+[workflows.workflow.metadata]
+isValidation = true
+
+[agent]
+stack = "PNPM_WORKSPACE"
+expertMode = true
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 120000
+
+[nix]
+channel = "stable-25_05"
+packages = ["jdk21"]
+
+[userenv]
+
+[userenv.development]
+VITE_FIREBASE_API_KEY = "[REDACTED; SET VIA REPLIT ENVIRONMENT]"
+VITE_FIREBASE_APP_ID = "1:635097760381:web:4d796bbbdb94f181e56714"
+VITE_FIREBASE_AUTH_DOMAIN = "ethereal-throne-b20e6.firebaseapp.com"
+VITE_FIREBASE_MESSAGING_SENDER_ID = "635097760381"
+VITE_FIREBASE_PROJECT_ID = "ethereal-throne-b20e6"
+VITE_FIREBASE_STORAGE_BUCKET = "ethereal-throne-b20e6.firebasestorage.app"
+VITE_FIREBASE_APPCHECK_SITE_KEY = "[REDACTED; SET VIA REPLIT ENVIRONMENT]"
+ZIONCORE_CHECKOUT_MODE = "live"
+ZIONCORE_AI_INTERPRETATION_CREDITS = "100"
+ZIONCORE_AI_PRICING_APPROVED = "true"
+ZIONCORE_AI_PRICING_VERSION = "service-catalog-v2"
+ZIONCORE_AI_SPIRITUAL_INTERPRETATION_CREDITS = "200"
+
+[userenv.production]
+ZIONCORE_CHECKOUT_MODE = "live"
+ZIONCORE_AI_INTERPRETATION_CREDITS = "100"
+ZIONCORE_AI_PRICING_APPROVED = "true"
+ZIONCORE_AI_PRICING_VERSION = "service-catalog-v2"
+ZIONCORE_AUTOMATIC_TAX_ENABLED = "true"
+ZIONCORE_LIVE_CHECKOUT_APPROVED = "true"
+ZIONCORE_PAID_USAGE_ENABLED = "true"
+ZIONCORE_PREMIUM_FEATURES_ENABLED = "true"
+VITE_FIREBASE_API_KEY = "[REDACTED; SET VIA REPLIT ENVIRONMENT]"
+VITE_FIREBASE_APP_ID = "1:635097760381:web:4d796bbbdb94f181e56714"
+VITE_FIREBASE_AUTH_DOMAIN = "ethereal-throne-b20e6.firebaseapp.com"
+VITE_FIREBASE_MESSAGING_SENDER_ID = "635097760381"
+VITE_FIREBASE_PROJECT_ID = "ethereal-throne-b20e6"
+VITE_FIREBASE_STORAGE_BUCKET = "ethereal-throne-b20e6.firebasestorage.app"
+ZIONCORE_AI_AUDIO_ANALYSIS_CREDITS = "40"
+ZIONCORE_AI_AUDIO_PRICING_APPROVED = "true"
+ZIONCORE_AI_AUDIO_PRICING_VERSION = "audio-cost-v2"
+ZIONCORE_AI_AUDIO_CREDITS_PER_30S = "5"
+ZIONCORE_AI_AUDIO_CREDITS_PER_MB = "2"
+ZIONCORE_AI_SPIRITUAL_INTERPRETATION_CREDITS = "200"
+VITE_FIREBASE_APPCHECK_SITE_KEY = "[REDACTED; SET VIA REPLIT ENVIRONMENT]"

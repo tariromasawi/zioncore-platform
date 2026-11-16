@@ -1,0 +1,279 @@
+.zc-spectral-matrix {
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid #d8d2c4;
+  border-radius: 5px;
+  background: linear-gradient(140deg, #f9f7f0 0%, #f1eee5 100%);
+  box-shadow: inset 0 1px 0 #ffffff9c;
+}
+
+.zc-spectral-matrix__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 17px 18px 13px;
+}
+
+.zc-spectral-matrix__eyebrow {
+  display: block;
+  color: #92723a;
+  font: 9px var(--app-font-mono);
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.zc-spectral-matrix__heading h3 {
+  margin: 7px 0 4px;
+  color: #29464a;
+  font: 21px/1.1 var(--app-font-serif);
+  font-weight: 400;
+}
+
+.zc-spectral-matrix__heading p {
+  margin: 0;
+  color: #74807b;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.zc-spectral-matrix__status {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  padding: 5px 7px;
+  border: 1px solid #ded7c8;
+  border-radius: 999px;
+  color: #687875;
+  font: 8px var(--app-font-mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.zc-spectral-matrix__status--sufficient {
+  border-color: #cbb880;
+  color: #82632e;
+}
+
+.zc-spectral-matrix__status--silent,
+.zc-spectral-matrix__status--insufficient_frames {
+  color: #7b7770;
+}
+
+.zc-spectral-matrix__formula {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  padding: 9px 18px;
+  border-top: 1px solid #e6e1d6;
+  border-bottom: 1px solid #e6e1d6;
+  background: #ebe8df8c;
+  color: #677b77;
+  font: 9px var(--app-font-mono);
+}
+
+.zc-spectral-matrix__formula span:first-child,
+.zc-spectral-matrix__formula span:nth-child(2) {
+  color: #526b66;
+}
+
+.zc-spectral-matrix__table-scroll {
+  overflow-x: auto;
+  padding: 13px 18px 8px;
+  scrollbar-color: #c6b98f transparent;
+  scrollbar-width: thin;
+}
+
+.zc-spectral-matrix__table {
+  width: 100%;
+  min-width: 520px;
+  border-spacing: 3px;
+  border-collapse: separate;
+  table-layout: fixed;
+  color: #405857;
+  font: 10px var(--app-font-mono);
+}
+
+.zc-spectral-matrix__table th {
+  padding: 4px 5px;
+  color: #72807b;
+  font-weight: 500;
+  text-align: center;
+}
+
+.zc-spectral-matrix__table thead th:first-child {
+  width: 110px;
+}
+
+.zc-spectral-matrix__table tbody th {
+  text-align: left;
+}
+
+.zc-spectral-matrix__table tbody th span {
+  display: block;
+  color: #345456;
+}
+
+.zc-spectral-matrix__table tbody th small {
+  display: block;
+  margin-top: 3px;
+  color: #88918a;
+  font-size: 8px;
+  font-weight: 400;
+}
+
+.zc-spectral-matrix__table td {
+  height: 34px;
+  border: 1px solid #ddd8cb;
+  border-radius: 2px;
+  color: #304b4d;
+  text-align: center;
+  transition: border-color 150ms ease, transform 150ms ease;
+}
+
+.zc-spectral-matrix__table td:hover {
+  z-index: 1;
+  border-color: #a9894d;
+  transform: translateY(-1px);
+}
+
+.zc-spectral-matrix__footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 2px 18px 14px;
+}
+
+.zc-spectral-matrix__legend {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 7px 13px;
+  color: #75817b;
+  font-size: 9px;
+}
+
+.zc-spectral-matrix__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.zc-spectral-matrix__swatch {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.zc-spectral-matrix__swatch--positive { background: #b9893a; }
+.zc-spectral-matrix__swatch--negative { background: #2e6f75; }
+
+.zc-spectral-matrix__footer p {
+  max-width: 480px;
+  margin: 0;
+  color: #7a8680;
+  font-size: 9px;
+  line-height: 1.55;
+  text-align: right;
+}
+
+.zc-spectral-matrix__principal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0 18px 17px;
+  padding: 12px 13px;
+  border: 1px solid #dcd4c2;
+  background: #f7f4ec;
+}
+
+.zc-spectral-matrix__principal > div:first-child {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+
+.zc-spectral-matrix__principal .zc-spectral-matrix__eyebrow {
+  grid-column: 1 / -1;
+  font-size: 8px;
+}
+
+.zc-spectral-matrix__principal strong {
+  color: #29464a;
+  font: 24px/1 var(--app-font-serif);
+  font-weight: 400;
+}
+
+.zc-spectral-matrix__principal small {
+  color: #84908a;
+  font: 8px var(--app-font-mono);
+}
+
+.zc-spectral-matrix__vector {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(34px, 1fr));
+  gap: clamp(5px, 1.5vw, 18px);
+}
+
+.zc-spectral-matrix__vector span {
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+
+.zc-spectral-matrix__vector span small {
+  color: #8b7a56;
+}
+
+.zc-spectral-matrix__vector b {
+  color: #355452;
+  font: 11px var(--app-font-mono);
+  font-weight: 500;
+}
+
+@media (max-width: 620px) {
+  .zc-spectral-matrix__heading {
+    padding: 14px;
+  }
+
+  .zc-spectral-matrix__heading h3 {
+    font-size: 19px;
+  }
+
+  .zc-spectral-matrix__table-scroll {
+    padding: 11px 12px 7px;
+  }
+
+  .zc-spectral-matrix__formula,
+  .zc-spectral-matrix__footer {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .zc-spectral-matrix__footer {
+    flex-direction: column;
+  }
+
+  .zc-spectral-matrix__footer p {
+    text-align: left;
+  }
+
+  .zc-spectral-matrix__principal {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-right: 12px;
+    margin-left: 12px;
+  }
+
+  .zc-spectral-matrix__vector {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zc-spectral-matrix__table td {
+    transition: none;
+  }
+}
