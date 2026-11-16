@@ -1,0 +1,100 @@
+name: ZionCore 2nd validation
+
+on:
+  pull_request:
+    paths:
+      - "artifacts/zioncore-2nd/**"
+      - "artifacts/zioncore-frequency-lab/**"
+      - "artifacts/api-server/**"
+      - "lib/**"
+      - "scripts/**"
+      - "governance/genesis/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "tsconfig*.json"
+      - ".github/workflows/zioncore-2nd-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zioncore-2nd-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.head_ref, 'zioncore-2nd/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.1
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Set up Java for Firebase emulators
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck workspace
+        run: pnpm run typecheck
+
+      - name: Build workspace
+        run: pnpm run build
+        env:
+          PORT: "18238"
+          BASE_PATH: "/"
+
+      - name: Test API server
+        run: pnpm --filter @workspace/api-server test:unit
+
+      - name: Test ZionCore 2nd artifact
+        run: pnpm --filter @workspace/zioncore-2nd test:unit
+
+      - name: Test frequency lab
+        run: pnpm --filter @workspace/zioncore-frequency-lab test:unit
+
+      - name: Test Firebase Auth emulators
+        run: pnpm --filter @workspace/zioncore-frequency-lab test:auth
+
+      - name: Test ZionCore 2nd Firestore rules
+        run: pnpm --filter @workspace/zioncore-2nd test:rules
+
+      - name: Test frequency lab Firestore rules
+        run: pnpm --filter @workspace/zioncore-frequency-lab test:rules
+
+      - name: Test wallet and Stripe emulator flows
+        run: pnpm --filter @workspace/api-server test:wallet
+
+      - name: Audit production dependencies
+        shell: bash
+        run: |
+          pnpm audit --prod --json > pnpm-audit.json || true
+          node <<'NODE'
+          const fs = require('node:fs');
+          const report = JSON.parse(fs.readFileSync('pnpm-audit.json', 'utf8'));
+          const counts = report.metadata?.vulnerabilities ?? {};
+          console.log(`Production dependency findings: ${JSON.stringify(counts)}`);
+          if ((counts.critical ?? 0) > 0 || (counts.high ?? 0) > 0) {
+            process.exitCode = 1;
+          } else if ((counts.moderate ?? 0) > 0) {
+            console.warn('Moderate findings remain; review advisories before release.');
+          }
+          NODE

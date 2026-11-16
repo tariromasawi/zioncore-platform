@@ -32,6 +32,16 @@ reconciliation.
 
 ## 2. Backup preparation and verification
 
+### API cross-origin policy
+
+The API does not grant cross-origin browser access by default. Same-origin
+frontends can call `/api` without a CORS allowlist. If a separately hosted
+frontend must call this API, set `CORS_ALLOWED_ORIGINS` to a comma-separated
+list of exact `http://` or `https://` origins, including any required port.
+Wildcards, credentials, paths, and non-HTTP schemes are rejected. Do not add
+unverified preview or customer origins. This setting controls browser response
+sharing; it is not authentication or authorization.
+
 ### Source and release records
 
 1. Before substantial code or configuration work, create a Replit checkpoint
