@@ -5,7 +5,7 @@ import {
   parseObservationBackup, prepareObservationRestore, restoreObservationBackup,
 } from './observation-backup';
 import {
-  appendObservation, OBSERVATION_STORAGE_KEY, readLocalRecoveryCopy,
+  appendObservation, getObservationStorageKey, OBSERVATION_STORAGE_KEY, readLocalRecoveryCopy,
   readObservationArchive, type Observation,
 } from './observations';
 
@@ -173,4 +173,31 @@ test('commit validates records again rather than trusting mutable preview data',
   plan.recordsToAdd[0]!.rmsLevel = 8;
   await assert.rejects(restoreObservationBackup(plan, false, { storage }), /validated/);
   assert.equal(storage.writes, 0);
+});
+
+test('backup restore targets the selected account device archive and leaves other accounts unchanged', async () => {
+  const firstUserId = 'uid-one';
+  const secondUserId = 'uid-two';
+  const firstKey = getObservationStorageKey(firstUserId);
+  const secondKey = getObservationStorageKey(secondUserId);
+  const otherAccount = JSON.stringify([record('other-account')]);
+  const values = new Map<string, string>([
+    [firstKey, JSON.stringify([record('existing')])],
+    [secondKey, otherAccount],
+  ]);
+  const storage = {
+    getItem: (key: string) => values.get(key) ?? null,
+    setItem: (key: string, value: string) => { values.set(key, value); },
+  };
+
+  const plan = prepareObservationRestore(
+    parseObservationBackup(JSON.stringify([record('imported')])),
+    readObservationArchive(storage, firstUserId),
+  );
+  const restored = await restoreObservationBackup(plan, false, { storage, userId: firstUserId });
+
+  assert.deepEqual(restored.map(item => item.id), ['imported', 'existing']);
+  assert.deepEqual(readObservationArchive(storage, firstUserId).items.map(item => item.id), ['imported', 'existing']);
+  assert.equal(values.get(secondKey), otherAccount);
+  assert.equal(readLocalRecoveryCopy(storage, firstUserId), values.get(firstKey));
 });

@@ -57,7 +57,7 @@ import { getRecordingFileExtension } from '@/lib/audio-recorder';
 import { useLocalAudioRecorder } from '@/hooks/use-local-audio-recorder';
 import {
   appendObservation, downloadFile, formatFrequency, localObservationErrorMessage,
-  OBSERVATION_STORAGE_KEY, readLocalRecoveryCopy, readObservationArchive,
+  getObservationStorageKey, OBSERVATION_STORAGE_KEY, readLocalRecoveryCopy, readObservationArchive,
   toCsv, writeObservations,
   type Observation,
 } from '@/lib/observations';
@@ -1745,9 +1745,17 @@ function LabPage() {
   </Shell>;
 }
 
-function HistoryPage() {
+function HistoryPage({ deviceOnly = false }: { deviceOnly?: boolean } = {}) {
   const { user, loading: authLoading } = useAuth();
-  const scope = authLoading ? 'loading' : user && firebaseCloudReady ? user.uid : 'local';
+  const scope = authLoading
+    ? 'loading'
+    : user && firebaseCloudReady && !deviceOnly
+      ? `cloud:${user.uid}`
+      : user
+        ? `device:${user.uid}`
+        : 'local';
+  const isCloudHistory = scope.startsWith('cloud:');
+  const archiveUserId = isCloudHistory ? undefined : user?.uid;
   const [items, setItems] = useState<Observation[]>([]);
   const [itemsScope, setItemsScope] = useState('loading');
   const [loading, setLoading] = useState(true);
@@ -1756,8 +1764,6 @@ function HistoryPage() {
   const [confirmClear, setConfirmClear] = useState(false);
   const [localArchiveIssue, setLocalArchiveIssue] = useState('');
   const [localArchiveDamaged, setLocalArchiveDamaged] = useState(false);
-  const isCloudHistory = scope !== 'local' && scope !== 'loading';
-
   useEffect(() => {
     if (scope === 'loading') return;
     let active = true;
@@ -1767,16 +1773,17 @@ function HistoryPage() {
     setHistoryError('');
     setLocalArchiveIssue('');
     setLocalArchiveDamaged(false);
-    if (scope === 'local') {
-      const archive = readObservationArchive();
+    if (!isCloudHistory) {
+      const archive = readObservationArchive(undefined, archiveUserId);
       setItems(archive.items);
       setLocalArchiveIssue(archive.issue);
       setLocalArchiveDamaged(archive.status === 'damaged');
-      setItemsScope('local');
+      setItemsScope(scope);
       setLoading(false);
+      const storageKey = getObservationStorageKey(archiveUserId);
       const refresh = (event: StorageEvent) => {
-        if (event.key !== OBSERVATION_STORAGE_KEY && event.key !== null) return;
-        const latest = readObservationArchive();
+        if (event.key !== storageKey && event.key !== null) return;
+        const latest = readObservationArchive(undefined, archiveUserId);
         setItems(latest.items);
         setLocalArchiveIssue(latest.issue);
         setLocalArchiveDamaged(latest.status === 'damaged');
@@ -1796,7 +1803,7 @@ function HistoryPage() {
       if (active) setLoading(false);
     });
     return () => { active = false; };
-  }, [scope]);
+  }, [scope, isCloudHistory, archiveUserId]);
 
   const visibleItems = itemsScope === scope ? items : [];
   const exportJson = () => downloadFile('zioncore-observations.json', JSON.stringify(visibleItems, null, 2), 'application/json');
@@ -1807,7 +1814,7 @@ function HistoryPage() {
       if (isCloudHistory) {
         await deleteCloudObservations(visibleItems.map(item => item.id));
       } else {
-        await writeObservations([]);
+        await writeObservations([], { userId: archiveUserId });
         setLocalArchiveIssue('');
         setLocalArchiveDamaged(false);
       }
@@ -1819,24 +1826,33 @@ function HistoryPage() {
   };
   return <Shell>
     <main className="page-wrap">
-      <div className="eyebrow">{isCloudHistory ? 'Private cloud / archive' : 'Your browser / archive'}</div>
-      <h1 className="page-title">Observation<br />history.</h1>
-      <p className="lead">{isCloudHistory ? 'Only observations you explicitly saved to your account appear here. This private archive follows your sign-in across devices.' : 'Only measurements you explicitly saved appear here. This archive lives in local browser storage on this device.'}</p>
+      <div className="eyebrow">{deviceOnly ? 'Device-only / local archive' : isCloudHistory ? 'Private cloud / archive' : 'Your browser / archive'}</div>
+      <h1 className="page-title">{deviceOnly ? <>Device-only<br />history.</> : <>Observation<br />history.</>}</h1>
+      <p className="lead">{deviceOnly
+        ? user
+          ? 'These observations are stored only in this browser under your account scope. They are not uploaded or synced.'
+          : 'These observations are stored only in this browser. Sign in to keep a separate device archive for your account.'
+        : isCloudHistory
+          ? 'Only observations you explicitly saved to your account appear here. This private archive follows your sign-in across devices.'
+          : 'Only measurements you explicitly saved appear here. This archive lives in local browser storage on this device.'}</p>
       <p className="footnote" data-testid="text-history-retention">
         {isCloudHistory
           ? 'Cloud observations remain in this account until you delete them. Export a copy before clearing; backup import restores to local browser history, not directly to cloud.'
           : 'Local observations remain in this browser profile until deleted or browser data is cleared. ZionCore does not encrypt this local archive; anyone with access to this profile may be able to read it. Backup imports merge into local history without replacing existing records.'}
       </p>
       <div style={{ marginTop: 24 }}><AccountSection /></div>
+      {user && !firebaseCloudReady && !deviceOnly && <p className="permission-note" role="status" data-testid="status-device-history-fallback">Cloud history is unavailable; this view uses your separate device archive.</p>}
+      {user && firebaseCloudReady && !deviceOnly && <p className="permission-note" data-testid="status-device-history-separate">Device-only records are separate from cloud history. <Link href="/history/device" data-testid="link-device-history">View this account’s device archive</Link></p>}
+      {user && firebaseCloudReady && deviceOnly && <p className="permission-note" data-testid="status-cloud-history-separate">Account cloud history is separate. <Link href="/history" data-testid="link-cloud-history">View cloud archive</Link></p>}
       {historyError && <div className="status-box alert-box" role="alert" style={{ marginTop: 18 }} data-testid="status-history-error">{historyError}</div>}
       {clearError && <div className="status-box alert-box" role="alert" style={{ marginTop: 18 }} data-testid="status-history-clear-error">{clearError}</div>}
       {!isCloudHistory && localArchiveIssue && <div className="status-box alert-box" role="alert" style={{ marginTop: 18 }} data-testid="status-local-history-error">{localArchiveIssue}</div>}
       {!isCloudHistory && localArchiveIssue && <button type="button" className="btn btn-subtle" style={{ marginTop: 12 }} data-testid="button-recheck-local-storage" onClick={() => {
-        const latest = readObservationArchive();
+        const latest = readObservationArchive(undefined, archiveUserId);
         setItems(latest.items); setLocalArchiveIssue(latest.issue); setLocalArchiveDamaged(latest.status === 'damaged'); setClearError('');
       }}>Check local history again</button>}
       {!isCloudHistory && localArchiveDamaged && <><button type="button" className="btn btn-subtle" style={{ marginTop: 12 }} data-testid="button-download-local-recovery" onClick={() => {
-        try { downloadFile('zioncore-browser-history-recovery.txt', readLocalRecoveryCopy(), 'text/plain;charset=utf-8'); }
+        try { downloadFile('zioncore-browser-history-recovery.txt', readLocalRecoveryCopy(undefined, archiveUserId), 'text/plain;charset=utf-8'); }
         catch { setClearError('Could not download a recovery copy. Check browser storage and download permissions. The archive has not been changed.'); }
       }}>Download local recovery copy</button><p className="permission-note">Contains the original browser archive and may include private notes. Keep this downloaded copy private.</p></>}
       <div className="history-toolbar" style={{ marginTop: 25 }}>
@@ -1845,10 +1861,10 @@ function HistoryPage() {
         <button className="btn btn-subtle" onClick={exportCsv} disabled={!visibleItems.length} data-testid="button-export-csv"><FileDown size={14} />Export CSV</button>
         <button className="btn btn-danger" onClick={() => setConfirmClear(true)} disabled={!visibleItems.length} data-testid="button-clear-history"><Trash2 size={14} />Clear history</button>
       </div>
-      {scope === 'local' && itemsScope === 'local' && (
+      {!isCloudHistory && itemsScope === scope && (
         <Suspense fallback={<p className="empty-inline" role="status">Preparing local recovery…</p>}>
-          <ObservationBackupRestore onRestored={() => {
-            const currentArchive = readObservationArchive();
+          <ObservationBackupRestore userId={archiveUserId} onRestored={() => {
+            const currentArchive = readObservationArchive(undefined, archiveUserId);
             setItems(currentArchive.items); setLocalArchiveIssue(currentArchive.issue);
             setLocalArchiveDamaged(currentArchive.status === 'damaged');
             setConfirmClear(false); setClearError('');
@@ -1857,7 +1873,7 @@ function HistoryPage() {
       )}
       {loading ? <div className="panel empty-state" role="status" data-testid="status-history-loading"><p>Loading your saved observations…</p></div>
         : historyError ? <div className="panel empty-state" role="status" data-testid="status-history-unavailable"><span className="empty-glyph"><Info size={22} /></span><h2>History could not be loaded.</h2><p>Retry the page after checking the Firebase connection. No local history was substituted for the cloud archive.</p></div>
-        : visibleItems.length ? <div className="history-list">{visibleItems.map(item => <Link key={item.id} href={`/history/${item.id}`} className="panel history-item" data-testid={`link-observation-${item.id}`}>
+        : visibleItems.length ? <div className="history-list">{visibleItems.map(item => <Link key={item.id} href={deviceOnly ? `/history/device/${item.id}` : `/history/${item.id}`} className="panel history-item" data-testid={`link-observation-${item.id}`}>
         <span><span className="history-date">{new Date(item.createdAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}</span><span className="history-freq">{formatFrequency(item.dominantFrequencyHz)}</span><span className="history-meta">{item.fftSize.toLocaleString()} FFT · {(item.sampleRate / 1000).toFixed(1)} kHz sample rate · {item.durationSeconds.toFixed(1)} sec</span></span><ArrowRight className="history-arrow" size={17} />
       </Link>)}</div> : <div className="panel empty-state" style={{ marginTop: 30 }}>
         <span className="empty-glyph"><History size={23} /></span><h2>{!isCloudHistory && localArchiveIssue ? 'Browser history needs attention.' : 'Your record begins with an observation.'}</h2><p>{!isCloudHistory && localArchiveIssue ? 'Existing history could not be read. This does not mean it was empty or deleted. Check storage permissions or download a private recovery copy when offered.' : isCloudHistory ? 'No cloud observations are saved to this account yet. Local browser records remain separate.' : 'Capture microphone sound or import a supported recording in the live lab, then choose “Save observation.” Nothing is added automatically.'}</p><Link href="/" className="btn btn-primary" style={{ width: 'auto', padding: '12px 16px' }} data-testid="link-empty-start"><Mic size={14} />Go to live lab</Link>
@@ -1875,10 +1891,19 @@ function HistoryPage() {
   </Shell>;
 }
 
-function DetailPage() {
+function DetailPage({ deviceOnly = false }: { deviceOnly?: boolean } = {}) {
   const params = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
-  const scope = authLoading ? 'loading' : user && firebaseCloudReady ? user.uid : 'local';
+  const scope = authLoading
+    ? 'loading'
+    : user && firebaseCloudReady && !deviceOnly
+      ? `cloud:${user.uid}`
+      : user
+        ? `device:${user.uid}`
+        : 'local';
+  const isCloudHistory = scope.startsWith('cloud:');
+  const archiveUserId = isCloudHistory ? undefined : user?.uid;
+  const returnHref = deviceOnly ? '/history/device' : '/history';
   const [item, setItem] = useState<Observation | undefined>();
   const [loadedScope, setLoadedScope] = useState('');
   const [detailLoading, setDetailLoading] = useState(true);
@@ -1891,12 +1916,12 @@ function DetailPage() {
     setLoadedScope('');
     setDetailError('');
     setDetailLoading(true);
-    if (scope === 'local') {
-      const archive = readObservationArchive();
+    if (!isCloudHistory) {
+      const archive = readObservationArchive(undefined, archiveUserId);
       const match = archive.items.find(entry => entry.id === params.id);
       setItem(match);
       if (!match && archive.issue) setDetailError(archive.issue);
-      setLoadedScope('local');
+      setLoadedScope(scope);
       setDetailLoading(false);
       return () => { active = false; };
     }
@@ -1914,19 +1939,19 @@ function DetailPage() {
       if (active) setDetailLoading(false);
     });
     return () => { active = false; };
-  }, [scope, params.id]);
+  }, [scope, params.id, isCloudHistory, archiveUserId]);
 
   if (detailLoading || loadedScope !== scope) return <Shell><main className="page-wrap"><div className="panel empty-state" role="status" data-testid="status-detail-loading"><p>Loading this observation…</p></div></main></Shell>;
-  if (detailError) return <Shell><main className="page-wrap"><Link href="/history" className="detail-back" data-testid="link-back-history"><ArrowLeft size={14} />Back to history</Link><div className="status-box alert-box" role="alert" data-testid="status-detail-error">{detailError}</div></main></Shell>;
-  if (!item) return <Shell><main className="page-wrap"><Link href="/history" className="detail-back" data-testid="link-back-history"><ArrowLeft size={14} />Back to history</Link><div className="panel empty-state"><span className="empty-glyph"><Info size={22} /></span><h2>Observation not found</h2><p>It may have been cleared from this browser or the link may be incomplete.</p><Link href="/history" className="btn btn-subtle" data-testid="link-return-history">Return to history</Link></div></main></Shell>;
+  if (detailError) return <Shell><main className="page-wrap"><Link href={returnHref} className="detail-back" data-testid="link-back-history"><ArrowLeft size={14} />Back to history</Link><div className="status-box alert-box" role="alert" data-testid="status-detail-error">{detailError}</div></main></Shell>;
+  if (!item) return <Shell><main className="page-wrap"><Link href={returnHref} className="detail-back" data-testid="link-back-history"><ArrowLeft size={14} />Back to history</Link><div className="panel empty-state"><span className="empty-glyph"><Info size={22} /></span><h2>Observation not found</h2><p>It may have been cleared from this browser or the link may be incomplete.</p><Link href={returnHref} className="btn btn-subtle" data-testid="link-return-history">Return to history</Link></div></main></Shell>;
   return <Shell>
     <main className="page-wrap">
-      <Link href="/history" className="detail-back" data-testid="link-back-history"><ArrowLeft size={14} />Back to history</Link>
+       <Link href={returnHref} className="detail-back" data-testid="link-back-history"><ArrowLeft size={14} />Back to history</Link>
        <div className="eyebrow">{item.mode === 'audio-file' ? 'Imported audio' : 'Microphone observation'} / {new Date(item.createdAt).toLocaleDateString()}</div>
       <h1 className="page-title">{formatFrequency(item.dominantFrequencyHz)}</h1>
       <p className="lead">Saved {new Date(item.createdAt).toLocaleString(undefined, { dateStyle: 'long', timeStyle: 'short' })}. This is a measurement record, not an interpretation of its source.</p>
       <section className="panel" style={{ marginTop: 29 }}>
-        <div className="panel-head"><span className="panel-title">Measurement record</span><span className="live-badge"><i className="live-dot" />Saved locally</span></div>
+         <div className="panel-head"><span className="panel-title">Measurement record</span><span className="live-badge"><i className="live-dot" />{isCloudHistory ? 'Saved to private cloud' : 'Saved locally'}</span></div>
         <div className="detail-stats">
          <div className="detail-stat"><span className="metric-label">Sample rate</span><strong>{(item.sampleRate / 1000).toFixed(1)} kHz</strong></div><div className="detail-stat"><span className="metric-label">Resolution</span><strong>{item.frequencyResolutionHz.toFixed(2)} Hz/bin</strong></div><div className="detail-stat"><span className="metric-label">FFT size</span><strong>{item.fftSize.toLocaleString()}</strong></div><div className="detail-stat"><span className="metric-label">Duration</span><strong>{item.durationSeconds.toFixed(1)} sec</strong></div><div className="detail-stat"><span className="metric-label">RMS level</span><strong>{Math.round(item.rmsLevel * 5000)} rel.</strong></div><div className="detail-stat"><span className="metric-label">Source</span><strong>{item.mode === 'audio-file' ? 'Imported audio' : 'Microphone'}</strong></div><div className="detail-stat"><span className="metric-label">Dominant peak</span><strong>{formatFrequency(item.dominantFrequencyHz)}</strong></div><div className="detail-stat"><span className="metric-label">Peak count</span><strong>{item.topPeaksHz.length}</strong></div>
         </div>
@@ -1939,6 +1964,22 @@ function DetailPage() {
 
 function NotFound() {
   return <Shell><main className="page-wrap"><div className="panel empty-state"><span className="empty-glyph"><Radio size={22} /></span><h2>Page not found</h2><p>Choose a live measurement, a saved observation, or the acoustic message instrument.</p><Link href="/" className="btn btn-primary" style={{ width: 'auto', padding: '12px 16px' }} data-testid="link-not-found-home">Return to lab</Link></div></main></Shell>;
+}
+
+function DeviceHistoryRoute() {
+  return <HistoryPage deviceOnly />;
+}
+
+function DeviceDetailRoute() {
+  return <DetailPage deviceOnly />;
+}
+
+function HistoryRoute() {
+  return <HistoryPage />;
+}
+
+function DetailRoute() {
+  return <DetailPage />;
 }
 
 function MessagesRoute() {
@@ -2161,7 +2202,7 @@ function App() {
     <PwaInstallPrompt />
     <NavigationEffects />
     <ConstellationProvider>
-    <Switch><Route path="/" component={LabPage} /><Route path="/discover" component={DiscoverRoute} /><Route path="/missions" component={ResearchMissionsRoute} /><Route path="/astronomy" component={AstronomyRoute} /><Route path="/bioacoustics" component={BioacousticsRoute} /><Route path="/exploration" component={ExplorationRoute} /><Route path="/access" component={AccessRoute} /><Route path="/devotional" component={DevotionalRoute} /><Route path="/cards" component={SignalCardsRoute} /><Route path="/history" component={HistoryPage} /><Route path="/history/:id" component={DetailPage} /><Route path="/messages" component={MessagesRoute} /><Route path="/voice-v2" component={VoiceV2Route} /><Route path="/devices" component={DevicesRoute} /><Route path="/premium" component={PremiumRoute} /><Route path="/admin" component={OwnerRoute} /><Route path="/owner" component={OwnerRoute} /><Route path="/dashboard" component={WalletRoute} /><Route path="/wallet" component={WalletRoute} /><Route component={NotFound} /></Switch>
+    <Switch><Route path="/" component={LabPage} /><Route path="/discover" component={DiscoverRoute} /><Route path="/missions" component={ResearchMissionsRoute} /><Route path="/astronomy" component={AstronomyRoute} /><Route path="/bioacoustics" component={BioacousticsRoute} /><Route path="/exploration" component={ExplorationRoute} /><Route path="/access" component={AccessRoute} /><Route path="/devotional" component={DevotionalRoute} /><Route path="/cards" component={SignalCardsRoute} /><Route path="/history" component={HistoryRoute} /><Route path="/history/device" component={DeviceHistoryRoute} /><Route path="/history/device/:id" component={DeviceDetailRoute} /><Route path="/history/:id" component={DetailRoute} /><Route path="/messages" component={MessagesRoute} /><Route path="/voice-v2" component={VoiceV2Route} /><Route path="/devices" component={DevicesRoute} /><Route path="/premium" component={PremiumRoute} /><Route path="/admin" component={OwnerRoute} /><Route path="/owner" component={OwnerRoute} /><Route path="/dashboard" component={WalletRoute} /><Route path="/wallet" component={WalletRoute} /><Route component={NotFound} /></Switch>
     </ConstellationProvider>
   </AuthContext.Provider>;
 }

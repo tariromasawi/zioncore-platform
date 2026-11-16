@@ -6,12 +6,12 @@ import {
   type ObservationBackup, type ObservationRestorePreview,
 } from '@/lib/observation-backup';
 import {
-  downloadFile, OBSERVATION_STORAGE_KEY, readLocalRecoveryCopy, type Observation,
+  downloadFile, getObservationStorageKey, readLocalRecoveryCopy, readObservationArchive, type Observation,
 } from '@/lib/observations';
 
 type Phase = 'idle' | 'reading' | 'preview' | 'stale' | 'restoring';
 
-export default function ObservationBackupRestore({ onRestored }: { onRestored: (items: Observation[]) => void }) {
+export default function ObservationBackupRestore({ onRestored, userId }: { onRestored: (items: Observation[]) => void; userId?: string }) {
   const [phase, setPhase] = useState<Phase>('idle');
   const [fileName, setFileName] = useState('');
   const [backup, setBackup] = useState<ObservationBackup | null>(null);
@@ -32,8 +32,9 @@ export default function ObservationBackupRestore({ onRestored }: { onRestored: (
 
   useEffect(() => {
     mounted.current = true;
+    const storageKey = getObservationStorageKey(userId);
     const onStorage = (event: StorageEvent) => {
-      if (event.key !== OBSERVATION_STORAGE_KEY && event.key !== null) return;
+      if (event.key !== storageKey && event.key !== null) return;
       if (!backupRef.current) return;
       setPreview(null); setConfirmed(false); setAcknowledged(false);
       setRecoveryCopyDownloaded(false); setConfirmDamagedReplacement(false);
@@ -41,7 +42,7 @@ export default function ObservationBackupRestore({ onRestored }: { onRestored: (
     };
     window.addEventListener('storage', onStorage);
     return () => { mounted.current = false; token.current++; window.removeEventListener('storage', onStorage); };
-  }, []);
+  }, [userId]);
 
   const resetInput = () => { if (inputRef.current) inputRef.current.value = ''; };
 
@@ -55,7 +56,7 @@ export default function ObservationBackupRestore({ onRestored }: { onRestored: (
 
   const buildPreview = (source: ObservationBackup) => {
     try {
-      setPreview(prepareObservationRestore(source));
+      setPreview(prepareObservationRestore(source, readObservationArchive(undefined, userId)));
       setPhase('preview');
     } catch (cause) {
       setPreview(null); setPhase('idle'); setError(observationBackupErrorMessage(cause));
@@ -101,7 +102,7 @@ export default function ObservationBackupRestore({ onRestored }: { onRestored: (
       const next = await restoreObservationBackup(
         preview,
         acknowledged,
-        {},
+        { userId },
         recoveryCopyDownloaded && confirmDamagedReplacement,
       );
       if (!mounted.current) return;
@@ -177,7 +178,7 @@ export default function ObservationBackupRestore({ onRestored }: { onRestored: (
             <button type="button" className="btn btn-subtle" disabled={phase === 'restoring'} data-testid="button-download-damaged-archive" onClick={() => {
               setRecoveryCopyDownloaded(false);
               try {
-                downloadFile('zioncore-damaged-history-recovery.txt', readLocalRecoveryCopy(), 'text/plain;charset=utf-8');
+                 downloadFile('zioncore-damaged-history-recovery.txt', readLocalRecoveryCopy(undefined, userId), 'text/plain;charset=utf-8');
                 setRecoveryCopyDownloaded(true);
               } catch {
                 setError('Could not download the exact current archive bytes. The damaged archive has not been changed.');
